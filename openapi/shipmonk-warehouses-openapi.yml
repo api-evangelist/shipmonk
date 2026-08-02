@@ -1,0 +1,218 @@
+openapi: 3.1.0
+info:
+  title: ShipMonk Warehouses API
+  version: v1.024
+  description: The Warehouses surface of the ShipMonk public fulfillment API.
+servers:
+- url: https://api.shipmonk.com
+  description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production.
+    Just write us at api@shipmonk.com and we will handle it.
+- url: https://sandbox.shipmonk.dev
+  description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting
+    the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to
+    the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed
+    contracts.'
+tags:
+- name: Warehouses
+paths:
+  /v1/integrations/warehouses:
+    get:
+      operationId: get-v1-integrations-warehouses
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 1000
+          default: 1
+        required: false
+        description: 1-based page number to return. Defaults to 1.
+        example: 1
+      - in: query
+        name: pageSize
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 1000
+          default: 50
+        required: false
+        description: Number of results per page. Defaults to a server-configured value; check the response metadata for the
+          effective size.
+        example: 10
+      - in: query
+        name: sortBy
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Enum_Warehouse_WarehouseListSortEnum'
+          - type: 'null'
+          default: null
+        required: false
+        description: Field to sort warehouses by (e.g., id, name, identifier). See the schema for allowed values.
+      - in: query
+        name: sortOrder
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Enum_PublicApiOrdering'
+          - type: 'null'
+          default: null
+        required: false
+        description: 'Sort direction: ASC (ascending) or DESC (descending).'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  paginator:
+                    $ref: '#/components/schemas/ShipMonk_Api_Output_PaginatorOutput'
+                  status:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Fulfillment_PublicApiBundle_ApiResource_Warehouse_WarehouseListOutput'
+                required:
+                - paginator
+                - status
+                - data
+      tags:
+      - Warehouses
+      security:
+      - api_key_header_Api-Key: []
+      description: Returns all enabled warehouses for the account associated with your API key. Warehouse IDs and identifiers
+        are required across various endpoints and can be included in query parameters to filter results.
+      summary: Retrieve List of Warehouses
+components:
+  schemas:
+    Fulfillment_PublicApiBundle_ApiResource_Address_AddressDetailOutput:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+        company:
+          type:
+          - string
+          - 'null'
+        street1:
+          type:
+          - string
+          - 'null'
+        street2:
+          type:
+          - string
+          - 'null'
+        street3:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        postal_code:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        residential:
+          type: boolean
+        verified:
+          type: boolean
+        country:
+          type:
+          - string
+          - 'null'
+      required:
+      - name
+      - company
+      - street1
+      - street2
+      - street3
+      - city
+      - state
+      - postal_code
+      - phone
+      - residential
+      - verified
+      - country
+      title: Address Detail Output
+    Fulfillment_PublicApiBundle_ApiResource_Warehouse_WarehouseListOutput:
+      type: object
+      properties:
+        id:
+          description: Unique numeric identifier of the warehouse.
+          type: integer
+        identifier:
+          description: Short warehouse code (e.g., CA1) used as a stable, human-readable reference.
+          type: string
+        name:
+          description: Display name of the warehouse.
+          type: string
+        timezone:
+          description: IANA time zone of the warehouse location (e.g., America/Los_Angeles).
+          type: string
+        warehouse_wms_type:
+          description: Warehouse management system backing this warehouse.
+          type: string
+        enabled:
+          description: Whether the warehouse is currently active and accepting shipments.
+          type: boolean
+        address:
+          description: Physical address of the warehouse.
+          $ref: '#/components/schemas/Fulfillment_PublicApiBundle_ApiResource_Address_AddressDetailOutput'
+      required:
+      - id
+      - identifier
+      - name
+      - timezone
+      - warehouse_wms_type
+      - enabled
+      - address
+      title: Warehouse List Output
+    Fulfillment_PublicApiBundle_Enum_PublicApiOrdering:
+      type:
+      - string
+      enum:
+      - DESC
+      - ASC
+      title: Ordering
+    Fulfillment_PublicApiBundle_Enum_Warehouse_WarehouseListSortEnum:
+      type:
+      - string
+      enum:
+      - name
+      - id
+      title: Warehouse List Sort Enum
+    ShipMonk_Api_Output_PaginatorOutput:
+      type: object
+      properties:
+        total:
+          type: integer
+        pages:
+          type: integer
+        page:
+          type: integer
+      required:
+      - total
+      - pages
+      - page
+      title: Paginator Output
+  securitySchemes:
+    api_key_header_Api-Key:
+      type: apiKey
+      in: header
+      name: Api-Key
+security:
+- api_key_header_Api-Key: []

@@ -1,0 +1,93 @@
+generated: '2026-08-02'
+method: searched
+source: >-
+  https://apidocs.shipmonk.com/openapi/public_api.json (servers[]),
+  https://apidocs.shipmonk.com/docs/intro,
+  https://apidocs.shipmonk.com/reference/post-v1-integrations-sandbox-complete-order,
+  https://apidocs.shipmonk.com/reference/post-v1-integrations-sandbox-complete-receiving,
+  https://apidocs.shipmonk.com/reference/post-v1-integrations-sandbox-complete-return
+description: >-
+  ShipMonk runs a separate Sandbox environment on its own host with its own API keys, plus
+  three first-class simulation endpoints that stand in for physical warehouse work. Because
+  fulfillment is a physical process, the simulation endpoints - not test card numbers - are
+  the substance of this artifact: they are how an integrator drives an order, a receiving or
+  a return to completion without a warehouse.
+environments:
+- name: production
+  base_url: https://api.shipmonk.com
+  access: >-
+    Production API keys and a production store_id are issued by ShipMonk support once testing
+    is complete - request them at api@shipmonk.com.
+- name: sandbox
+  base_url: https://sandbox.shipmonk.dev
+  access: >-
+    Sandbox access is requested from ShipMonk support and is only granted to customers with a
+    signed contract. It is not self-serve.
+  purpose: Pre-production testing without risk of corrupting live data; ShipMonk recommends running tests here before production.
+  maintenance: >-
+    Periodic maintenance may cause brief downtime between 00:00-06:00 EST, typically no longer
+    than 30 minutes. Extended windows are announced in advance.
+separation:
+  mechanism: separate host + separate API key + separate store_id
+  key_prefixes: none published
+  mode_flag: none - environment is selected by base URL
+simulation_endpoints:
+- name: Complete Order
+  operationId: post-v1-integrations-sandbox-complete-order
+  path: POST /v1/integrations/sandbox/complete-order
+  production_allowed: false
+  description: >-
+    Simulates warehouse shipment of an order. The order must already be submitted, with
+    available inventory, a valid address and a valid shipping method.
+  behaviour:
+  - A shipment notification is sent after the store's configured delay (Account Settings > Stores), defaulting to 20 minutes.
+  - >-
+    For D2C orders there is roughly a 1-minute delay (up to 5) between awaiting pick up and
+    en route; an awaiting-shipment webhook is delivered in that window to mirror real fulfillment.
+  - Order completion can also be simulated directly in the ShipMonk UI.
+- name: Complete Receiving
+  operationId: post-v1-integrations-sandbox-complete-receiving
+  path: POST /v1/integrations/sandbox/complete-receiving
+  production_allowed: false
+  description: Simulates completion of a receiving, including discrepancy outcomes.
+  target_identification: supply either receiving_key or asn
+  completion_modes:
+  - {mode: fully_received, meaning: accepts all expected units}
+  - {mode: short_received, meaning: fewer units than expected - may leave the receiving open or raise an exception}
+  - {mode: excess_received, meaning: more units than expected}
+  - {mode: partially_received, meaning: partial receipt}
+- name: Complete Return
+  operationId: post-v1-integrations-sandbox-complete-return
+  path: POST /v1/integrations/sandbox/complete-return
+  production_allowed: false
+  description: >-
+    Simulates the full return lifecycle - arrival, check-in, receiving, grading and completion -
+    according to the chosen completion mode and disposition.
+  completion_modes:
+  - {mode: fully_received, effect: receives the complete expected quantity, constraint: none}
+  - {mode: short_received, effect: receives one less unit than expected, constraint: expected quantity must be greater than 1}
+  - {mode: excess_received, effect: receives one more unit than expected, constraint: none}
+  - {mode: partially_received, effect: receives only 1 unit regardless of expected quantity, constraint: expected quantity must be greater than 1}
+  dispositions:
+  - {disposition: returned_to_inventory, constraint: none}
+  - {disposition: reworked, constraint: account must have the rework feature enabled}
+  - {disposition: dispose, constraint: none}
+  - {disposition: donate, constraint: none}
+  - {disposition: return_to_merchant, constraint: none}
+  note: Completion mode changes how many units are received of the FIRST item in the return; other items are always fully received.
+test_values:
+  cards: not applicable - ShipMonk is a fulfillment API and does not process payments
+  magic_identifiers: none published
+  note: >-
+    ShipMonk publishes no magic test SKUs, test addresses or fixture data. Test data is
+    whatever you create in your sandbox account; the simulation endpoints then advance it.
+warehouse_identifiers:
+  note: >-
+    Warehouse identifiers are the same in sandbox and production. Active identifiers are
+    CZ1, KY1, KY8, KY2, MX1, NV1, NV3, PA1, PA2, PA8, PA3, TX1, TX8, TO1, UK1. When creating
+    orders ShipMonk recommends omitting warehouse entirely so it can route to the optimal
+    warehouse on inventory and cost.
+  source: https://apidocs.shipmonk.com/docs/intro
+time_simulation:
+  supported: false
+  note: No test clocks. submit_at can be set in the future to schedule fulfillment, which is scheduling, not time travel.

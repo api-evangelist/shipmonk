@@ -1,0 +1,54 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+provider: ShipMonk
+providerId: shipmonk
+generated: '2026-08-02'
+method: searched
+created: '2026-08-02'
+modified: '2026-08-02'
+tags:
+- Logistics
+- Fulfillment
+- 3PL
+- Rate Limiting
+- Throttling
+description: >-
+  ShipMonk applies rate limits per account (merchant) on a rolling basis. Every endpoint
+  except the Orders List endpoint shares a default ceiling of 100,000 requests per minute;
+  GET /v1/integrations/orders-list is throttled far harder at 1,000 requests per 30 minutes.
+  Exhaustion returns HTTP 429 with a Retry-After header carrying an RFC 1123 date.
+sources:
+- https://apidocs.shipmonk.com/reference/common
+- https://apidocs.shipmonk.com/docs/intro
+responseCodes:
+  throttled: 429
+headers:
+- name: Retry-After
+  description: >-
+    Earliest retry time in RFC 1123 date form (e.g. "Mon, 01 Jan 2024 12:00:00 GMT").
+    This is the programmatic signal; the human-readable body message is informational only.
+limits:
+- name: General endpoints
+  scope: account (merchant)
+  metric: requests
+  limit: 100000
+  window: 60s
+  algorithm: rolling
+  applies_to: All endpoints except GET /v1/integrations/orders-list
+  notes: Custom per-account limits can be requested from api@shipmonk.com.
+- name: Orders List endpoint
+  scope: account (merchant)
+  metric: requests
+  limit: 1000
+  window: 1800s
+  algorithm: rolling
+  applies_to: GET /v1/integrations/orders-list
+  operationId: get-v1-integrations-orders-list
+  notes: Plan polling intervals against this ceiling; it is 100x stricter than the general limit.
+policies:
+- name: Backoff strategy
+  description: >-
+    Read the Retry-After header and wait until that time before retrying. Implement
+    exponential backoff for sustained 429s. Retrying immediately does not restore tokens
+    faster and may extend throttling.
+contact: api@shipmonk.com

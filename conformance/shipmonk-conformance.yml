@@ -1,0 +1,70 @@
+generated: '2026-08-02'
+method: derived
+source: >-
+  openapi/_original/shipmonk-openapi.json, https://apidocs.shipmonk.com/reference/common,
+  https://apidocs.shipmonk.com/docs/intro, well-known/shipmonk-api-catalog.json
+description: >-
+  Cross-cutting standards conformance for the ShipMonk public fulfillment API, derived
+  from the provider's own OpenAPI 3.1.0 description and its published reference docs.
+standards:
+- id: openapi-3.1
+  conforms: true
+  evidence: 'openapi: 3.1.0 in openapi/_original/shipmonk-openapi.json (self-published at https://apidocs.shipmonk.com/openapi/public_api.json)'
+- id: rfc9727-api-catalog
+  conforms: true
+  evidence: /.well-known/api-catalog on apidocs.shipmonk.com returns application/linkset+json with service-desc/service-doc
+- id: rfc9116-security-txt
+  conforms: false
+  partial: true
+  evidence: security.txt served at app.shipmonk.com with Contact/Canonical/Preferred-Languages, but the REQUIRED Expires field is absent
+- id: iso8601-datetimes
+  conforms: true
+  evidence: 'docs/intro: "All date and time values follow the ISO 8601 format"; spec uses format date-time'
+- id: iso3166-1-alpha-2
+  conforms: true
+  evidence: 'Create Product: country_of_origin accepts a 2-letter ISO 3166-1 alpha-2 country code'
+- id: oauth2
+  conforms: false
+  evidence: only securityScheme is apiKey in header (Api-Key); no OAuth 2.0 flows declared or documented
+- id: openid-connect
+  conforms: false
+  evidence: /.well-known/openid-configuration 404 on every host
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: no application/problem+json media type anywhere in the spec or docs; errors use a plain JSON envelope
+- id: rfc6585-429
+  conforms: true
+  evidence: 'documented 429 Too Many Requests on rate-limit exhaustion (https://apidocs.shipmonk.com/reference/common)'
+- id: rfc9110-retry-after
+  conforms: true
+  evidence: 'Retry-After header returned on 429, in RFC 1123 date form (e.g. "Mon, 01 Jan 2024 12:00:00 GMT")'
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: no Sunset or Deprecation response headers documented; removal dates are announced in the changelog and in field descriptions instead
+- id: idempotency-key
+  conforms: false
+  evidence: >-
+    no Idempotency-Key header exists. Idempotency is instead achieved through natural
+    keys (store_id + order_key on orders, receiving_key/asn on receivings, unique SKU on
+    products) — an upsert model, not an idempotency-key model. See conventions/.
+- id: asyncapi
+  conforms: false
+  evidence: ShipMonk publishes no AsyncAPI; the event surface is described in OpenAPI 3.1 webhooks and modeled by us in asyncapi/shipmonk-webhooks-asyncapi.yml
+- id: webhooks-http-callbacks
+  conforms: true
+  evidence: 'OpenAPI 3.1 top-level webhooks block declares 4 event types with typed JSON payloads'
+- id: json-api
+  conforms: false
+  evidence: responses use a bespoke {status, data} / {paginator, ...} envelope, not JSON:API
+- id: scim2
+  conforms: false
+- id: odata
+  conforms: false
+- id: gs1-sscc
+  conforms: true
+  evidence: >-
+    Receiving carton/pallet identifiers use a typed LPN vocabulary whose type is SSCC
+    (GS1 Serial Shipping Container Code) — changelog v1.018 / v1.023
+- id: soc2-type-ii
+  conforms: true
+  evidence: SOC 2 Type II audit completed, announced 2026-02-12 (see security/shipmonk-trust-center.yml)

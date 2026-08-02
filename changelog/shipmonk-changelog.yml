@@ -1,0 +1,102 @@
+generated: '2026-08-02'
+method: searched
+source: https://apidocs.shipmonk.com/changelog
+description: >-
+  ShipMonk publishes a per-release changelog on its developer hub. Each entry is a numbered
+  documentation/contract release (v1.0xx) with sections for new endpoints, schema and
+  property updates, new support schemas, removals, and documentation-only changes. Breaking
+  changes are marked explicitly and carry a migration paragraph.
+scheme: incremental release train (v1.0xx) within the v1 URI-path API version
+current_version: v1.024
+url: https://apidocs.shipmonk.com/changelog
+feed: null
+window: 10 most recent entries (of 3 pages published)
+date_note: >-
+  The changelog renders relative timestamps rather than absolute dates. Dates below are
+  exact only where the relative label pinned them unambiguously against the crawl date
+  (2026-08-02); older entries carry the published relative label instead.
+entries:
+- version: v1.024
+  date: '2026-07-27'
+  url: https://apidocs.shipmonk.com/changelog/v1-024
+  breaking: false
+  type: documentation + schema
+  highlights:
+  - >-
+    The carrier field on order shipment data and on the Shipment Notification webhook now
+    documents its known values as the Custom_PublicApi_Enum_CarrierIdentifier enum
+    (CanadaPost, Cirro, DHL eCommerce, DHL Express, DPD, FedEx, Global-E, International
+    Bridge, OnTrac, Passport, Royal Mail, ShipMonk, SpeedX, UPS, USPS) while remaining
+    open to any string for custom/freight carriers.
+  - Additive and fully backward-compatible; no value is rejected or removed.
+- version: v1.023
+  date: '2026-07-24'
+  url: https://apidocs.shipmonk.com/changelog/v1-023
+  breaking: true
+  type: removal
+  highlights:
+  - >-
+    BREAKING - the deprecated item/line-level sscc field was removed from POST
+    /v1/integrations/receiving, GET /v1/integrations/receiving and the receivings list.
+    Sending it now fails validation with 'Unrecognized key "sscc"'.
+  - >-
+    Migration - attach the SSCC at packaging level via cartons[].identifiers or
+    pallets[].identifiers with type SSCC, and reference it from the item through carton_key.
+- version: v1.022
+  date_relative: about 1 month ago
+  url: https://apidocs.shipmonk.com/changelog/v1-022
+  breaking: false
+  type: documentation
+  highlights:
+  - >-
+    Documented the webhook store filter - a subscription delivers events for every store on
+    the account by default and can be restricted to specific stores. Capability shipped
+    December 2025; this release documents it.
+- version: v1.021
+  date_relative: about 1 month ago
+  url: https://apidocs.shipmonk.com/changelog/v1-021
+  breaking: false
+  type: documentation
+  highlights:
+  - >-
+    Webhook retry policy restated as exponential backoff - up to 8 retries starting at 30s
+    and doubling (30s, 1m, 2m, 4m, 8m, 16m, 32m, 60m, capped at 60 minutes), spanning
+    roughly two hours.
+- version: v1.020
+  date_relative: about 2 months ago
+  url: https://apidocs.shipmonk.com/changelog/v1-020
+  breaking: false
+  type: validation + documentation
+  highlights:
+  - >-
+    Receiving LPN identifier docs clarified and validation tightened - every carton must
+    carry at least one identifier, and identifier values must be unique across all cartons
+    and pallets of a receiving.
+- version: v1.019
+  date_relative: about 2 months ago
+  url: https://apidocs.shipmonk.com/changelog/v1-019
+  breaking: false
+  type: addition + deprecation
+  highlights:
+  - >-
+    Products expose a structured type enum (pick_and_pack, insert, packaging), replacing
+    the free-form product_type field which is now deprecated and scheduled for removal.
+- version: v1.018
+  date_relative: about 2 months ago
+  url: https://apidocs.shipmonk.com/changelog/v1-018
+  breaking: false
+  type: addition + deprecation
+  highlights:
+  - >-
+    Receiving packaging identifiers adopt a generic typed LPN vocabulary ({type, value},
+    type currently always SSCC). Additive; the line-item sscc field keeps working and is
+    deprecated in favour of carton/pallet identifier arrays.
+- version: v1.017
+  date_relative: 2 months ago
+  url: https://apidocs.shipmonk.com/changelog/v1-017
+- version: v1.016
+  date_relative: 2 months ago
+  url: https://apidocs.shipmonk.com/changelog/v1-016
+- version: v1.015
+  date_relative: 3 months ago
+  url: https://apidocs.shipmonk.com/changelog/v1-015

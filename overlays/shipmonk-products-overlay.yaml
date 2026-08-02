@@ -1,0 +1,69 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for ShipMonk Products API
+  version: 1.0.0
+extends: openapi/shipmonk-products-openapi.yml
+x-generated: '2026-08-02'
+x-method: generated
+x-source: https://apidocs.shipmonk.com/openapi/public_api.json
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: shipmonk
+    x-apievangelist-surface: products
+    x-apievangelist-harvested-from: https://apidocs.shipmonk.com/openapi/public_api.json
+    x-apievangelist-spec-version: v1.024
+    x-apievangelist-artifacts:
+      authentication: authentication/shipmonk-authentication.yml
+      conventions: conventions/shipmonk-conventions.yml
+      errors: errors/shipmonk-problem-types.yml
+      rate-limits: rate-limits/shipmonk-rate-limits.yml
+      lifecycle: lifecycle/shipmonk-lifecycle.yml
+      sandbox: sandbox/shipmonk-sandbox.yml
+      events: asyncapi/shipmonk-webhooks-asyncapi.yml
+      data-model: data-model/shipmonk-data-model.yml
+    x-apievangelist-gaps:
+    - No 4xx/5xx responses are described for any operation; only 200 is declared.
+    - No request or response examples are present in the specification.
+    - No error envelope schema is published.
+- target: $.servers
+  update:
+  - url: https://api.shipmonk.com
+    description: Production. Keys issued by ShipMonk support (api@shipmonk.com).
+    x-environment: production
+  - url: https://sandbox.shipmonk.dev
+    description: Sandbox. Contract customers only; see sandbox/shipmonk-sandbox.yml.
+    x-environment: sandbox
+- target: $.components.securitySchemes.api_key_header_Api-Key
+  update:
+    description: 'Account-wide API key issued per store under Account Settings > Integration API Keys. No scopes; one key
+      can act on any store on the account. Docs: https://apidocs.shipmonk.com/docs/api-key'
+    x-rotation: Regenerate or revoke from the Integration API Keys screen in the ShipMonk app.
+- target: $.paths['/v1/integrations/product'].post
+  update:
+    x-rate-limit:
+      limit: 100000
+      window: 1m
+      scope: account
+    x-idempotency:
+      mechanism: natural-key uniqueness
+      key: sku
+      note: duplicate SKU rejected with 400
+- target: $.paths['/v1/integrations/products/search'].post
+  update:
+    x-rate-limit:
+      limit: 100000
+      window: 1m
+      scope: account
+- target: $.paths['/v1/integrations/products/search/paginate'].get
+  update:
+    x-rate-limit:
+      limit: 100000
+      window: 1m
+      scope: account
+- target: $.paths['/v1/products'].get
+  update:
+    x-rate-limit:
+      limit: 100000
+      window: 1m
+      scope: account

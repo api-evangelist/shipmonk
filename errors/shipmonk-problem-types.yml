@@ -1,0 +1,96 @@
+generated: '2026-08-02'
+method: searched
+source: >-
+  https://apidocs.shipmonk.com/reference/common, https://apidocs.shipmonk.com/reference/post-v1-integrations-product,
+  https://apidocs.shipmonk.com/changelog/v1-023, openapi/_original/shipmonk-openapi.json
+format: bespoke-json
+rfc9457: false
+description: >-
+  ShipMonk's published OpenAPI declares a 200 response and nothing else for all 19 operations
+  - no 4xx or 5xx response object exists anywhere in the contract, so error payloads are not
+  machine-readable and cannot be derived from the spec. This catalog therefore records only
+  the failure modes ShipMonk documents in prose, each traceable to a published page. It is
+  deliberately short; it is not a complete error registry, because ShipMonk does not publish one.
+spec_coverage:
+  operations: 19
+  operations_with_4xx_or_5xx_documented_in_spec: 0
+  media_types_in_spec: [application/json]
+  problem_json_used: false
+problems:
+- status: 429
+  name: rate_limit_exceeded
+  title: Too Many Requests
+  detail: >-
+    The account exceeded its rolling request allowance. The response carries a Retry-After
+    header with the earliest retry time in RFC 1123 date form and a human-readable body
+    message. Use the header, not the message, for retry logic.
+  remediation: >-
+    Wait until the Retry-After time, then retry with exponential backoff for sustained 429s.
+    Retrying immediately does not restore tokens faster.
+  applies_to: all operations (orders-list has a far stricter ceiling)
+  source: https://apidocs.shipmonk.com/reference/common
+- status: 400
+  name: duplicate_sku
+  title: SKU is not unique
+  detail: SKUs must be unique within the ShipMonk account; a non-unique SKU is rejected.
+  remediation: Look the SKU up before creating, or namespace SKUs per catalog.
+  applies_to: post-v1-integrations-product
+  source: https://apidocs.shipmonk.com/reference/post-v1-integrations-product
+- status: 400
+  name: invalid_required_packaging_for_fragile
+  title: Fragile products must ship in a box
+  detail: A product flagged fragile must have required_packaging set to box; any other value is rejected.
+  remediation: Set required_packaging to box for fragile products.
+  applies_to: post-v1-integrations-product
+  source: https://apidocs.shipmonk.com/reference/post-v1-integrations-product
+- status: 400
+  name: unrecognized_key
+  title: 'Unrecognized key "<field>"'
+  detail: >-
+    Request-body validation rejects unknown properties. Observed after the v1.023 removal of
+    the deprecated receiving sscc field - sending it now fails with Unrecognized key "sscc".
+  remediation: >-
+    Remove fields that have been retired. For SSCC, attach it at packaging level through
+    cartons[].identifiers or pallets[].identifiers with type SSCC and reference the carton
+    from the item via carton_key.
+  applies_to: post-v1-integrations-receiving
+  source: https://apidocs.shipmonk.com/changelog/v1-023
+- status: 400
+  name: receiving_key_without_asn
+  title: asn is required
+  detail: >-
+    A Create-or-Update Receiving request that supplies only receiving_key is rejected, because
+    asn is a required field.
+  remediation: Always send asn; send receiving_key additionally when you need a stable client-side key.
+  applies_to: post-v1-integrations-receiving
+  source: https://apidocs.shipmonk.com/reference/post-v1-integrations-receiving
+- status: 400
+  name: duplicate_lpn_identifier
+  title: Identifier values must be unique per receiving
+  detail: >-
+    Every carton must carry at least one identifier, and identifier values must be unique
+    across all cartons and pallets of a single receiving (tightened in v1.020).
+  remediation: De-duplicate LPN/SSCC values across cartons and pallets before posting.
+  applies_to: post-v1-integrations-receiving
+  source: https://apidocs.shipmonk.com/changelog/v1-020
+non_error_failure_states:
+  note: >-
+    A number of ShipMonk failure modes are not HTTP errors at all - the write succeeds and the
+    order lands in an "Action Required" state in the app instead.
+  states:
+  - name: Recipient Tax ID Required
+    trigger: >-
+      International shipment to a destination that mandates a recipient tax ID (for example
+      Mexico, Brazil, South Korea) submitted without recipient_tax_id.
+    consequence: Order is held in Action Required; carriers may reject the shipment and return it to sender.
+    remediation: Re-submit the order with recipient_tax_id, or set it in the ShipMonk app.
+    source: https://apidocs.shipmonk.com/reference/post-v1-integrations-order
+  - name: Item mapping action required
+    trigger: Lot requirements that are not applicable to the mapped bundle.
+    consequence: The order is accepted but item mapping ends in action required.
+    remediation: Update the bundles or set different lot requirements.
+    source: https://apidocs.shipmonk.com/reference/post-v1-integrations-order
+gaps_to_raise_with_provider:
+- No 4xx/5xx responses are described in the OpenAPI for any operation.
+- No documented error envelope schema, error code registry, or error-type identifiers.
+- No RFC 9457 application/problem+json support.

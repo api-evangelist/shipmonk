@@ -1,0 +1,103 @@
+generated: '2026-08-02'
+method: derived
+source: openapi/_original/shipmonk-openapi.json (186 component schemas, 19 operations, 4 webhooks)
+description: >-
+  Entity-relationship graph of the ShipMonk fulfillment domain, derived from the schema graph
+  of ShipMonk's own OpenAPI 3.1 description and the concepts reference. The domain has two
+  inbound spines (Receiving of new stock, Returns of shipped goods), one outbound spine
+  (Order to Shipment), and Product + Warehouse as the shared reference data both depend on.
+identifiers:
+  note: >-
+    ShipMonk uses caller-supplied natural keys rather than prefixed opaque ids. These keys are
+    also the idempotency contract - see conventions/shipmonk-conventions.yml.
+  keys:
+  - {entity: Order, key: order_key, scope: unique within a store, supplied_by: client}
+  - {entity: Order, secondary: order_number, supplied_by: ShipMonk}
+  - {entity: Store, key: store_id, supplied_by: ShipMonk}
+  - {entity: Product, key: sku, scope: unique within the account, supplied_by: client}
+  - {entity: Receiving, key: asn, required: true, supplied_by: client}
+  - {entity: Receiving, secondary: receiving_key, supplied_by: client}
+  - {entity: ReceivingLine, key: line_key, scope: unique per receiving, supplied_by: client, optional: true}
+  - {entity: Return, key: rma, supplied_by: ShipMonk}
+  - {entity: Warehouse, key: warehouse identifier, examples: [CZ1, KY1, NV1, PA1, TX1, TO1, UK1, MX1]}
+  - {entity: Carton, key: carton_key, supplied_by: client}
+entities:
+- name: Store
+  description: A merchant's sales channel or marketplace where orders originate; carries default ship-from/return addresses, auto-submission, gift messaging, order merging and inventory-sync settings.
+  operations: []
+  note: No REST endpoint exposes stores; they are managed in the ShipMonk app and referenced by store_id.
+- name: Order
+  description: An outbound customer order to be picked, packed and shipped.
+  operations: [post-v1-integrations-order, get-v1-integrations-orders, get-v1-integrations-orders-list, post-v1-integrations-submit-order, post-v1-integrations-sandbox-complete-order]
+  statuses: [unfulfilled, cancelled, fulfilled, onHold]
+  processing_statuses: [back-order, unable_to_submit, queued_to_submit, subscription, package_forwarding, on_hold, submitted, pick_in_progress, pack_in_progress, packed, awaiting_pick_up, awaiting_carrier_processing, en_route, delivered, undeliverable, shipped_untrackable, cancellation_requested, cancelled]
+- name: OrderItem
+  description: A line on an order, mapped to a product or bundle, optionally carrying lot and shelf-life requirements.
+- name: Shipment
+  description: The physical dispatch of an order, carrying tracking and packing data. A large order can produce multiple packages, each with its own tracking number.
+  operations: []
+  events: [orderShipmentNotification]
+- name: Product
+  description: A SKU in the merchant catalog. Immutable via API after creation; updates happen in the web app.
+  operations: [post-v1-integrations-product, get-v1-products, post-v1-integrations-products-search, get-v1-integrations-products-search-paginate]
+  types: [pick_and_pack, insert, packaging]
+- name: Inventory
+  description: Aggregated stock levels for a product across warehouses.
+  classifications: [expected, quarantined, allocated, available, on_hand, final]
+  allocation: FIFO by default; FEFO when a lot carries an expiration date.
+- name: Lot
+  description: A tracked batch of a product, used for aging and expiry control. Not enabled by default on an account.
+- name: Warehouse
+  description: A ShipMonk fulfillment centre. Order routing is automatic on inventory and shipping cost unless a warehouse is specified.
+  operations: [get-v1-integrations-warehouses]
+- name: Receiving
+  description: An inbound shipment of stock into a ShipMonk warehouse, identified by ASN.
+  operations: [post-v1-integrations-receiving, get-v1-integrations-receiving, get-v1-integrations-receivings-list, post-v1-integrations-sandbox-complete-receiving]
+  statuses: [awaiting, in_progress, arrived, received]
+  outcome_states: [partial, short, over, complete]
+- name: ReceivingLine
+  description: An expected product quantity on a receiving, optionally keyed by line_key and referencing a carton or pallet.
+- name: Carton
+  description: A packaging unit on a receiving, identified by one or more typed LPN identifiers (currently SSCC).
+- name: Pallet
+  description: A pallet on a receiving, identified by typed LPN identifiers; loose units reference it via loose_units_pallet_key.
+- name: Receipt
+  description: The recorded result of a receiving being checked in.
+  operations: [get-v1-integrations-receipts-list]
+- name: Return
+  description: A customer return (RMA) with expected items, a return reason and a desired action.
+  operations: [post-v1-integrations-returns, get-v1-integrations-returns, get-v1-integrations-returns-list, post-v1-integrations-sandbox-complete-return]
+  statuses: [status_created, in_progress, en_route, returned]
+  dispositions: [returned_to_inventory, reworked, dispose, donate, return_to_merchant]
+- name: TradingPartner
+  description: The retailer, distributor or business entity an order is fulfilled for; drives order rules, packing inserts and per-marketplace SLAs, often behind a single EDI integration.
+relationships:
+- {from: Store, to: Order, type: has_many, via: store_id}
+- {from: Order, to: OrderItem, type: has_many, via: items}
+- {from: OrderItem, to: Product, type: belongs_to, via: sku}
+- {from: Order, to: Shipment, type: has_many, via: packages}
+- {from: Order, to: Warehouse, type: belongs_to, via: warehouse, optional: true, note: omitted by default so ShipMonk can auto-route}
+- {from: Order, to: TradingPartner, type: belongs_to, via: trading partner field, optional: true}
+- {from: Order, to: Return, type: has_many, via: rma, note: the only way to recall an order past pick_in_progress}
+- {from: Product, to: Inventory, type: has_one, via: inventory}
+- {from: Product, to: Lot, type: has_many, via: lots}
+- {from: Inventory, to: Warehouse, type: has_many, via: per-warehouse levels}
+- {from: Receiving, to: ReceivingLine, type: has_many, via: receiving_lines / items}
+- {from: Receiving, to: Warehouse, type: belongs_to, via: warehouse_id}
+- {from: Receiving, to: Carton, type: has_many, via: cartons}
+- {from: Receiving, to: Pallet, type: has_many, via: pallets}
+- {from: ReceivingLine, to: Carton, type: belongs_to, via: carton_key}
+- {from: ReceivingLine, to: Pallet, type: belongs_to, via: loose_units_pallet_key}
+- {from: ReceivingLine, to: Product, type: belongs_to, via: sku}
+- {from: ReceivingLine, to: Lot, type: belongs_to, via: lot, optional: true}
+- {from: Receiving, to: Receipt, type: has_many, via: asn}
+- {from: Return, to: Warehouse, type: belongs_to, via: warehouse_id}
+- {from: Return, to: Product, type: has_many, via: return items}
+- {from: Carton, to: Identifier, type: has_many, via: identifiers, note: 'typed LPN {type, value}; type currently always SSCC'}
+event_surface:
+  detail: asyncapi/shipmonk-webhooks-asyncapi.yml
+  bindings:
+  - {event: orderShipmentNotification, entity: Shipment, payload_schema: ShipMonk_OMS_Notification_ApiResource_ShipmentNotificationOutput}
+  - {event: orderStatusChange, entity: Order, payload_schema: Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderDetailOutput, note: same shape as the Get Order response}
+  - {event: returnStatusChange, entity: Return, payload_schema: Fulfillment_IntegrationsBundle_ApiResource_ReturnOutput, note: same shape as one element of the returns list}
+  - {event: receivingStatusChange, entity: Receiving, payload_schema: ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingOutput}

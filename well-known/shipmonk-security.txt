@@ -1,0 +1,9 @@
+# Our security address
+Contact: mailto:security@shipmonk.com
+
+# Twitter
+Contact: https://twitter.com/ShipMonkDevs
+
+Canonical: https://app.shipmonk.com/.well-known/security.txt
+
+Preferred-Languages: en, cs

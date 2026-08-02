@@ -1,0 +1,20 @@
+generated: '2026-08-02'
+method: derived
+source: openapi/shipmonk-orders-openapi.yml, openapi/shipmonk-products-openapi.yml, openapi/shipmonk-receivings-openapi.yml,
+  openapi/shipmonk-returns-openapi.yml, openapi/shipmonk-warehouses-openapi.yml
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+schemes:
+- name: api_key_header_Api-Key
+  type: apiKey
+  in: header
+  parameter: Api-Key
+  sources:
+  - openapi/shipmonk-orders-openapi.yml
+  - openapi/shipmonk-products-openapi.yml
+  - openapi/shipmonk-receivings-openapi.yml
+  - openapi/shipmonk-returns-openapi.yml
+  - openapi/shipmonk-warehouses-openapi.yml

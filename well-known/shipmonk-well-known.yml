@@ -1,0 +1,66 @@
+generated: '2026-08-02'
+method: searched
+source: live probes of every ShipMonk host in apis.yml and every OpenAPI servers[] host
+description: >-
+  RFC 8615 well-known discovery surface for ShipMonk. Two documents are genuinely
+  served: an RFC 9116 security.txt (canonical on app.shipmonk.com, mirrored on the
+  sandbox host) and an RFC 9727 api-catalog linkset on the developer docs host that
+  points at the machine-readable OpenAPI description. Everything else 404s.
+hosts_probed:
+- api.shipmonk.com
+- sandbox.shipmonk.dev
+- app.shipmonk.com
+- www.shipmonk.com
+- apidocs.shipmonk.com
+documents:
+- host: https://app.shipmonk.com
+  path: /.well-known/security.txt
+  status: 200
+  content_type: text/plain
+  standard: RFC 9116
+  file: shipmonk-security.txt
+  canonical: true
+- host: https://sandbox.shipmonk.dev
+  path: /.well-known/security.txt
+  status: 200
+  content_type: text/plain
+  standard: RFC 9116
+  note: Same document as app.shipmonk.com; its Canonical field points at app.shipmonk.com.
+- host: https://apidocs.shipmonk.com
+  path: /.well-known/api-catalog
+  status: 200
+  content_type: application/linkset+json
+  standard: RFC 9727
+  file: shipmonk-api-catalog.json
+  note: >-
+    Linkset with one anchor whose service-desc is
+    https://apidocs.shipmonk.com/openapi/public_api.json
+    (application/vnd.oai.openapi+json) and whose service-doc is
+    https://apidocs.shipmonk.com/reference.
+misses:
+- {host: api.shipmonk.com, path: /.well-known/security.txt, status: 404}
+- {host: api.shipmonk.com, path: /.well-known/openid-configuration, status: 404}
+- {host: api.shipmonk.com, path: /.well-known/oauth-authorization-server, status: 404}
+- {host: api.shipmonk.com, path: /.well-known/api-catalog, status: 404}
+- {host: api.shipmonk.com, path: /.well-known/ai-plugin.json, status: 404}
+- {host: api.shipmonk.com, path: /.well-known/agent-card.json, status: 404}
+- {host: api.shipmonk.com, path: /.well-known/agent.json, status: 404}
+- {host: www.shipmonk.com, path: /.well-known/security.txt, status: 404}
+- {host: www.shipmonk.com, path: /.well-known/agent-card.json, status: 404}
+- {host: apidocs.shipmonk.com, path: /.well-known/security.txt, status: 404}
+- {host: apidocs.shipmonk.com, path: /.well-known/oauth-protected-resource, status: 404}
+- {host: apidocs.shipmonk.com, path: /.well-known/agent-card.json, status: 404}
+false_positives_rejected:
+- host: sandbox.shipmonk.dev
+  paths: [/.well-known/agent-card.json, /.well-known/agent.json, /.well-known/openid-configuration,
+    /.well-known/oauth-authorization-server, /.well-known/api-catalog, /.well-known/ai-plugin.json]
+  status: 200
+  content_type: text/html
+  reason: >-
+    Single-page-app catch-all — every /.well-known/* path returns the ShipMonk app
+    HTML shell, not a document. Rejected; no A2A agent card exists.
+- host: app.shipmonk.com
+  paths: [/.well-known/agent-card.json]
+  status: 200
+  content_type: text/html
+  reason: Same SPA catch-all. Rejected.

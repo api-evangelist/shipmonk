@@ -1,0 +1,30 @@
+generated: '2026-08-02'
+method: searched
+source: >-
+  npm registry search, PyPI, Packagist, github.com/shipmonk-rnd,
+  https://apidocs.shipmonk.com/ and https://www.shipmonk.com/platform/api-developer-tools
+description: >-
+  ShipMonk publishes NO first-party client library for its public fulfillment API in any
+  language. Integrators call the REST API directly. The shipmonk/* packages on Packagist and
+  the github.com/shipmonk-rnd organization are genuinely first-party but are internal PHP
+  engineering tooling (PHPStan extensions, Doctrine utilities, coding standards) - they are
+  not API SDKs and are deliberately not listed as such.
+packages: []
+registries_probed:
+- {registry: npm, query: shipmonk, api_client_libraries_found: 0}
+- {registry: pypi, packages_checked: [shipmonk, shipmonk-api, shipmonk-sdk], found: 0}
+- {registry: packagist, query: shipmonk, api_client_libraries_found: 0, note: '20+ shipmonk/* packages exist, all PHP developer tooling'}
+- {registry: github, org: shipmonk-rnd, api_client_libraries_found: 0, note: 'PHP static-analysis and Doctrine tooling; no API client'}
+- {registry: github, org: ShipMonk, status: 404}
+first_party_non_sdk_open_source:
+  org: https://github.com/shipmonk-rnd
+  note: >-
+    Recorded for provenance only - these are engineering tools ShipMonk open-sources, not
+    ways to call the ShipMonk API.
+  examples:
+  - {name: shipmonk/composer-dependency-analyser, registry: packagist, language: php}
+  - {name: shipmonk/dead-code-detector, registry: packagist, language: php}
+  - {name: shipmonk/phpstan-rules, registry: packagist, language: php}
+gap_to_raise_with_provider: >-
+  A generated client from the published OpenAPI 3.1 description would be low-cost and would
+  close the single largest ergonomics gap in this API surface.

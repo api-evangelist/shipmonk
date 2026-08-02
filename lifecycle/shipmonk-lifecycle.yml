@@ -1,0 +1,77 @@
+generated: '2026-08-02'
+method: searched
+source: >-
+  https://apidocs.shipmonk.com/changelog, https://apidocs.shipmonk.com/openapi/public_api.json,
+  https://status.shipmonk.com, https://apidocs.shipmonk.com/docs/intro
+versioning:
+  scheme: uri-path + documentation release train
+  current: v1
+  spec_version: v1.024
+  mechanism: >-
+    Every operation is served under the /v1/ path prefix. Within v1 the contract itself is
+    versioned as a documentation release train (v1.015 ... v1.024) published on the
+    changelog; the OpenAPI info.version carries the current train number. There is no
+    version request header and no per-account version pinning.
+  docs: https://apidocs.shipmonk.com/changelog
+deprecation:
+  policy_url: https://apidocs.shipmonk.com/changelog
+  sunset_header: false
+  deprecation_header: false
+  mechanism: >-
+    Deprecations are announced in the changelog and marked in the OpenAPI with
+    "deprecated": true plus an inline removal date in the field description
+    (e.g. "Deprecated: Will be removed on 2026-09-30. Use type instead."). Breaking
+    removals are shipped in a numbered release with an explicit BREAKING marker and a
+    migration paragraph. No RFC 8594 Sunset/Deprecation response headers are emitted.
+  observed_notice_period: >-
+    The item-level sscc field was deprecated in v1.018 with a published removal date of
+    2026-06-30 and removed in v1.023 — roughly a two-quarter migration window.
+sla:
+  url: null
+  uptime_target: null
+  observed_uptime_90d: '99.99% (Public API component, status.shipmonk.com)'
+  notes: >-
+    ShipMonk publishes no numeric API uptime SLA. The status page reports rolling 90-day
+    uptime per component. Sandbox maintenance may cause brief downtime between
+    00:00-06:00 EST, typically under 30 minutes, with extended windows announced ahead.
+status_page: https://status.shipmonk.com
+status_page_components:
+- ShipMonk Systems
+- Website
+- Public API
+rate_limits: rate-limits/shipmonk-rate-limits.yml
+support:
+  api: api@shipmonk.com
+  help_center: https://support.shipmonk.com/s/
+deprecated_operations:
+- operationId: get-v1-integrations-returns
+  path: GET /v1/integrations/returns
+  spec: openapi/shipmonk-returns-openapi.yml
+  note: 'DEPRECATED - use Retrieve List of Returns (get-v1-integrations-returns-list) with an RMA filter instead.'
+deprecated_fields:
+- field: product_type
+  entity: Product
+  removal_date: '2026-09-30'
+  replacement: type
+  note: Always returns "unit"; superseded by the typed enum introduced in v1.019.
+- field: hs_code
+  entity: Product
+  replacement: hs_codes
+- field: tax_id
+  entity: Order
+  replacement: recipient_tax_id
+- field: ship_monk_hazmat_carrier_service_not_available
+  entity: Order
+  note: Always false; retained for backwards compatibility.
+removed_fields:
+- field: sscc
+  entity: Receiving items / receiving_lines
+  deprecated_in: v1.018
+  removed_in: v1.023
+  announced_removal_date: '2026-06-30'
+  replacement: cartons[].identifiers / pallets[].identifiers with type SSCC, referenced via carton_key
+deprecated_warehouses:
+  note: >-
+    New orders cannot be routed to these warehouse identifiers; they are retained for
+    historical data and existing references.
+  identifiers: [NY7, CA7, KY7, NV2, NV7, NJ1, NJ7, TO7, CA1, FL1]

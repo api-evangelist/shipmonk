@@ -1,0 +1,37 @@
+generated: '2026-08-02'
+method: generated
+source: >-
+  openapi/_original/shipmonk-openapi.json plus the ShipMonk guides and reference pages at
+  https://apidocs.shipmonk.com/. Every operationId referenced below is verified present in
+  the harvested specification.
+description: >-
+  Packaged Agent Skills for the ShipMonk public fulfillment API — one per marquee flow. Each
+  is grounded in real operationIds and carries the conventions, idempotency keys, rate-limit
+  ceilings and failure modes captured elsewhere in this repo.
+skills:
+- file: shipmonk-create-and-fulfill-order.md
+  name: Create and fulfill a ShipMonk order
+  api: openapi/shipmonk-orders-openapi.yml
+  operations: [post-v1-integrations-order, post-v1-integrations-submit-order, get-v1-integrations-orders,
+    get-v1-integrations-orders-list, post-v1-integrations-sandbox-complete-order]
+- file: shipmonk-sync-inventory.md
+  name: Sync ShipMonk inventory and catalog
+  api: openapi/shipmonk-products-openapi.yml
+  operations: [post-v1-integrations-product, post-v1-integrations-products-search,
+    get-v1-integrations-products-search-paginate, get-v1-products]
+- file: shipmonk-inbound-receiving.md
+  name: Send inbound stock to ShipMonk (receiving)
+  api: openapi/shipmonk-receivings-openapi.yml
+  operations: [post-v1-integrations-receiving, get-v1-integrations-receiving,
+    get-v1-integrations-receivings-list, get-v1-integrations-receipts-list,
+    post-v1-integrations-sandbox-complete-receiving]
+- file: shipmonk-process-return.md
+  name: Process a ShipMonk return (RMA)
+  api: openapi/shipmonk-returns-openapi.yml
+  operations: [post-v1-integrations-returns, get-v1-integrations-returns-list,
+    get-v1-integrations-returns, post-v1-integrations-sandbox-complete-return]
+- file: shipmonk-consume-webhooks.md
+  name: Consume ShipMonk webhooks
+  api: asyncapi/shipmonk-webhooks-asyncapi.yml
+  operations: [webhook-order-shipment-notification, webhook-order-status-change,
+    webhook-return-status-change, webhook-receiving-status-change]

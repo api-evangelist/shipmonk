@@ -1,0 +1,67 @@
+generated: '2026-08-02'
+method: derived
+source: >-
+  mcp/shipmonk-mcp.yml (live tools/list from https://apidocs.shipmonk.com/mcp) bound against
+  openapi/_original/shipmonk-openapi.json
+description: >-
+  Binding between ShipMonk's published MCP tools and its OpenAPI operations. ShipMonk's MCP
+  server is spec-driven rather than operation-per-tool, so the crosswalk is inverted from the
+  usual shape: four discovery tools have no REST equivalent (they read the spec, not the API),
+  and one execution tool fans out to every operation in the spec. No ShipMonk capability is
+  MCP-exclusive, and no REST operation is unreachable from MCP - but no operation has a named
+  tool or a typed inputSchema either, so an agent must discover the contract at runtime.
+surfaces:
+  openapi:
+    file: openapi/_original/shipmonk-openapi.json
+    published: https://apidocs.shipmonk.com/openapi/public_api.json
+    operations: 19
+    webhooks: 4
+    gated: false
+  mcp:
+    url: https://apidocs.shipmonk.com/mcp
+    tools: 5
+    gated: false
+    note: tools/list responds anonymously; execute-request requires a ShipMonk Api-Key supplied by the caller.
+  graphql: null
+crosswalk:
+- tool: execute-request
+  category: execution
+  binding: rest
+  confidence: high
+  rest: [get-v1-integrations-receiving, post-v1-integrations-receiving, get-v1-integrations-returns,
+    post-v1-integrations-returns, post-v1-integrations-order, get-v1-integrations-orders,
+    get-v1-integrations-orders-list, post-v1-integrations-product, post-v1-integrations-products-search,
+    get-v1-integrations-products-search-paginate, get-v1-integrations-receipts-list,
+    get-v1-integrations-receivings-list, get-v1-integrations-returns-list,
+    post-v1-integrations-sandbox-complete-order, post-v1-integrations-sandbox-complete-receiving,
+    post-v1-integrations-sandbox-complete-return, post-v1-integrations-submit-order,
+    get-v1-integrations-warehouses, get-v1-products]
+  note: >-
+    Generic HAR proxy - it does not name an operation, it takes a whole HTTP request. Its real
+    input contract per call is the parameters + requestBody of whichever operation the HAR
+    targets. An agent must first call list-endpoints / get-endpoint to learn that contract.
+mcp_only:
+- tool: list-endpoints
+  reason: Spec introspection over the OpenAPI description; there is no REST endpoint that lists ShipMonk's own endpoints.
+- tool: get-endpoint
+  reason: Spec introspection - returns an operation's detail, security scheme and servers from the description.
+- tool: search-endpoints
+  reason: Spec search over paths, operations and parameters; no REST equivalent.
+- tool: get-server-variables
+  reason: Reads servers[] variables out of the OpenAPI description; no REST equivalent.
+rest_only: []
+rest_only_note: >-
+  Every operation is reachable through execute-request, so nothing is strictly REST-only.
+  What is missing is naming and typing, not reach.
+coverage:
+  tools_published: 5
+  tools_bound_to_rest: 1
+  tools_mcp_only: 4
+  rest_operations_total: 19
+  rest_operations_reachable_from_mcp: 19
+  rest_operations_with_a_named_tool: 0
+  webhook_events_exposed_via_mcp: 0
+observations:
+- Every write operation is reachable through a single generic tool, so tool-level authorization is not possible - an agent granted execute-request can create orders and products as readily as it can read them.
+- The three sandbox simulation endpoints are reachable through the same tool as production writes; environment separation depends entirely on the base URL in the HAR request.
+- The 4 webhook events are not represented in MCP at all.
