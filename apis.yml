@@ -29,144 +29,13 @@ created: '2026-08-02'
 modified: '2026-08-02'
 specificationVersion: '0.20'
 apis:
-- aid: shipmonk:shipmonk-orders-api
-  name: ShipMonk Orders API
-  description: Create, update, read and release outbound customer orders for pick, pack and ship, and
-    simulate warehouse shipment in sandbox. Orders are upserted on store_id + order_key, released with
-    submit-order, and tracked through 18 processing statuses.
-  humanURL: https://apidocs.shipmonk.com/reference
-  baseURL: https://api.shipmonk.com
-  tags:
-  - Logistics
-  - Fulfillment
-  - 3PL
-  - Orders
-  properties:
-  - type: OpenAPI
-    url: openapi/shipmonk-orders-openapi.yml
-  - type: Overlay
-    url: overlays/shipmonk-orders-overlay.yaml
-  - type: Documentation
-    url: https://apidocs.shipmonk.com/docs/intro
-  - type: APIReference
-    url: https://apidocs.shipmonk.com/reference
-  - type: Authentication
-    url: https://apidocs.shipmonk.com/docs/api-key
-  - type: RateLimits
-    url: rate-limits/shipmonk-rate-limits.yml
-  - type: Sandbox
-    url: sandbox/shipmonk-sandbox.yml
-- aid: shipmonk:shipmonk-products-api
-  name: ShipMonk Products API
-  description: Create products and read inventory. Includes the frozen-cursor search/paginate pair that
-    is the reliable way to walk the whole catalog for inventory synchronisation, plus the legacy products
-    list.
-  humanURL: https://apidocs.shipmonk.com/reference
-  baseURL: https://api.shipmonk.com
-  tags:
-  - Logistics
-  - Fulfillment
-  - 3PL
-  - Products
-  properties:
-  - type: OpenAPI
-    url: openapi/shipmonk-products-openapi.yml
-  - type: Overlay
-    url: overlays/shipmonk-products-overlay.yaml
-  - type: Documentation
-    url: https://apidocs.shipmonk.com/docs/intro
-  - type: APIReference
-    url: https://apidocs.shipmonk.com/reference
-  - type: Authentication
-    url: https://apidocs.shipmonk.com/docs/api-key
-  - type: RateLimits
-    url: rate-limits/shipmonk-rate-limits.yml
-  - type: Sandbox
-    url: sandbox/shipmonk-sandbox.yml
-- aid: shipmonk:shipmonk-receivings-api
-  name: ShipMonk Receivings API
-  description: Push inbound ASN-keyed receivings into ShipMonk warehouses with typed carton and pallet
-    LPN (SSCC) identifiers, read receivings and receipts, and simulate check-in discrepancies in sandbox.
-  humanURL: https://apidocs.shipmonk.com/reference
-  baseURL: https://api.shipmonk.com
-  tags:
-  - Logistics
-  - Fulfillment
-  - 3PL
-  - Receivings
-  properties:
-  - type: OpenAPI
-    url: openapi/shipmonk-receivings-openapi.yml
-  - type: Overlay
-    url: overlays/shipmonk-receivings-overlay.yaml
-  - type: Documentation
-    url: https://apidocs.shipmonk.com/docs/intro
-  - type: APIReference
-    url: https://apidocs.shipmonk.com/reference
-  - type: Authentication
-    url: https://apidocs.shipmonk.com/docs/api-key
-  - type: RateLimits
-    url: rate-limits/shipmonk-rate-limits.yml
-  - type: Sandbox
-    url: sandbox/shipmonk-sandbox.yml
-- aid: shipmonk:shipmonk-returns-api
-  name: ShipMonk Returns API
-  description: Create and track customer returns (RMAs) with expected items, return reasons and dispositions,
-    and simulate the full arrival-to-grading return lifecycle in sandbox.
-  humanURL: https://apidocs.shipmonk.com/reference
-  baseURL: https://api.shipmonk.com
-  tags:
-  - Logistics
-  - Fulfillment
-  - 3PL
-  - Returns
-  properties:
-  - type: OpenAPI
-    url: openapi/shipmonk-returns-openapi.yml
-  - type: Overlay
-    url: overlays/shipmonk-returns-overlay.yaml
-  - type: Documentation
-    url: https://apidocs.shipmonk.com/docs/intro
-  - type: APIReference
-    url: https://apidocs.shipmonk.com/reference
-  - type: Authentication
-    url: https://apidocs.shipmonk.com/docs/api-key
-  - type: RateLimits
-    url: rate-limits/shipmonk-rate-limits.yml
-  - type: Sandbox
-    url: sandbox/shipmonk-sandbox.yml
-- aid: shipmonk:shipmonk-warehouses-api
-  name: ShipMonk Warehouses API
-  description: Read the enabled ShipMonk fulfillment centres for the account. Warehouse identifiers are
-    required across order, receiving and return operations and as filters on list endpoints.
-  humanURL: https://apidocs.shipmonk.com/reference
-  baseURL: https://api.shipmonk.com
-  tags:
-  - Logistics
-  - Fulfillment
-  - 3PL
-  - Warehouses
-  properties:
-  - type: OpenAPI
-    url: openapi/shipmonk-warehouses-openapi.yml
-  - type: Overlay
-    url: overlays/shipmonk-warehouses-overlay.yaml
-  - type: Documentation
-    url: https://apidocs.shipmonk.com/docs/intro
-  - type: APIReference
-    url: https://apidocs.shipmonk.com/reference
-  - type: Authentication
-    url: https://apidocs.shipmonk.com/docs/api-key
-  - type: RateLimits
-    url: rate-limits/shipmonk-rate-limits.yml
-  - type: Sandbox
-    url: sandbox/shipmonk-sandbox.yml
 - aid: shipmonk:shipmonk-webhooks
   name: ShipMonk Webhooks
-  description: 'The ShipMonk event surface: four HTTP callback events (order shipment notification, order
-    status change, return status change, receiving status change) declared in the OpenAPI 3.1 webhooks
-    block. Deliveries authenticate with HTTP Basic and carry an X-Sm-Signature HMAC-SHA512 integrity header,
-    with exponential-backoff retries.'
+  description: >-
+    The ShipMonk event surface: four HTTP callback events (order shipment notification, order status change,
+    return status change, receiving status change) declared in the OpenAPI 3.1 webhooks block. Deliveries
+    authenticate with HTTP Basic and carry an X-Sm-Signature HMAC-SHA512 integrity header, with exponential-backoff
+    retries.
   humanURL: https://apidocs.shipmonk.com/reference/webhooks
   baseURL: https://api.shipmonk.com
   tags:
@@ -183,9 +52,10 @@ apis:
     url: https://apidocs.shipmonk.com/reference/webhooks
 - aid: shipmonk:shipmonk-mcp
   name: ShipMonk MCP Server
-  description: 'A live Model Context Protocol endpoint served from ShipMonk''s own developer-docs host.
-    tools/list responds anonymously with five spec-driven tools: four OpenAPI introspection tools plus
-    execute-request, a HAR-shaped proxy that can invoke any of the 19 ShipMonk REST operations.'
+  description: >-
+    A live Model Context Protocol endpoint served from ShipMonk's own developer-docs host. tools/list
+    responds anonymously with five spec-driven tools: four OpenAPI introspection tools plus execute-request,
+    a HAR-shaped proxy that can invoke any of the 19 ShipMonk REST operations.
   humanURL: https://apidocs.shipmonk.com/
   baseURL: https://apidocs.shipmonk.com/mcp
   tags:
@@ -198,12 +68,114 @@ apis:
     url: mcp/shipmonk-mcp.yml
   - type: ToolCrosswalk
     url: mcp/shipmonk-tool-crosswalk.yml
+- aid: shipmonk:shipmonk-orders-api
+  name: ShipMonk Orders API
+  description: The Orders API from ShipMonk — 5 operation(s) for orders.
+  humanURL: https://apidocs.shipmonk.com/reference
+  baseURL: https://api.shipmonk.com
+  tags:
+  - Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/shipmonk-orders-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.shipmonk.com/docs/intro
+  - type: APIReference
+    url: https://apidocs.shipmonk.com/reference
+  - type: Authentication
+    url: https://apidocs.shipmonk.com/docs/api-key
+  - type: RateLimits
+    url: rate-limits/shipmonk-rate-limits.yml
+  - type: Sandbox
+    url: sandbox/shipmonk-sandbox.yml
+- aid: shipmonk:shipmonk-products-api
+  name: ShipMonk Products API
+  description: The Products API from ShipMonk — 4 operation(s) for products.
+  humanURL: https://apidocs.shipmonk.com/reference
+  baseURL: https://api.shipmonk.com
+  tags:
+  - Products
+  properties:
+  - type: OpenAPI
+    url: openapi/shipmonk-products-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.shipmonk.com/docs/intro
+  - type: APIReference
+    url: https://apidocs.shipmonk.com/reference
+  - type: Authentication
+    url: https://apidocs.shipmonk.com/docs/api-key
+  - type: RateLimits
+    url: rate-limits/shipmonk-rate-limits.yml
+  - type: Sandbox
+    url: sandbox/shipmonk-sandbox.yml
+- aid: shipmonk:shipmonk-receivings-api
+  name: ShipMonk Receivings API
+  description: The Receivings API from ShipMonk — 4 operation(s) for receivings.
+  humanURL: https://apidocs.shipmonk.com/reference
+  baseURL: https://api.shipmonk.com
+  tags:
+  - Receivings
+  properties:
+  - type: OpenAPI
+    url: openapi/shipmonk-receivings-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.shipmonk.com/docs/intro
+  - type: APIReference
+    url: https://apidocs.shipmonk.com/reference
+  - type: Authentication
+    url: https://apidocs.shipmonk.com/docs/api-key
+  - type: RateLimits
+    url: rate-limits/shipmonk-rate-limits.yml
+  - type: Sandbox
+    url: sandbox/shipmonk-sandbox.yml
+- aid: shipmonk:shipmonk-returns-api
+  name: ShipMonk Returns API
+  description: The Returns API from ShipMonk — 3 operation(s) for returns.
+  humanURL: https://apidocs.shipmonk.com/reference
+  baseURL: https://api.shipmonk.com
+  tags:
+  - Returns
+  properties:
+  - type: OpenAPI
+    url: openapi/shipmonk-returns-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.shipmonk.com/docs/intro
+  - type: APIReference
+    url: https://apidocs.shipmonk.com/reference
+  - type: Authentication
+    url: https://apidocs.shipmonk.com/docs/api-key
+  - type: RateLimits
+    url: rate-limits/shipmonk-rate-limits.yml
+  - type: Sandbox
+    url: sandbox/shipmonk-sandbox.yml
+- aid: shipmonk:shipmonk-warehouses-api
+  name: ShipMonk Warehouses API
+  description: The Warehouses API from ShipMonk — 1 operation(s) for warehouses.
+  humanURL: https://apidocs.shipmonk.com/reference
+  baseURL: https://api.shipmonk.com
+  tags:
+  - Warehouses
+  properties:
+  - type: OpenAPI
+    url: openapi/shipmonk-warehouses-api-openapi.yml
+  - type: Documentation
+    url: https://apidocs.shipmonk.com/docs/intro
+  - type: APIReference
+    url: https://apidocs.shipmonk.com/reference
+  - type: Authentication
+    url: https://apidocs.shipmonk.com/docs/api-key
+  - type: RateLimits
+    url: rate-limits/shipmonk-rate-limits.yml
+  - type: Sandbox
+    url: sandbox/shipmonk-sandbox.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/shipmonk-orders-overlay.yaml
 - type: Website
   url: https://www.shipmonk.com/
 - type: DeveloperPortal
