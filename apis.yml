@@ -27,7 +27,7 @@ tags:
 - Order Management
 created: '2026-08-02'
 modified: '2026-08-02'
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 apis:
 - aid: shipmonk:shipmonk-webhooks
   name: ShipMonk Webhooks
