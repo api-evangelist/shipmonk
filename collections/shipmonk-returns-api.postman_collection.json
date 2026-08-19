@@ -1,0 +1,583 @@
+{
+  "item": [
+    {
+      "id": "71af6055-10be-47bf-a207-5ceb8c174265",
+      "name": "Returns",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "136d8077-eecf-47fe-86cb-d021f5d9de46",
+          "name": "Get Return",
+          "request": {
+            "name": "Get Return",
+            "description": {
+              "content": "DEPRECATED – please use Retrieve List of Returns instead with filter for RMA.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "returns"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "rma",
+                  "value": "<string>",
+                  "description": "(Required) Return Merchandise Authorization (RMA) number used to look up the return; optional query filter."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "24fac6bd-0e66-4144-abc2-bed3192f65be",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "returns"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "rma",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 6737,\n  \"warehouse\": \"string\",\n  \"order_key\": null,\n  \"store_id\": null,\n  \"rma\": \"string\",\n  \"tracking_number\": \"string\",\n  \"tracking_numbers\": [\n    \"string\",\n    \"string\"\n  ],\n  \"status\": \"not_arrived\",\n  \"return_reason\": \"reason_incorrect_product\",\n  \"note\": null,\n  \"created_at\": \"2003-01-11T13:25:04.566Z\",\n  \"updated_at\": \"1997-02-15T13:33:25.143Z\",\n  \"received_at\": \"1997-08-28T07:54:44.781Z\",\n  \"items\": [\n    {\n      \"product\": {\n        \"id\": 1970,\n        \"sku\": \"string\",\n        \"name\": \"string\"\n      },\n      \"expected_quantity\": 5830,\n      \"received_quantity\": 1403,\n      \"receiving_details\": [\n        {\n          \"lot\": {\n            \"lot_number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expiration_date\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"expected_quantity\": 423,\n          \"received_quantity\": 7456,\n          \"received_at\": null,\n          \"type_scoped_id\": 5252,\n          \"type\": \"receive\",\n          \"final_disposition\": \"return_to_merchant\"\n        },\n        {\n          \"lot\": {\n            \"lot_number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expiration_date\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"expected_quantity\": 9646,\n          \"received_quantity\": 2174,\n          \"received_at\": null,\n          \"type_scoped_id\": 7657,\n          \"type\": \"optoro_inventory\",\n          \"final_disposition\": \"return_to_merchant\"\n        }\n      ],\n      \"desired_action\": \"received_back_into_inventory\"\n    },\n    {\n      \"product\": {\n        \"id\": 2247,\n        \"sku\": \"string\",\n        \"name\": \"string\"\n      },\n      \"expected_quantity\": 5808,\n      \"received_quantity\": 5605,\n      \"receiving_details\": [\n        {\n          \"lot\": {\n            \"lot_number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expiration_date\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"expected_quantity\": 8810,\n          \"received_quantity\": 4089,\n          \"received_at\": \"1977-08-25T13:52:23.503Z\",\n          \"type_scoped_id\": 5927,\n          \"type\": \"optoro_inventory\",\n          \"final_disposition\": \"other\"\n        },\n        {\n          \"lot\": {\n            \"lot_number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expiration_date\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"expected_quantity\": 138,\n          \"received_quantity\": 4926,\n          \"received_at\": \"1983-04-15T04:58:50.173Z\",\n          \"type_scoped_id\": 3563,\n          \"type\": \"optoro_inventory\",\n          \"final_disposition\": \"return_to_merchant\"\n        }\n      ],\n      \"desired_action\": \"received_back_into_inventory\"\n    }\n  ],\n  \"custom_data\": [\n    {\n      \"name\": \"string\",\n      \"value\": {}\n    },\n    {\n      \"name\": \"string\",\n      \"value\": {}\n    }\n  ],\n  \"source\": \"loop\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3745916b-26ec-4649-a1b8-57df83905f64",
+          "name": "Create or Update Return",
+          "request": {
+            "name": "Create or Update Return",
+            "description": {},
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "returns"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"warehouse\": \"<string>\",\n  \"rma\": \"<string>\",\n  \"store_id\": \"<integer>\",\n  \"return_reason\": \"<string>\",\n  \"items\": [\n    {\n      \"sku\": \"<string>\",\n      \"expected_quantity\": \"<integer>\",\n      \"desired_action\": \"<string>\"\n    },\n    {\n      \"sku\": \"<string>\",\n      \"expected_quantity\": \"<integer>\",\n      \"desired_action\": \"<string>\"\n    }\n  ],\n  \"order_key\": \"<string,null>\",\n  \"note\": \"<string,null>\",\n  \"tracking_number\": \"<string,null>\",\n  \"tracking_numbers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"custom_data\": [\n    {\n      \"name\": \"<string>\",\n      \"value\": \"<object>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"value\": \"<object>\"\n    }\n  ],\n  \"references_to_related_order\": {\n    \"order_number\": \"<string,null>\",\n    \"search_in_all_stores\": \"<boolean>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "de0a74df-aa1a-4f8f-b86f-c51388087e94",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "returns"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"warehouse\": \"PA1\",\n  \"rma\": \"<string>\",\n  \"store_id\": 123456,\n  \"return_reason\": \"<string>\",\n  \"items\": [\n    {\n      \"sku\": \"<string>\",\n      \"expected_quantity\": \"<integer>\",\n      \"desired_action\": \"<string>\"\n    },\n    {\n      \"sku\": \"<string>\",\n      \"expected_quantity\": \"<integer>\",\n      \"desired_action\": \"<string>\"\n    }\n  ],\n  \"order_key\": \"327b5abd-017a-4504-a50d-54f1cea80269\",\n  \"note\": \"<string,null>\",\n  \"tracking_number\": \"<string,null>\",\n  \"tracking_numbers\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"custom_data\": [\n    {\n      \"name\": \"<string>\",\n      \"value\": \"<object>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"value\": \"<object>\"\n    }\n  ],\n  \"references_to_related_order\": {\n    \"order_number\": \"Order-123\",\n    \"search_in_all_stores\": \"<boolean>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 2312,\n  \"data\": {\n    \"message\": \"string\",\n    \"id\": 5728\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b0b6466f-deef-4403-9e03-a701098a26d8",
+          "name": "Retrieve List of Returns",
+          "request": {
+            "name": "Retrieve List of Returns",
+            "description": {},
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "returns-list"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "rma",
+                  "value": "",
+                  "description": "Return only returns whose Return Merchandise Authorization (RMA) number matches this value."
+                },
+                {
+                  "disabled": false,
+                  "key": "return_status",
+                  "value": "<string>",
+                  "description": "Return only returns currently in this status (e.g., in_progress, returned, arrived)."
+                },
+                {
+                  "disabled": false,
+                  "key": "warehouse_id",
+                  "value": "",
+                  "description": "Numeric identifier of the warehouse processing the return; use the value returned by the warehouses endpoint."
+                },
+                {
+                  "disabled": false,
+                  "key": "return_reason",
+                  "value": "<string>",
+                  "description": "Return only returns flagged with this reason code (e.g., damaged, wrong_item, no_longer_needed)."
+                },
+                {
+                  "disabled": false,
+                  "key": "created_at",
+                  "value": "",
+                  "description": "Return only returns created at or after this ISO 8601 timestamp."
+                },
+                {
+                  "disabled": false,
+                  "key": "updated_at",
+                  "value": "",
+                  "description": "Return only returns updated at or after this ISO 8601 timestamp."
+                },
+                {
+                  "disabled": false,
+                  "key": "desired_action",
+                  "value": "<string>",
+                  "description": "Return only returns whose items have this intended processing action (e.g., damaged_not_resellable, received_back_into_inventory)."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "1-based page number to return. Defaults to 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "100",
+                  "description": "Number of results per page (default and maximum values are documented at the endpoint level)."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "77690879-dd27-403a-bd9e-21c3262debd3",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "returns-list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "rma",
+                      "value": ""
+                    },
+                    {
+                      "key": "return_status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "warehouse_id",
+                      "value": ""
+                    },
+                    {
+                      "key": "return_reason",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "created_at",
+                      "value": "2025-07-24 14:53:00"
+                    },
+                    {
+                      "key": "updated_at",
+                      "value": "2025-07-24 14:53:00"
+                    },
+                    {
+                      "key": "desired_action",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"paginator\": {\n    \"total\": 2712,\n    \"pages\": 1608,\n    \"page\": 4630\n  },\n  \"status\": 8166,\n  \"data\": {\n    \"returns_list\": [\n      {\n        \"id\": 6414,\n        \"warehouse\": \"string\",\n        \"order_key\": \"string\",\n        \"store_id\": null,\n        \"rma\": \"string\",\n        \"tracking_number\": null,\n        \"tracking_numbers\": [\n          \"string\",\n          \"string\"\n        ],\n        \"status\": \"<string>\",\n        \"return_reason\": \"<string>\",\n        \"note\": \"string\",\n        \"created_at\": \"1959-04-20T19:11:44.742Z\",\n        \"updated_at\": \"1965-09-08T04:51:08.991Z\",\n        \"received_at\": null,\n        \"items\": [\n          {\n            \"product\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expected_quantity\": 6881,\n            \"received_quantity\": 7705,\n            \"receiving_details\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"desired_action\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"product\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expected_quantity\": 5110,\n            \"received_quantity\": 418,\n            \"receiving_details\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"desired_action\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"custom_data\": [\n          {\n            \"name\": \"string\",\n            \"value\": {}\n          },\n          {\n            \"name\": \"string\",\n            \"value\": {}\n          }\n        ],\n        \"source\": \"returnly\"\n      },\n      {\n        \"id\": 6935,\n        \"warehouse\": \"string\",\n        \"order_key\": \"string\",\n        \"store_id\": null,\n        \"rma\": \"string\",\n        \"tracking_number\": \"string\",\n        \"tracking_numbers\": [\n          \"string\",\n          \"string\"\n        ],\n        \"status\": \"<string>\",\n        \"return_reason\": \"<string>\",\n        \"note\": \"string\",\n        \"created_at\": \"1955-12-24T10:40:20.658Z\",\n        \"updated_at\": \"1989-10-30T17:24:46.667Z\",\n        \"received_at\": null,\n        \"items\": [\n          {\n            \"product\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expected_quantity\": 5538,\n            \"received_quantity\": 9238,\n            \"receiving_details\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"desired_action\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"product\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expected_quantity\": 1393,\n            \"received_quantity\": 6217,\n            \"receiving_details\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"desired_action\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"custom_data\": [\n          {\n            \"name\": \"string\",\n            \"value\": {}\n          },\n          {\n            \"name\": \"string\",\n            \"value\": {}\n          }\n        ],\n        \"source\": \"shipmonk\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cf4b4e1f-ba8a-4d38-915d-6e36bc358230",
+          "name": "Complete Return",
+          "request": {
+            "name": "Complete Return",
+            "description": {
+              "content": "This endpoint simulates the full return lifecycle on Sandbox environment. It can't be used in production!\n\nThe return goes through arrival, check-in, receiving, grading, and completion based on the specified completion mode and disposition.\n\n## Completion Modes\nCompletion mode changes how many units are received of the FIRST item in the return. Other items are always fully received.\n| Mode | Description | Constraint |\n|------|-------------|------------|\n| `fully_received` | Receives the complete expected quantity | None |\n| `short_received` | Receives one less unit than expected | Expected quantity must be greater than 1 |\n| `excess_received` | Receives one more unit than expected | None |\n| `partially_received` | Receives only 1 unit regardless of expected quantity | Expected quantity must be greater than 1 |\n\n## Dispositions\n\n| Disposition | Constraint |\n|-------------|------------|\n| `returned_to_inventory`| None |\n| `reworked` | Account must have rework feature enabled |\n| `dispose` | None |\n| `donate` | None |\n| `return_to_merchant` | None |",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "sandbox",
+                "complete-return"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rma\": \"<string>\",\n  \"completion_mode\": \"<string>\",\n  \"final_disposition\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "4ecc2112-a8fe-4660-9b8b-b91a52d573ee",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "sandbox",
+                    "complete-return"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"rma\": \"<string>\",\n  \"completion_mode\": \"<string>\",\n  \"final_disposition\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 28\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.shipmonk.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Api-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "530a4214-9302-4a3d-aa70-3904280f1376",
+    "name": "ShipMonk Returns API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Returns surface of the ShipMonk public fulfillment API.",
+      "type": "text/plain"
+    }
+  }
+}

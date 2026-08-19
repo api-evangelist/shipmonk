@@ -1,0 +1,211 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ShipMonk Orders API",
+    "version": "v1.024"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Api-Key",
+      "value": "{{Api-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Orders",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create or Update Order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shipmonk.com/v1/integrations/order",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint can be used to create an order. The orders are typically pushed to ShipMonk from the 3rd party software.\n\nThe Create Order endpoint does not create duplicate entries when both the `store_id` and `order_key` are the same. Instead, it updates the existing order.\n\n*NOTE: Resending an Order with a different `order_key` will result in Order duplication.**\n\nThe order can be in following 4 statuses:\n- `unfulfilled` will create order for ShipMonk to process\n- `cancelled` will create cancel"
+        },
+        {
+          "info": {
+            "name": "Get Order",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shipmonk.com/v1/integrations/orders",
+            "params": [
+              {
+                "name": "orderKey",
+                "value": "327b5abd-017a-4504-a50d-54f1cea80269",
+                "type": "query",
+                "description": "Filter by the external system's unique order identifier (order_key). Returns only orders matching this value; omit to skip this filter."
+              },
+              {
+                "name": "orderNumber",
+                "value": "Order-123",
+                "type": "query",
+                "description": "Filter by the customer-facing order identifier (order_number). Returns only orders matching this value; omit to skip this filter."
+              },
+              {
+                "name": "storeId",
+                "value": "123456",
+                "type": "query",
+                "description": "Filter by the internal numeric identifier of the store that owns the order. Omit to return orders across all stores."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint can be used to retrieve data from the order you are calling.The order can be in following 4 statuses (field order_status):\n- `unfulfilled` indicates an order is ready for ShipMonk to process\n- `cancelled` indicates an order was cancelled\n- `fulfilled` indicates an order has been marked as \"Fulfilled by 3rd party\", unless already fulfilled by ShipMonk\n- `onHold` indicates an order is placed on hold\n\nYou can retrieve orders from all of your stores. In case you have not unique orderKe"
+        },
+        {
+          "info": {
+            "name": "Retrieve List of Orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shipmonk.com/v1/integrations/orders-list",
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "description": "1-based page number to return. Defaults to 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "10",
+                "type": "query",
+                "description": "Number of results per page. Defaults to a server-configured value; check the response metadata for the effective size."
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Sort direction by internal order id: DESC (newest first) or ASC (oldest first)."
+              },
+              {
+                "name": "orderKeys",
+                "value": "",
+                "type": "query",
+                "description": "Filter to orders whose order_key matches any value in this list."
+              },
+              {
+                "name": "orderNumbers",
+                "value": "",
+                "type": "query",
+                "description": "Filter to orders whose order_number matches any value in this list."
+              },
+              {
+                "name": "orderStatus",
+                "value": "",
+                "type": "query",
+                "description": "Filter by current order status (see PublicApiOrderStatus enum); omit to return all statuses."
+              },
+              {
+                "name": "orderType",
+                "value": "",
+                "type": "query",
+                "description": "Filter by order type (see OrderType enum); omit to return all types."
+              },
+              {
+                "name": "updatedAtStart",
+                "value": "2025-07-24 14:53:00",
+                "type": "query",
+                "description": "Lower bound (inclusive) on updated_at as an ISO 8601 timestamp; returns orders updated at or after this time."
+              },
+              {
+                "name": "updatedAtEnd",
+                "value": "2025-07-24 14:53:00",
+                "type": "query",
+                "description": "Upper bound (inclusive) on updated_at as an ISO 8601 timestamp; returns orders updated at or before this time."
+              },
+              {
+                "name": "shippedAtStart",
+                "value": "2025-07-24 14:53:00",
+                "type": "query",
+                "description": "Lower bound (inclusive) on shipped_at as an ISO 8601 timestamp; returns orders shipped at or after this time."
+              },
+              {
+                "name": "shippedAtEnd",
+                "value": "2025-07-24 14:53:00",
+                "type": "query",
+                "description": "Upper bound (inclusive) on shipped_at as an ISO 8601 timestamp; returns orders shipped at or before this time."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "When no filters are specified, the endpoint will return up to the first 1,000,000 orders, based on selected ordering. If filters are used, this endpoint will return a maximum of 10,000 orders."
+        },
+        {
+          "info": {
+            "name": "Complete Order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shipmonk.com/v1/integrations/sandbox/complete-order",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Simulates warehouse shipment of an order in your Sandbox environment. Cannot be used in production.\n\nThe order must be in a submitted status with available inventory, a valid address, and a valid shipping method.\n\nA shipment notification is sent after the delay configured for the store under Account Settings > Stores, defaulting to 20 minutes.\n\nFor D2C orders, there is approximately a 1-minute delay (up to 5 minutes) between the order transitioning from awaiting pick up to en route. During this "
+        },
+        {
+          "info": {
+            "name": "Submit Order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shipmonk.com/v1/integrations/submit-order",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Submits an order for fulfillment or reschedules its submit date.\n\nSubmitting an order makes it eligible for the operations team to begin fulfillment. Once submitted, the order enters the fulfillment pipeline and edit restrictions apply:\n\n- During picking, order items cannot be changed.\n- Once packed, no fields on the order can be changed.\n\nThis endpoint serves two purposes:\n\n- Submit immediately — pass a submit_at timestamp in the past (or now) to release the order into the fulfillment queue rig"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

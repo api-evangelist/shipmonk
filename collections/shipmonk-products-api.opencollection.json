@@ -1,0 +1,177 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ShipMonk Products API",
+    "version": "v1.024"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Api-Key",
+      "value": "{{Api-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Products",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Product",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shipmonk.com/v1/integrations/product",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint allows merchants to create products within ShipMonk. Once created, product data is immutable via API — updates must be made via the ShipMonk web app. SKUs must be unique within the account. ShipMonk will reject non-unique SKUs with a 400 error.\n\nThe required_packaging field defines the minimum packaging suitable for a product. When fulfilling an order, ShipMonk selects the smallest packaging type that satisfies every item in the shipment — for example, if an order contains one prod"
+        },
+        {
+          "info": {
+            "name": "Products for Inventory Sync",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shipmonk.com/v1/integrations/products/search",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Search for products based on a set of filters and sorting criteria. A cursor is returned that can be used by /integrations/products/search/paginate endpoint to iterate through the results.\n\nThe search results are fixed at the time of the request. This guarantees that it's possible to iterate over the whole data set reliably without missing any products.\nThe returned cursor is valid for 1 hour.\n\nA typical use-case might be inventory synchronization where products with updated inventory are fetche"
+        },
+        {
+          "info": {
+            "name": "Fetch results from Products for Inventory Sync",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shipmonk.com/v1/integrations/products/search/paginate",
+            "params": [
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Cursor returned from the initial /integrations/products/search call, or the next_cursor value returned from a previous call to this endpoint."
+              },
+              {
+                "name": "pageSize",
+                "value": "10",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Iterate over results from /integrations/products/search endpoint using the returned cursor or using the cursor provided by response of this request as nextCursor.\n\nThe response is the same as the legacy /products endpoint (Retrieve List of Products)."
+        },
+        {
+          "info": {
+            "name": "Retrieve List of Products",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shipmonk.com/v1/products",
+            "params": [
+              {
+                "name": "search",
+                "value": "shirt",
+                "type": "query",
+                "description": "Free-text filter matched against product SKU, name, or barcode."
+              },
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "description": "1-based page number to return. Defaults to 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "10",
+                "type": "query",
+                "description": "Number of products returned per page (default and maximum values are documented at the endpoint level)."
+              },
+              {
+                "name": "sortBy",
+                "value": "id",
+                "type": "query",
+                "description": "Field to sort the results by; one of 'id', 'created_at', or 'updated_at'."
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Sort direction for the results: ASC (ascending) or DESC (descending). Defaults to DESC."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Return only products in this status (e.g., active, blacklisted, disabled). See the enum schema for the full list of allowed values."
+              },
+              {
+                "name": "dateUpdatedStart",
+                "value": "2025-07-24 14:53:00",
+                "type": "query",
+                "description": "Return only products updated at or after this ISO 8601 timestamp."
+              },
+              {
+                "name": "dateUpdatedEnd",
+                "value": "2025-07-24 14:53:00",
+                "type": "query",
+                "description": "Return only products updated at or before this ISO 8601 timestamp."
+              },
+              {
+                "name": "dateCreatedStart",
+                "value": "2025-07-24 14:53:00",
+                "type": "query",
+                "description": "Return only products created at or after this ISO 8601 timestamp."
+              },
+              {
+                "name": "dateCreatedEnd",
+                "value": "2025-07-24 14:53:00",
+                "type": "query",
+                "description": "Return only products created at or before this ISO 8601 timestamp."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Results are not guaranteed to be consistent across paginated calls. As inventory is updated during fulfillment, products shift position in the sort order and may reappear on later pages. For consistent pagination, use the Products for Inventory Sync endpoint instead."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

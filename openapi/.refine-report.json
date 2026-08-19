@@ -1,0 +1,29 @@
+{
+  "provider": "shipmonk",
+  "sources": [
+    "shipmonk-orders-api-openapi.yml",
+    "shipmonk-products-api-openapi.yml",
+    "shipmonk-receivings-api-openapi.yml",
+    "shipmonk-returns-api-openapi.yml",
+    "shipmonk-warehouses-api-openapi.yml"
+  ],
+  "outputs": [
+    "shipmonk-orders-api-openapi.yml",
+    "shipmonk-products-api-openapi.yml",
+    "shipmonk-receivings-api-openapi.yml",
+    "shipmonk-returns-api-openapi.yml",
+    "shipmonk-warehouses-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "shipmonk-orders-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "shipmonk-products-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "shipmonk-receivings-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "shipmonk-returns-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "shipmonk-warehouses-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": []
+}

@@ -1,0 +1,189 @@
+{
+  "item": [
+    {
+      "id": "f8aab22b-ed13-4fe9-9d1b-e53219c47dca",
+      "name": "Warehouses",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "4b14d5e0-ef85-4038-bd12-6bb451eed0f1",
+          "name": "Retrieve List of Warehouses",
+          "request": {
+            "name": "Retrieve List of Warehouses",
+            "description": {
+              "content": "Returns all enabled warehouses for the account associated with your API key. Warehouse IDs and identifiers are required across various endpoints and can be included in query parameters to filter results.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "warehouses"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "1-based page number to return. Defaults to 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "50",
+                  "description": "Number of results per page. Defaults to a server-configured value; check the response metadata for the effective size."
+                },
+                {
+                  "disabled": false,
+                  "key": "sortBy",
+                  "value": "<string>",
+                  "description": "Field to sort warehouses by (e.g., id, name, identifier). See the schema for allowed values."
+                },
+                {
+                  "disabled": false,
+                  "key": "sortOrder",
+                  "value": "<string>",
+                  "description": "Sort direction: ASC (ascending) or DESC (descending)."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9aa1211a-a91b-4ccd-9021-46025da1e697",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "warehouses"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    },
+                    {
+                      "key": "sortBy",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sortOrder",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"paginator\": {\n    \"total\": 2881,\n    \"pages\": 5293,\n    \"page\": 6464\n  },\n  \"status\": 5292,\n  \"data\": [\n    {\n      \"id\": 3732,\n      \"identifier\": \"string\",\n      \"name\": \"string\",\n      \"timezone\": \"string\",\n      \"warehouse_wms_type\": \"string\",\n      \"enabled\": false,\n      \"address\": {\n        \"name\": null,\n        \"company\": null,\n        \"street1\": null,\n        \"street2\": \"string\",\n        \"street3\": null,\n        \"city\": null,\n        \"state\": null,\n        \"postal_code\": \"string\",\n        \"phone\": \"string\",\n        \"residential\": true,\n        \"verified\": false,\n        \"country\": null\n      }\n    },\n    {\n      \"id\": 446,\n      \"identifier\": \"string\",\n      \"name\": \"string\",\n      \"timezone\": \"string\",\n      \"warehouse_wms_type\": \"string\",\n      \"enabled\": true,\n      \"address\": {\n        \"name\": null,\n        \"company\": \"string\",\n        \"street1\": \"string\",\n        \"street2\": \"string\",\n        \"street3\": \"string\",\n        \"city\": \"string\",\n        \"state\": \"string\",\n        \"postal_code\": null,\n        \"phone\": \"string\",\n        \"residential\": true,\n        \"verified\": true,\n        \"country\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.shipmonk.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Api-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "5e6eb75d-8431-4fea-bada-9002c86d60ed",
+    "name": "ShipMonk Warehouses API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Warehouses surface of the ShipMonk public fulfillment API.",
+      "type": "text/plain"
+    }
+  }
+}

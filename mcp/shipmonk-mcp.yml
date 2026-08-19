@@ -2,24 +2,21 @@ generated: '2026-08-02'
 method: searched
 status: published
 source: https://apidocs.shipmonk.com/mcp
-description: >-
-  ShipMonk serves a live MCP endpoint from its own developer-docs host. tools/list responds
-  anonymously over streamable HTTP (SSE) with five spec-driven tools. These are ReadMe's
-  documentation-MCP tools rather than one tool per ShipMonk operation: four are
-  introspection tools over ShipMonk's OpenAPI description and the fifth, execute-request,
-  is a generic HAR-shaped proxy that can call any operation in the spec. So the agent-facing
-  surface is complete (every REST operation is reachable) but indirect (no per-operation
-  tool names or typed inputs).
+description: 'ShipMonk serves a live MCP endpoint from its own developer-docs host. tools/list responds
+  anonymously over streamable HTTP (SSE) with five spec-driven tools. These are ReadMe''s documentation-MCP
+  tools rather than one tool per ShipMonk operation: four are introspection tools over ShipMonk''s OpenAPI
+  description and the fifth, execute-request, is a generic HAR-shaped proxy that can call any operation
+  in the spec. So the agent-facing surface is complete (every REST operation is reachable) but indirect
+  (no per-operation tool names or typed inputs).'
 server:
   name: shipmonk-api
   transport: http
   url: https://apidocs.shipmonk.com/mcp
-  auth: >-
-    tools/list is anonymous. execute-request carries whatever credentials the caller places
-    in the HAR request - the ShipMonk API key goes in the Api-Key header.
+  auth: tools/list is anonymous. execute-request carries whatever credentials the caller places in the
+    HAR request - the ShipMonk API key goes in the Api-Key header.
   provider: ReadMe-hosted MCP on ShipMonk's own domain
   probe:
-    method: 'POST tools/list (jsonrpc 2.0)'
+    method: POST tools/list (jsonrpc 2.0)
     http_status: 200
     content_type: text/event-stream
     fetched: '2026-08-02'
@@ -27,27 +24,39 @@ server:
 spec_source: https://apidocs.shipmonk.com/openapi/public_api.json
 tools:
 - name: list-endpoints
-  description: Lists all API paths and their HTTP methods with summaries, organized by path. Results can be passed directly into get-endpoint.
+  description: Lists all API paths and their HTTP methods with summaries, organized by path. Results can
+    be passed directly into get-endpoint.
   input: {}
   read_only: true
 - name: get-endpoint
-  description: Gets detailed information about a specific API endpoint, including security schemes and servers.
-  input: {path: string, method: string}
+  description: Gets detailed information about a specific API endpoint, including security schemes and
+    servers.
+  input:
+    path: string
+    method: string
   read_only: true
 - name: search-endpoints
-  description: Performs a deep search through paths, operations and parameters to discover relevant API endpoints.
-  input: {pattern: string}
+  description: Performs a deep search through paths, operations and parameters to discover relevant API
+    endpoints.
+  input:
+    pattern: string
   read_only: true
 - name: execute-request
   description: Executes an API request with a given HAR request object.
-  input: {harRequest: object}
+  input:
+    harRequest: object
   read_only: false
-  note: >-
-    This is the execution surface. It can invoke any of the 19 ShipMonk operations, including
-    the writes (create order, submit order, create product, create/update receiving,
-    create/update return) and the three sandbox simulation endpoints.
+  note: This is the execution surface. It can invoke any of the 19 ShipMonk operations, including the
+    writes (create order, submit order, create product, create/update receiving, create/update return)
+    and the three sandbox simulation endpoints.
 - name: get-server-variables
   description: Gets the server variables for each server within a specific OpenAPI spec.
   input: {}
   read_only: true
 crosswalk: mcp/shipmonk-tool-crosswalk.yml
+deployment:
+  mode: remote
+  verified: searched
+  tools: 5
+  checked: '2026-08-12'
+  source: catalog MCP census

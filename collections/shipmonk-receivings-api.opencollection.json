@@ -1,0 +1,209 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ShipMonk Receivings API",
+    "version": "v1.024"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Api-Key",
+      "value": "{{Api-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Receivings",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Receiving",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shipmonk.com/v1/integrations/receiving",
+            "params": [
+              {
+                "name": "receivingKey",
+                "value": "key-123",
+                "type": "query",
+                "description": "Optional filter to retrieve a receiving by its external reference key (e.g. purchase order number) assigned by the client when the receiving was created. Returns the matching receiving or null if not found."
+              },
+              {
+                "name": "asn",
+                "value": "ASN-12345",
+                "type": "query",
+                "description": "Optional filter to retrieve a receiving by its Advance Shipping Notice (ASN) number, a supplier-provided identifier for the incoming shipment."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "## ASN & Receiving Key\nWhen retrieving a Receiving, you must supply either the receivingKey or asn parameter.\n\n- If both are supplied, they must both match a single Receiving.\n- Supplying only one of the parameters is strongly advised.\n\n## LineKey\nWhen item objects are supplied with a line_key string field, those items are uniquely identified and can be referenced by it later — for example, to change expected quantity. Line Key must be unique per receiving.\n\n- line_key is optional. Null or missi"
+        },
+        {
+          "info": {
+            "name": "Create or Update Receiving",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shipmonk.com/v1/integrations/receiving",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "## General description\n- ERP push to ShipMonk\n- `items.[].lot` or any of its property can be null\n\n## ASN & Receiving Key\n- When updating a Receiving, the identifying properties are `receiving_key` and `asn` in this order.\n  - In case both are supplied\n    - First, Receiving is retrieved by `receiving_key`. If found, it is updated with new ASN if current ASN is different than `asn` in the request body.\n    - If not found, Receiving is retrieved by `asn`. If found, it is updated with new `receivi"
+        },
+        {
+          "info": {
+            "name": "Retrieve List of Receipts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shipmonk.com/v1/integrations/receipts-list",
+            "params": [
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "description": "1-based page number to return. Defaults to 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "10",
+                "type": "query",
+                "description": "Number of results per page. Defaults to a server-configured value; check the response metadata for the effective size."
+              },
+              {
+                "name": "sortOrder",
+                "value": "",
+                "type": "query",
+                "description": "Sort direction for the results: ASC (ascending) or DESC (descending). Defaults to DESC."
+              },
+              {
+                "name": "asn",
+                "value": "ASN-12345",
+                "type": "query",
+                "description": "Return only receipts whose Advance Ship Notice (ASN) number matches this value."
+              },
+              {
+                "name": "warehouseId",
+                "value": "15",
+                "type": "query",
+                "description": "Return only receipts processed in the warehouse with this numeric identifier."
+              },
+              {
+                "name": "completedAt",
+                "value": "2025-07-24 14:53:00",
+                "type": "query",
+                "description": "Return only receipts completed at or after this ISO 8601 timestamp."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Retrieve List of Receipts"
+        },
+        {
+          "info": {
+            "name": "Retrieve List of Receivings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shipmonk.com/v1/integrations/receivings-list",
+            "params": [
+              {
+                "name": "asn",
+                "value": "ASN-12345",
+                "type": "query",
+                "description": "Return only receivings whose Advance Ship Notice (ASN) number matches this value."
+              },
+              {
+                "name": "warehouseId",
+                "value": "PA1",
+                "type": "query",
+                "description": "Short warehouse code (e.g., CA1, PA2) to filter receivings by. Note: this is a string code, not a numeric ID."
+              },
+              {
+                "name": "createdAt",
+                "value": "2025-07-24 14:53:00",
+                "type": "query",
+                "description": "Return only receivings created at or after this ISO 8601 timestamp."
+              },
+              {
+                "name": "updatedAt",
+                "value": "2025-07-24 14:53:00",
+                "type": "query",
+                "description": "Return only receivings updated at or after this ISO 8601 timestamp."
+              },
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "description": "1-based page number to return. Defaults to 1."
+              },
+              {
+                "name": "pageSize",
+                "value": "10",
+                "type": "query",
+                "description": "Number of results per page. Defaults to a server-configured value; check the response metadata for the effective size."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Retrieve List of Receivings"
+        },
+        {
+          "info": {
+            "name": "Complete Receiving",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shipmonk.com/v1/integrations/sandbox/complete-receiving",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Simulates the completion of a receiving in your Sandbox environment. This action is available for testing purposes only and cannot be used in production.\n\nUse the completion_mode field to control how the simulation behaves: fully_received accepts all expected units, while short_received, excess_received, and partially_received simulate discrepancies that may leave the receiving open or generate exceptions.\n\n## ASN & Receiving Key\nTo identify the target receiving, you must supply either receiving"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

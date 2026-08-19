@@ -1,0 +1,610 @@
+{
+  "item": [
+    {
+      "id": "e8ff5234-12d3-4872-9036-6260cf6716e2",
+      "name": "Products",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b65d653f-6a43-403d-86d9-9f7408533941",
+          "name": "Create Product",
+          "request": {
+            "name": "Create Product",
+            "description": {
+              "content": "This endpoint allows merchants to create products within ShipMonk. Once created, product data is immutable via API — updates must be made via the ShipMonk web app. SKUs must be unique within the account. ShipMonk will reject non-unique SKUs with a 400 error.\n\nThe required_packaging field defines the minimum packaging suitable for a product. When fulfilling an order, ShipMonk selects the smallest packaging type that satisfies every item in the shipment — for example, if an order contains one product that can ship in a poly mailer and another that requires a box, the entire order ships in a box.\nField country_of_origin accepts a 2-letter ISO 3166-1 alpha-2 country code.\n\n## Fragile products\nFragile products must have required_packaging set to box. Submitting any other value will return a 400 error.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "product"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_key\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\",\n  \"required_packaging\": \"<string>\",\n  \"fragile\": \"<boolean>\",\n  \"replacement_cost\": \"<double>\",\n  \"customs_declaration_value\": \"<double>\",\n  \"country_of_origin\": \"<string>\",\n  \"barcodes\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"dimensions_in\": {\n    \"width\": \"<double>\",\n    \"height\": \"<double>\",\n    \"length\": \"<double>\"\n  },\n  \"weight_lb\": null,\n  \"currency_code\": \"USD\",\n  \"hs_code\": null,\n  \"image_url\": null,\n  \"lot_control_settings\": {\n    \"is_lot_number_required\": \"<boolean>\",\n    \"is_expiration_date_required\": \"<boolean>\",\n    \"is_labeled_with_expiration_date_only\": false\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f9c51f65-3dfc-4ba3-b97d-0a46a5f9b3fe",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "product"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"product_key\": \"<string>\",\n  \"sku\": \"<string>\",\n  \"name\": \"<string>\",\n  \"required_packaging\": \"<string>\",\n  \"fragile\": \"<boolean>\",\n  \"replacement_cost\": \"<double>\",\n  \"customs_declaration_value\": \"<double>\",\n  \"country_of_origin\": \"<string>\",\n  \"barcodes\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"dimensions_in\": {\n    \"width\": \"<double>\",\n    \"height\": \"<double>\",\n    \"length\": \"<double>\"\n  },\n  \"weight_lb\": null,\n  \"currency_code\": \"USD\",\n  \"hs_code\": null,\n  \"image_url\": null,\n  \"lot_control_settings\": {\n    \"is_lot_number_required\": \"<boolean>\",\n    \"is_expiration_date_required\": \"<boolean>\",\n    \"is_labeled_with_expiration_date_only\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 9586,\n  \"data\": {\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "edc751f9-dd16-4799-b2d0-c9b34106b39c",
+          "name": "Products for Inventory Sync",
+          "request": {
+            "name": "Products for Inventory Sync",
+            "description": {
+              "content": "Search for products based on a set of filters and sorting criteria. A cursor is returned that can be used by /integrations/products/search/paginate endpoint to iterate through the results.\n\nThe search results are fixed at the time of the request. This guarantees that it's possible to iterate over the whole data set reliably without missing any products.\nThe returned cursor is valid for 1 hour.\n\nA typical use-case might be inventory synchronization where products with updated inventory are fetched periodically, (for example fetching changes from the previous day 8am up until now).\nWith the search results being fixed, the synchronization process can be implemented in a reliable way.\nOne thing to note, the inventory_on_hand_last_updated_at field only captures the latest update so when a product was first updated the day before and then again on the current day, it will not be included in the results for yesterday only.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "products",
+                "search"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filters\": {\n    \"search\": null,\n    \"status\": \"<string>\",\n    \"created_at\": {\n      \"is_after_or_equal\": null,\n      \"is_before_or_equal\": null\n    },\n    \"inventory_on_hand_last_updated_at\": {\n      \"is_after_or_equal\": null,\n      \"is_before_or_equal\": null\n    }\n  },\n  \"sort\": {\n    \"sort_by\": \"<string>\",\n    \"sort_order\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "512fb970-13c9-4d55-af93-389cff4440de",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "products",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": {\n    \"search\": null,\n    \"status\": \"<string>\",\n    \"created_at\": {\n      \"is_after_or_equal\": \"2025-07-24 14:53:00\",\n      \"is_before_or_equal\": \"2025-07-24 14:53:00\"\n    },\n    \"inventory_on_hand_last_updated_at\": {\n      \"is_after_or_equal\": \"2025-07-24 14:53:00\",\n      \"is_before_or_equal\": \"2025-07-24 14:53:00\"\n    }\n  },\n  \"sort\": {\n    \"sort_by\": \"<string>\",\n    \"sort_order\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"total\": 222,\n  \"cursor\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1c04e5d3-270d-4b8b-b3ac-cdd2a50d7946",
+          "name": "Fetch results from Products for Inventory Sync",
+          "request": {
+            "name": "Fetch results from Products for Inventory Sync",
+            "description": {
+              "content": "Iterate over results from /integrations/products/search endpoint using the returned cursor or using the cursor provided by response of this request as nextCursor.\n\nThe response is the same as the legacy /products endpoint (Retrieve List of Products).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "products",
+                "search",
+                "paginate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>",
+                  "description": "(Required) Cursor returned from the initial /integrations/products/search call, or the next_cursor value returned from a previous call to this endpoint."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "50"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "a244a003-e0c8-480a-a290-30a7c7ab6d4b",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "products",
+                    "search",
+                    "paginate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": 9490,\n      \"sku\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": \"1971-07-01T06:36:06.951Z\",\n      \"updated_at\": \"1984-08-04T12:39:24.152Z\",\n      \"inventory_on_hand_last_updated_at\": \"1992-12-18T00:03:45.605Z\",\n      \"is_active\": false,\n      \"product_type\": \"string\",\n      \"type\": \"packaging\",\n      \"replacement_cost\": null,\n      \"replacement_cost_currency\": \"string\",\n      \"inventory\": {\n        \"quantity_total_final\": 8794,\n        \"quantity_total_available\": 4121,\n        \"quantity_total_on_hand\": 3303,\n        \"quantity_total_quarantined\": 3137,\n        \"quantity_total_unavailable\": 9988,\n        \"locations\": [\n          {\n            \"quantity_final\": 8283,\n            \"quantity_available\": 6362,\n            \"quantity_on_hand\": 4768,\n            \"quarantined_quantity\": 7831,\n            \"quantity_unavailable\": 8757,\n            \"quantity_by_lot\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"warehouse\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"quantity_final\": 9352,\n            \"quantity_available\": 1478,\n            \"quantity_on_hand\": 8652,\n            \"quarantined_quantity\": 8556,\n            \"quantity_unavailable\": 7858,\n            \"quantity_by_lot\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"warehouse\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"hs_code\": null,\n      \"hs_codes\": [\n        {\n          \"hs_code\": \"string\",\n          \"region\": \"<string>\"\n        },\n        {\n          \"hs_code\": \"string\",\n          \"region\": \"<string>\"\n        }\n      ],\n      \"barcodes\": [\n        \"string\",\n        \"string\"\n      ],\n      \"country_code\": null,\n      \"stock_out_days\": 1512,\n      \"custom_data\": [\n        {\n          \"name\": \"string\",\n          \"value\": {}\n        },\n        {\n          \"name\": \"string\",\n          \"value\": {}\n        }\n      ],\n      \"weight\": {\n        \"value\": 7643.984324687225,\n        \"unit\": \"lb\"\n      },\n      \"dimensions\": {\n        \"length\": 3659.4312491838978,\n        \"width\": 458.2129842155003,\n        \"height\": 1623.5600844686803,\n        \"unit\": \"in\"\n      },\n      \"product_bundles\": [\n        {\n          \"bundle_sku\": \"string\",\n          \"products\": [\n            {\n              \"sku\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"sku\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        },\n        {\n          \"bundle_sku\": \"string\",\n          \"products\": [\n            {\n              \"sku\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"sku\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        }\n      ],\n      \"product_handling_units\": null\n    },\n    {\n      \"id\": 189,\n      \"sku\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": \"1966-07-30T12:36:41.169Z\",\n      \"updated_at\": \"1966-02-08T00:52:25.374Z\",\n      \"inventory_on_hand_last_updated_at\": null,\n      \"is_active\": true,\n      \"product_type\": \"string\",\n      \"type\": \"packaging\",\n      \"replacement_cost\": 3941.487419947388,\n      \"replacement_cost_currency\": \"string\",\n      \"inventory\": {\n        \"quantity_total_final\": 8618,\n        \"quantity_total_available\": 4820,\n        \"quantity_total_on_hand\": 9923,\n        \"quantity_total_quarantined\": 4391,\n        \"quantity_total_unavailable\": 6514,\n        \"locations\": [\n          {\n            \"quantity_final\": 5514,\n            \"quantity_available\": 1904,\n            \"quantity_on_hand\": 311,\n            \"quarantined_quantity\": 3449,\n            \"quantity_unavailable\": 2387,\n            \"quantity_by_lot\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"warehouse\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"quantity_final\": 9053,\n            \"quantity_available\": 7088,\n            \"quantity_on_hand\": 9841,\n            \"quarantined_quantity\": 2145,\n            \"quantity_unavailable\": 5288,\n            \"quantity_by_lot\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"warehouse\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"hs_code\": \"string\",\n      \"hs_codes\": [\n        {\n          \"hs_code\": \"string\",\n          \"region\": \"<string>\"\n        },\n        {\n          \"hs_code\": \"string\",\n          \"region\": \"<string>\"\n        }\n      ],\n      \"barcodes\": [\n        \"string\",\n        \"string\"\n      ],\n      \"country_code\": \"string\",\n      \"stock_out_days\": 1863,\n      \"custom_data\": [\n        {\n          \"name\": \"string\",\n          \"value\": {}\n        },\n        {\n          \"name\": \"string\",\n          \"value\": {}\n        }\n      ],\n      \"weight\": {\n        \"value\": 7270.26657156649,\n        \"unit\": \"g\"\n      },\n      \"dimensions\": {\n        \"length\": 4839.693098493804,\n        \"width\": 2757.3521710544815,\n        \"height\": 8765.264012232694,\n        \"unit\": \"ft\"\n      },\n      \"product_bundles\": [\n        {\n          \"bundle_sku\": \"string\",\n          \"products\": [\n            {\n              \"sku\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"sku\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        },\n        {\n          \"bundle_sku\": \"string\",\n          \"products\": [\n            {\n              \"sku\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"sku\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        }\n      ],\n      \"product_handling_units\": null\n    }\n  ],\n  \"total\": 6908,\n  \"next_cursor\": null\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2db78d24-602c-42e2-addb-a690f669808d",
+          "name": "Retrieve List of Products",
+          "request": {
+            "name": "Retrieve List of Products",
+            "description": {
+              "content": "Results are not guaranteed to be consistent across paginated calls. As inventory is updated during fulfillment, products shift position in the sort order and may reappear on later pages. For consistent pagination, use the Products for Inventory Sync endpoint instead.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "products"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "search",
+                  "value": "",
+                  "description": "Free-text filter matched against product SKU, name, or barcode."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "1-based page number to return. Defaults to 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "50",
+                  "description": "Number of products returned per page (default and maximum values are documented at the endpoint level)."
+                },
+                {
+                  "disabled": false,
+                  "key": "sortBy",
+                  "value": "",
+                  "description": "Field to sort the results by; one of 'id', 'created_at', or 'updated_at'."
+                },
+                {
+                  "disabled": false,
+                  "key": "sortOrder",
+                  "value": "<string>",
+                  "description": "Sort direction for the results: ASC (ascending) or DESC (descending). Defaults to DESC."
+                },
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>",
+                  "description": "Return only products in this status (e.g., active, blacklisted, disabled). See the enum schema for the full list of allowed values."
+                },
+                {
+                  "disabled": false,
+                  "key": "dateUpdatedStart",
+                  "value": "",
+                  "description": "Return only products updated at or after this ISO 8601 timestamp."
+                },
+                {
+                  "disabled": false,
+                  "key": "dateUpdatedEnd",
+                  "value": "",
+                  "description": "Return only products updated at or before this ISO 8601 timestamp."
+                },
+                {
+                  "disabled": false,
+                  "key": "dateCreatedStart",
+                  "value": "",
+                  "description": "Return only products created at or after this ISO 8601 timestamp."
+                },
+                {
+                  "disabled": false,
+                  "key": "dateCreatedEnd",
+                  "value": "",
+                  "description": "Return only products created at or before this ISO 8601 timestamp."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "ee651692-c89d-4df6-947c-c6629de102d2",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "products"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "shirt"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    },
+                    {
+                      "key": "sortBy",
+                      "value": "id"
+                    },
+                    {
+                      "key": "sortOrder",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "dateUpdatedStart",
+                      "value": "2025-07-24 14:53:00"
+                    },
+                    {
+                      "key": "dateUpdatedEnd",
+                      "value": "2025-07-24 14:53:00"
+                    },
+                    {
+                      "key": "dateCreatedStart",
+                      "value": "2025-07-24 14:53:00"
+                    },
+                    {
+                      "key": "dateCreatedEnd",
+                      "value": "2025-07-24 14:53:00"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": 618,\n      \"sku\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": \"1978-01-27T05:11:08.481Z\",\n      \"updated_at\": \"1971-05-12T17:08:18.515Z\",\n      \"inventory_on_hand_last_updated_at\": \"1975-05-03T11:50:47.156Z\",\n      \"is_active\": null,\n      \"product_type\": \"string\",\n      \"type\": \"insert\",\n      \"replacement_cost\": null,\n      \"replacement_cost_currency\": \"string\",\n      \"inventory\": {\n        \"quantity_total_final\": 427,\n        \"quantity_total_available\": 9732,\n        \"quantity_total_on_hand\": 6103,\n        \"quantity_total_quarantined\": 3683,\n        \"quantity_total_unavailable\": 1530,\n        \"locations\": [\n          {\n            \"quantity_final\": 4997,\n            \"quantity_available\": 4277,\n            \"quantity_on_hand\": 3609,\n            \"quarantined_quantity\": 3240,\n            \"quantity_unavailable\": 4311,\n            \"quantity_by_lot\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"warehouse\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"quantity_final\": 9346,\n            \"quantity_available\": 3930,\n            \"quantity_on_hand\": 6605,\n            \"quarantined_quantity\": 8248,\n            \"quantity_unavailable\": 3094,\n            \"quantity_by_lot\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"warehouse\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"hs_code\": \"string\",\n      \"hs_codes\": [\n        {\n          \"hs_code\": \"string\",\n          \"region\": \"<string>\"\n        },\n        {\n          \"hs_code\": \"string\",\n          \"region\": \"<string>\"\n        }\n      ],\n      \"barcodes\": [\n        \"string\",\n        \"string\"\n      ],\n      \"country_code\": \"string\",\n      \"stock_out_days\": 7826,\n      \"custom_data\": [\n        {\n          \"name\": \"string\",\n          \"value\": {}\n        },\n        {\n          \"name\": \"string\",\n          \"value\": {}\n        }\n      ],\n      \"weight\": {\n        \"value\": 180.0755424346645,\n        \"unit\": \"kg\"\n      },\n      \"dimensions\": {\n        \"length\": 8039.597858858346,\n        \"width\": 3543.3468741575325,\n        \"height\": 4889.177970868158,\n        \"unit\": \"mm\"\n      },\n      \"product_bundles\": [\n        {\n          \"bundle_sku\": \"string\",\n          \"products\": [\n            {\n              \"sku\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"sku\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        },\n        {\n          \"bundle_sku\": \"string\",\n          \"products\": [\n            {\n              \"sku\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"sku\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        }\n      ],\n      \"product_handling_units\": [\n        \"\",\n        \"\"\n      ]\n    },\n    {\n      \"id\": 6121,\n      \"sku\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": \"2007-02-03T03:04:20.205Z\",\n      \"updated_at\": \"1968-01-04T18:38:54.175Z\",\n      \"inventory_on_hand_last_updated_at\": null,\n      \"is_active\": null,\n      \"product_type\": \"string\",\n      \"type\": \"insert\",\n      \"replacement_cost\": 9808.430013115461,\n      \"replacement_cost_currency\": null,\n      \"inventory\": {\n        \"quantity_total_final\": 1159,\n        \"quantity_total_available\": 2503,\n        \"quantity_total_on_hand\": 9530,\n        \"quantity_total_quarantined\": 9352,\n        \"quantity_total_unavailable\": 2357,\n        \"locations\": [\n          {\n            \"quantity_final\": 4812,\n            \"quantity_available\": 426,\n            \"quantity_on_hand\": 331,\n            \"quarantined_quantity\": 4082,\n            \"quantity_unavailable\": 1976,\n            \"quantity_by_lot\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"warehouse\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"quantity_final\": 6680,\n            \"quantity_available\": 3301,\n            \"quantity_on_hand\": 408,\n            \"quarantined_quantity\": 6456,\n            \"quantity_unavailable\": 7158,\n            \"quantity_by_lot\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"warehouse\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"hs_code\": \"string\",\n      \"hs_codes\": [\n        {\n          \"hs_code\": \"string\",\n          \"region\": \"<string>\"\n        },\n        {\n          \"hs_code\": \"string\",\n          \"region\": \"<string>\"\n        }\n      ],\n      \"barcodes\": [\n        \"string\",\n        \"string\"\n      ],\n      \"country_code\": null,\n      \"stock_out_days\": 4725,\n      \"custom_data\": [\n        {\n          \"name\": \"string\",\n          \"value\": {}\n        },\n        {\n          \"name\": \"string\",\n          \"value\": {}\n        }\n      ],\n      \"weight\": {\n        \"value\": 4786.317862828071,\n        \"unit\": \"oz\"\n      },\n      \"dimensions\": {\n        \"length\": 5043.51931216284,\n        \"width\": 8926.584926987378,\n        \"height\": 6210.555302696677,\n        \"unit\": \"m\"\n      },\n      \"product_bundles\": [\n        {\n          \"bundle_sku\": \"string\",\n          \"products\": [\n            {\n              \"sku\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"sku\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        },\n        {\n          \"bundle_sku\": \"string\",\n          \"products\": [\n            {\n              \"sku\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"sku\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        }\n      ],\n      \"product_handling_units\": null\n    }\n  ],\n  \"total\": 4797,\n  \"pages\": 582,\n  \"page\": 9937\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.shipmonk.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Api-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "44442f1f-e446-4fa3-8db2-297615a078a9",
+    "name": "ShipMonk Products API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Products surface of the ShipMonk public fulfillment API.",
+      "type": "text/plain"
+    }
+  }
+}

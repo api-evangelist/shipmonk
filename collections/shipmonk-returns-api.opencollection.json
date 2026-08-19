@@ -1,0 +1,166 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ShipMonk Returns API",
+    "version": "v1.024"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Api-Key",
+      "value": "{{Api-Key}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Returns",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Return",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shipmonk.com/v1/integrations/returns",
+            "params": [
+              {
+                "name": "rma",
+                "value": "",
+                "type": "query",
+                "description": "Return Merchandise Authorization (RMA) number used to look up the return; optional query filter."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "DEPRECATED – please use Retrieve List of Returns instead with filter for RMA."
+        },
+        {
+          "info": {
+            "name": "Create or Update Return",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shipmonk.com/v1/integrations/returns",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Create or Update Return"
+        },
+        {
+          "info": {
+            "name": "Retrieve List of Returns",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.shipmonk.com/v1/integrations/returns-list",
+            "params": [
+              {
+                "name": "rma",
+                "value": "",
+                "type": "query",
+                "description": "Return only returns whose Return Merchandise Authorization (RMA) number matches this value."
+              },
+              {
+                "name": "return_status",
+                "value": "",
+                "type": "query",
+                "description": "Return only returns currently in this status (e.g., in_progress, returned, arrived)."
+              },
+              {
+                "name": "warehouse_id",
+                "value": "",
+                "type": "query",
+                "description": "Numeric identifier of the warehouse processing the return; use the value returned by the warehouses endpoint."
+              },
+              {
+                "name": "return_reason",
+                "value": "",
+                "type": "query",
+                "description": "Return only returns flagged with this reason code (e.g., damaged, wrong_item, no_longer_needed)."
+              },
+              {
+                "name": "created_at",
+                "value": "2025-07-24 14:53:00",
+                "type": "query",
+                "description": "Return only returns created at or after this ISO 8601 timestamp."
+              },
+              {
+                "name": "updated_at",
+                "value": "2025-07-24 14:53:00",
+                "type": "query",
+                "description": "Return only returns updated at or after this ISO 8601 timestamp."
+              },
+              {
+                "name": "desired_action",
+                "value": "",
+                "type": "query",
+                "description": "Return only returns whose items have this intended processing action (e.g., damaged_not_resellable, received_back_into_inventory)."
+              },
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "description": "1-based page number to return. Defaults to 1."
+              },
+              {
+                "name": "page_size",
+                "value": "10",
+                "type": "query",
+                "description": "Number of results per page (default and maximum values are documented at the endpoint level)."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Retrieve List of Returns"
+        },
+        {
+          "info": {
+            "name": "Complete Return",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.shipmonk.com/v1/integrations/sandbox/complete-return",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "Api-Key",
+              "value": "{{Api-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint simulates the full return lifecycle on Sandbox environment. It can't be used in production!\n\nThe return goes through arrival, check-in, receiving, grading, and completion based on the specified completion mode and disposition.\n\n## Completion Modes\nCompletion mode changes how many units are received of the FIRST item in the return. Other items are always fully received.\n| Mode | Description | Constraint |\n|------|-------------|------------|\n| `fully_received` | Receives the complete"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,723 @@
+{
+  "item": [
+    {
+      "id": "48fdea30-ef7b-4247-a8d5-0ea8e1b867e6",
+      "name": "Receivings",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "153947c0-f603-4d9a-9cc4-7491bcccbd76",
+          "name": "Get Receiving",
+          "request": {
+            "name": "Get Receiving",
+            "description": {
+              "content": "## ASN & Receiving Key\nWhen retrieving a Receiving, you must supply either the receivingKey or asn parameter.\n\n- If both are supplied, they must both match a single Receiving.\n- Supplying only one of the parameters is strongly advised.\n\n## LineKey\nWhen item objects are supplied with a line_key string field, those items are uniquely identified and can be referenced by it later — for example, to change expected quantity. Line Key must be unique per receiving.\n\n- line_key is optional. Null or missing values are expected and supported.\n- Lines without a line_key can still be updated: they are matched by product and lot. If a product and lot combination are specified multiple times in a single POST request, they are grouped and their quantities summed.\n- On update, if exactly one existing line matches a given product and lot, that line is updated.\n- If multiple keyless lines share the same product and lot, they cannot be told apart and are replaced as a group, with the request treated as the source of truth.\n- Supply a line_key whenever you need to reliably target a specific line — especially when a receiving has more than one line for the same product and lot.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "receiving"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "receivingKey",
+                  "value": "",
+                  "description": "Optional filter to retrieve a receiving by its external reference key (e.g. purchase order number) assigned by the client when the receiving was created. Returns the matching receiving or null if not found."
+                },
+                {
+                  "disabled": false,
+                  "key": "asn",
+                  "value": "",
+                  "description": "Optional filter to retrieve a receiving by its Advance Shipping Notice (ASN) number, a supplier-provided identifier for the incoming shipment."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "f4742ed5-90a5-4904-b761-13c654d7e09a",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "receiving"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "receivingKey",
+                      "value": "key-123"
+                    },
+                    {
+                      "key": "asn",
+                      "value": "ASN-12345"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 4483,\n  \"warehouse\": \"string\",\n  \"receiving_key\": null,\n  \"asn\": \"string\",\n  \"bol_number\": \"string\",\n  \"supplier_name\": \"string\",\n  \"handling_unit_type\": \"container_53_palletized\",\n  \"handling_unit_quantity\": 2000,\n  \"estimated_delivery\": \"string\",\n  \"description\": \"string\",\n  \"status\": \"received\",\n  \"created_at\": \"1970-11-15T04:03:45.495Z\",\n  \"updated_at\": \"1998-11-09T02:59:22.148Z\",\n  \"arrived_at\": null,\n  \"received_at\": \"1967-10-18T20:25:48.278Z\",\n  \"items\": [\n    {\n      \"product\": {\n        \"id\": 7052,\n        \"sku\": \"string\",\n        \"name\": \"string\"\n      },\n      \"expected_quantity\": 2462,\n      \"received_quantity\": 4648,\n      \"receiving_details\": [\n        {\n          \"lot\": {\n            \"lot_number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expiration_date\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"expected_quantity\": 1415,\n          \"received_quantity\": 9426,\n          \"received_at\": null,\n          \"line_key\": \"string\"\n        },\n        {\n          \"lot\": {\n            \"lot_number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expiration_date\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"expected_quantity\": 4341,\n          \"received_quantity\": 2933,\n          \"received_at\": null,\n          \"line_key\": null\n        }\n      ]\n    },\n    {\n      \"product\": {\n        \"id\": 4955,\n        \"sku\": \"string\",\n        \"name\": \"string\"\n      },\n      \"expected_quantity\": 493,\n      \"received_quantity\": 4271,\n      \"receiving_details\": [\n        {\n          \"lot\": {\n            \"lot_number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expiration_date\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"expected_quantity\": 5768,\n          \"received_quantity\": 5335,\n          \"received_at\": \"1951-06-19T00:59:31.912Z\",\n          \"line_key\": \"string\"\n        },\n        {\n          \"lot\": {\n            \"lot_number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expiration_date\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"expected_quantity\": 789,\n          \"received_quantity\": 2242,\n          \"received_at\": null,\n          \"line_key\": null\n        }\n      ]\n    }\n  ],\n  \"receiving_lines\": [\n    {\n      \"line_key\": null,\n      \"product\": {\n        \"id\": 3938,\n        \"sku\": \"string\",\n        \"name\": \"string\"\n      },\n      \"expected_quantity\": 586,\n      \"received_quantity\": 7810,\n      \"carton_key\": \"string\",\n      \"loose_units_pallet_key\": null,\n      \"lot\": {\n        \"lot_number\": \"string\",\n        \"expiration_date\": \"1994-10-12T02:58:14.576Z\"\n      }\n    },\n    {\n      \"line_key\": null,\n      \"product\": {\n        \"id\": 6256,\n        \"sku\": \"string\",\n        \"name\": \"string\"\n      },\n      \"expected_quantity\": 6601,\n      \"received_quantity\": 4140,\n      \"carton_key\": null,\n      \"loose_units_pallet_key\": \"string\",\n      \"lot\": {\n        \"lot_number\": \"string\",\n        \"expiration_date\": null\n      }\n    }\n  ],\n  \"custom_data\": [\n    {\n      \"name\": \"string\",\n      \"value\": {}\n    },\n    {\n      \"name\": \"string\",\n      \"value\": {}\n    }\n  ],\n  \"cartons\": [\n    {\n      \"carton_key\": \"string\",\n      \"pallet_key\": null,\n      \"identifiers\": [\n        {\n          \"type\": \"SSCC\",\n          \"value\": \"string\"\n        },\n        {\n          \"type\": \"SSCC\",\n          \"value\": \"string\"\n        }\n      ]\n    },\n    {\n      \"carton_key\": \"string\",\n      \"pallet_key\": null,\n      \"identifiers\": [\n        {\n          \"type\": \"SSCC\",\n          \"value\": \"string\"\n        },\n        {\n          \"type\": \"SSCC\",\n          \"value\": \"string\"\n        }\n      ]\n    }\n  ],\n  \"pallets\": [\n    {\n      \"pallet_key\": \"string\",\n      \"identifiers\": [\n        {\n          \"type\": \"SSCC\",\n          \"value\": \"string\"\n        },\n        {\n          \"type\": \"SSCC\",\n          \"value\": \"string\"\n        }\n      ]\n    },\n    {\n      \"pallet_key\": \"string\",\n      \"identifiers\": [\n        {\n          \"type\": \"SSCC\",\n          \"value\": \"string\"\n        },\n        {\n          \"type\": \"SSCC\",\n          \"value\": \"string\"\n        }\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "39ed775c-474a-4418-b53d-48abcf3aaddc",
+          "name": "Create or Update Receiving",
+          "request": {
+            "name": "Create or Update Receiving",
+            "description": {
+              "content": "## General description\n- ERP push to ShipMonk\n- `items.[].lot` or any of its property can be null\n\n## ASN & Receiving Key\n- When updating a Receiving, the identifying properties are `receiving_key` and `asn` in this order.\n  - In case both are supplied\n    - First, Receiving is retrieved by `receiving_key`. If found, it is updated with new ASN if current ASN is different than `asn` in the request body.\n    - If not found, Receiving is retrieved by `asn`. If found, it is updated with new `receiving_key` in the request body.\n    - If not found, new Receiving is created with `receiving_key` and asn being its unique identifiers.\n  - In case only asn is supplied\n    - First, Receiving is retrieved by `asn`. If found, `receiving_key` of the Receiving is left as-is as it cannot be deleted upon setting up.\n    - If not found, new Receiving is created with `asn` being its unique identifier.\n  - In case only `receiving_key` is supplied\n    - The request is rejected, as `asn` is required field.\n\n## LineKey\n- When item objects are supplied with `line_key` string field, these items are then uniquely identified and can be referenced by it, if needed to change expected quantity.\n- Line Key must be unique per receiving.\n- Null/missing values are also expected. Such lines are then grouped by product and lot if supplied multiple times in the POST request.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "receiving"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"warehouse\": \"<string>\",\n  \"asn\": \"<string>\",\n  \"supplier_name\": \"<string>\",\n  \"estimated_delivery\": \"<date>\",\n  \"handling_unit_type\": \"<string>\",\n  \"items\": [\n    {\n      \"sku\": \"<string>\",\n      \"expected_quantity\": \"<integer>\",\n      \"barcode\": null,\n      \"lot\": {\n        \"lot_number\": null,\n        \"expiration_date\": null\n      },\n      \"line_key\": null,\n      \"carton_key\": null,\n      \"loose_units_pallet_key\": null\n    },\n    {\n      \"sku\": \"<string>\",\n      \"expected_quantity\": \"<integer>\",\n      \"barcode\": null,\n      \"lot\": {\n        \"lot_number\": null,\n        \"expiration_date\": null\n      },\n      \"line_key\": null,\n      \"carton_key\": null,\n      \"loose_units_pallet_key\": null\n    }\n  ],\n  \"handling_unit_quantity\": null,\n  \"receiving_key\": null,\n  \"description\": null,\n  \"bol_number\": null,\n  \"category\": \"<string>\",\n  \"cartons\": null,\n  \"pallets\": null,\n  \"tracking_numbers\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "30313d40-f9ae-4ea5-b68d-12f7acff5aa3",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "receiving"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"warehouse\": \"PA1\",\n  \"asn\": \"ASN-12345\",\n  \"supplier_name\": \"Acme Supplier\",\n  \"estimated_delivery\": \"<date>\",\n  \"handling_unit_type\": \"<string>\",\n  \"items\": [\n    {\n      \"sku\": \"<string>\",\n      \"expected_quantity\": 50,\n      \"barcode\": null,\n      \"lot\": {\n        \"lot_number\": \"LOT-2025-001\",\n        \"expiration_date\": null\n      },\n      \"line_key\": \"LINE-001\",\n      \"carton_key\": null,\n      \"loose_units_pallet_key\": null\n    },\n    {\n      \"sku\": \"<string>\",\n      \"expected_quantity\": 50,\n      \"barcode\": null,\n      \"lot\": {\n        \"lot_number\": \"LOT-2025-001\",\n        \"expiration_date\": null\n      },\n      \"line_key\": \"LINE-001\",\n      \"carton_key\": null,\n      \"loose_units_pallet_key\": null\n    }\n  ],\n  \"handling_unit_quantity\": 10,\n  \"receiving_key\": \"key-123\",\n  \"description\": \"Spring collection shipment\",\n  \"bol_number\": \"BOL-9876\",\n  \"category\": \"<string>\",\n  \"cartons\": null,\n  \"pallets\": null,\n  \"tracking_numbers\": null\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "52248684-251a-40db-a880-8488adeabcc7",
+          "name": "Retrieve List of Receipts",
+          "request": {
+            "name": "Retrieve List of Receipts",
+            "description": {},
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "receipts-list"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "1-based page number to return. Defaults to 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "100",
+                  "description": "Number of results per page. Defaults to a server-configured value; check the response metadata for the effective size."
+                },
+                {
+                  "disabled": false,
+                  "key": "sortOrder",
+                  "value": "<string>",
+                  "description": "Sort direction for the results: ASC (ascending) or DESC (descending). Defaults to DESC."
+                },
+                {
+                  "disabled": false,
+                  "key": "asn",
+                  "value": "",
+                  "description": "Return only receipts whose Advance Ship Notice (ASN) number matches this value."
+                },
+                {
+                  "disabled": false,
+                  "key": "warehouseId",
+                  "value": "",
+                  "description": "Return only receipts processed in the warehouse with this numeric identifier."
+                },
+                {
+                  "disabled": false,
+                  "key": "completedAt",
+                  "value": "",
+                  "description": "Return only receipts completed at or after this ISO 8601 timestamp."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "6bd08f82-7428-4550-b527-3fdc313ea944",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "receipts-list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    },
+                    {
+                      "key": "sortOrder",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "asn",
+                      "value": "ASN-12345"
+                    },
+                    {
+                      "key": "warehouseId",
+                      "value": "15"
+                    },
+                    {
+                      "key": "completedAt",
+                      "value": "2025-07-24 14:53:00"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"paginator\": {\n    \"total\": 7168,\n    \"pages\": 8211,\n    \"page\": 9692\n  },\n  \"status\": 7556,\n  \"data\": [\n    {\n      \"receipt_id\": 5110,\n      \"receiving_id\": 905,\n      \"warehouse\": \"string\",\n      \"receiving_key\": null,\n      \"asn\": \"string\",\n      \"receipt_created_at\": \"2020-10-03T04:36:01.526Z\",\n      \"receipt_completed_at\": \"1974-01-20T22:58:54.776Z\",\n      \"items\": [\n        {\n          \"product\": {\n            \"id\": 3489,\n            \"sku\": \"string\",\n            \"name\": \"string\"\n          },\n          \"received_quantity\": 7882,\n          \"receiving_details\": [\n            {\n              \"line_key\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_at\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"lot\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"line_key\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_at\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"lot\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        },\n        {\n          \"product\": {\n            \"id\": 6012,\n            \"sku\": \"string\",\n            \"name\": \"string\"\n          },\n          \"received_quantity\": 271,\n          \"receiving_details\": [\n            {\n              \"line_key\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_at\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"lot\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"line_key\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_at\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"lot\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        }\n      ],\n      \"receiving_lines\": [\n        {\n          \"line_key\": \"string\",\n          \"product\": {\n            \"id\": 6623,\n            \"sku\": \"string\",\n            \"name\": \"string\"\n          },\n          \"received_quantity\": 8308,\n          \"lot\": {\n            \"lot_number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expiration_date\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        {\n          \"line_key\": \"string\",\n          \"product\": {\n            \"id\": 4205,\n            \"sku\": \"string\",\n            \"name\": \"string\"\n          },\n          \"received_quantity\": 8586,\n          \"lot\": {\n            \"lot_number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expiration_date\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        }\n      ],\n      \"custom_data\": [\n        {\n          \"name\": \"string\",\n          \"value\": {}\n        },\n        {\n          \"name\": \"string\",\n          \"value\": {}\n        }\n      ]\n    },\n    {\n      \"receipt_id\": 2924,\n      \"receiving_id\": 2486,\n      \"warehouse\": \"string\",\n      \"receiving_key\": null,\n      \"asn\": \"string\",\n      \"receipt_created_at\": \"2018-12-24T00:29:29.623Z\",\n      \"receipt_completed_at\": \"1976-01-10T02:01:55.507Z\",\n      \"items\": [\n        {\n          \"product\": {\n            \"id\": 1125,\n            \"sku\": \"string\",\n            \"name\": \"string\"\n          },\n          \"received_quantity\": 153,\n          \"receiving_details\": [\n            {\n              \"line_key\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_at\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"lot\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"line_key\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_at\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"lot\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        },\n        {\n          \"product\": {\n            \"id\": 7366,\n            \"sku\": \"string\",\n            \"name\": \"string\"\n          },\n          \"received_quantity\": 115,\n          \"receiving_details\": [\n            {\n              \"line_key\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_at\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"lot\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"line_key\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_at\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"lot\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        }\n      ],\n      \"receiving_lines\": [\n        {\n          \"line_key\": \"string\",\n          \"product\": {\n            \"id\": 6287,\n            \"sku\": \"string\",\n            \"name\": \"string\"\n          },\n          \"received_quantity\": 5807,\n          \"lot\": {\n            \"lot_number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expiration_date\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        {\n          \"line_key\": null,\n          \"product\": {\n            \"id\": 6504,\n            \"sku\": \"string\",\n            \"name\": \"string\"\n          },\n          \"received_quantity\": 9607,\n          \"lot\": {\n            \"lot_number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expiration_date\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        }\n      ],\n      \"custom_data\": [\n        {\n          \"name\": \"string\",\n          \"value\": {}\n        },\n        {\n          \"name\": \"string\",\n          \"value\": {}\n        }\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "27441ab1-9113-49e4-bc3c-7efd59eae31e",
+          "name": "Retrieve List of Receivings",
+          "request": {
+            "name": "Retrieve List of Receivings",
+            "description": {},
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "receivings-list"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "asn",
+                  "value": "",
+                  "description": "Return only receivings whose Advance Ship Notice (ASN) number matches this value."
+                },
+                {
+                  "disabled": false,
+                  "key": "warehouseId",
+                  "value": "",
+                  "description": "Short warehouse code (e.g., CA1, PA2) to filter receivings by. Note: this is a string code, not a numeric ID."
+                },
+                {
+                  "disabled": false,
+                  "key": "createdAt",
+                  "value": "",
+                  "description": "Return only receivings created at or after this ISO 8601 timestamp."
+                },
+                {
+                  "disabled": false,
+                  "key": "updatedAt",
+                  "value": "",
+                  "description": "Return only receivings updated at or after this ISO 8601 timestamp."
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "1-based page number to return. Defaults to 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "100",
+                  "description": "Number of results per page. Defaults to a server-configured value; check the response metadata for the effective size."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e928b2b0-cffc-4f81-8dd7-08764d7a149f",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "receivings-list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "asn",
+                      "value": "ASN-12345"
+                    },
+                    {
+                      "key": "warehouseId",
+                      "value": "PA1"
+                    },
+                    {
+                      "key": "createdAt",
+                      "value": "2025-07-24 14:53:00"
+                    },
+                    {
+                      "key": "updatedAt",
+                      "value": "2025-07-24 14:53:00"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"paginator\": {\n    \"total\": 3243,\n    \"pages\": 4132,\n    \"page\": 5941\n  },\n  \"status\": 878,\n  \"data\": [\n    {\n      \"id\": 8861,\n      \"warehouse\": \"string\",\n      \"receiving_key\": \"string\",\n      \"asn\": \"string\",\n      \"bol_number\": \"string\",\n      \"supplier_name\": \"string\",\n      \"handling_unit_type\": \"<string>\",\n      \"handling_unit_quantity\": 1422,\n      \"estimated_delivery\": \"string\",\n      \"description\": null,\n      \"status\": \"arrived\",\n      \"created_at\": \"1989-12-04T18:17:00.803Z\",\n      \"updated_at\": \"1976-02-14T15:27:54.519Z\",\n      \"arrived_at\": null,\n      \"received_at\": null,\n      \"items\": [\n        {\n          \"product\": {\n            \"id\": 6562,\n            \"sku\": \"string\",\n            \"name\": \"string\"\n          },\n          \"expected_quantity\": 9354,\n          \"received_quantity\": 3964,\n          \"receiving_details\": [\n            {\n              \"lot\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"expected_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_at\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line_key\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"lot\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"expected_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_at\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line_key\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        },\n        {\n          \"product\": {\n            \"id\": 4393,\n            \"sku\": \"string\",\n            \"name\": \"string\"\n          },\n          \"expected_quantity\": 5955,\n          \"received_quantity\": 2978,\n          \"receiving_details\": [\n            {\n              \"lot\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"expected_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_at\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line_key\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"lot\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"expected_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_at\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line_key\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        }\n      ],\n      \"receiving_lines\": [\n        {\n          \"line_key\": null,\n          \"product\": {\n            \"id\": 8866,\n            \"sku\": \"string\",\n            \"name\": \"string\"\n          },\n          \"expected_quantity\": 1313,\n          \"received_quantity\": 3042,\n          \"carton_key\": \"string\",\n          \"loose_units_pallet_key\": \"string\",\n          \"lot\": {\n            \"lot_number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expiration_date\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        {\n          \"line_key\": \"string\",\n          \"product\": {\n            \"id\": 2078,\n            \"sku\": \"string\",\n            \"name\": \"string\"\n          },\n          \"expected_quantity\": 5379,\n          \"received_quantity\": 6270,\n          \"carton_key\": null,\n          \"loose_units_pallet_key\": null,\n          \"lot\": {\n            \"lot_number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expiration_date\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        }\n      ],\n      \"custom_data\": [\n        {\n          \"name\": \"string\",\n          \"value\": {}\n        },\n        {\n          \"name\": \"string\",\n          \"value\": {}\n        }\n      ],\n      \"cartons\": [\n        {\n          \"carton_key\": \"string\",\n          \"pallet_key\": null,\n          \"identifiers\": [\n            {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        },\n        {\n          \"carton_key\": \"string\",\n          \"pallet_key\": \"string\",\n          \"identifiers\": [\n            {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        }\n      ],\n      \"pallets\": [\n        {\n          \"pallet_key\": \"string\",\n          \"identifiers\": [\n            {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        },\n        {\n          \"pallet_key\": \"string\",\n          \"identifiers\": [\n            {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        }\n      ]\n    },\n    {\n      \"id\": 4421,\n      \"warehouse\": \"string\",\n      \"receiving_key\": null,\n      \"asn\": \"string\",\n      \"bol_number\": \"string\",\n      \"supplier_name\": \"string\",\n      \"handling_unit_type\": \"<string>\",\n      \"handling_unit_quantity\": 8323,\n      \"estimated_delivery\": \"string\",\n      \"description\": null,\n      \"status\": \"arrived\",\n      \"created_at\": \"1961-11-29T23:54:14.918Z\",\n      \"updated_at\": \"1973-05-11T15:18:18.762Z\",\n      \"arrived_at\": null,\n      \"received_at\": \"1996-04-27T23:37:36.313Z\",\n      \"items\": [\n        {\n          \"product\": {\n            \"id\": 42,\n            \"sku\": \"string\",\n            \"name\": \"string\"\n          },\n          \"expected_quantity\": 8132,\n          \"received_quantity\": 195,\n          \"receiving_details\": [\n            {\n              \"lot\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"expected_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_at\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line_key\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"lot\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"expected_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_at\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line_key\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        },\n        {\n          \"product\": {\n            \"id\": 1128,\n            \"sku\": \"string\",\n            \"name\": \"string\"\n          },\n          \"expected_quantity\": 8508,\n          \"received_quantity\": 6738,\n          \"receiving_details\": [\n            {\n              \"lot\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"expected_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_at\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line_key\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"lot\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"expected_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_quantity\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"received_at\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"line_key\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        }\n      ],\n      \"receiving_lines\": [\n        {\n          \"line_key\": \"string\",\n          \"product\": {\n            \"id\": 1927,\n            \"sku\": \"string\",\n            \"name\": \"string\"\n          },\n          \"expected_quantity\": 1906,\n          \"received_quantity\": 6497,\n          \"carton_key\": null,\n          \"loose_units_pallet_key\": null,\n          \"lot\": {\n            \"lot_number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expiration_date\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        {\n          \"line_key\": \"string\",\n          \"product\": {\n            \"id\": 1251,\n            \"sku\": \"string\",\n            \"name\": \"string\"\n          },\n          \"expected_quantity\": 3733,\n          \"received_quantity\": 5045,\n          \"carton_key\": null,\n          \"loose_units_pallet_key\": \"string\",\n          \"lot\": {\n            \"lot_number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"expiration_date\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        }\n      ],\n      \"custom_data\": [\n        {\n          \"name\": \"string\",\n          \"value\": {}\n        },\n        {\n          \"name\": \"string\",\n          \"value\": {}\n        }\n      ],\n      \"cartons\": [\n        {\n          \"carton_key\": \"string\",\n          \"pallet_key\": \"string\",\n          \"identifiers\": [\n            {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        },\n        {\n          \"carton_key\": \"string\",\n          \"pallet_key\": \"string\",\n          \"identifiers\": [\n            {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        }\n      ],\n      \"pallets\": [\n        {\n          \"pallet_key\": \"string\",\n          \"identifiers\": [\n            {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        },\n        {\n          \"pallet_key\": \"string\",\n          \"identifiers\": [\n            {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            },\n            {\n              \"type\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              \"value\": {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            }\n          ]\n        }\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "92985596-c55b-44dd-b0ec-8c5315d3aece",
+          "name": "Complete Receiving",
+          "request": {
+            "name": "Complete Receiving",
+            "description": {
+              "content": "Simulates the completion of a receiving in your Sandbox environment. This action is available for testing purposes only and cannot be used in production.\n\nUse the completion_mode field to control how the simulation behaves: fully_received accepts all expected units, while short_received, excess_received, and partially_received simulate discrepancies that may leave the receiving open or generate exceptions.\n\n## ASN & Receiving Key\nTo identify the target receiving, you must supply either receiving_key or asn.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "sandbox",
+                "complete-receiving"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"completion_mode\": \"<string>\",\n  \"receiving_key\": \"<string,null>\",\n  \"asn\": \"<string,null>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b40aa9e9-0695-43db-9dc5-5e35fb9f4074",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "sandbox",
+                    "complete-receiving"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"completion_mode\": \"<string>\",\n  \"receiving_key\": \"key-123\",\n  \"asn\": \"ASN-12345\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 5137\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.shipmonk.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Api-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "ed5b261f-03c5-4544-8e1d-d894e147706b",
+    "name": "ShipMonk Receivings API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Receivings surface of the ShipMonk public fulfillment API.",
+      "type": "text/plain"
+    }
+  }
+}

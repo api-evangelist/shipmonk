@@ -1,0 +1,748 @@
+{
+  "item": [
+    {
+      "id": "b5abe0d6-50d0-4203-b5d7-b0f617e94516",
+      "name": "Orders",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "1d696281-fbcc-491e-aeeb-cc68f6dab0b2",
+          "name": "Create or Update Order",
+          "request": {
+            "name": "Create or Update Order",
+            "description": {
+              "content": "This endpoint can be used to create an order. The orders are typically pushed to ShipMonk from the 3rd party software.\n\nThe Create Order endpoint does not create duplicate entries when both the `store_id` and `order_key` are the same. Instead, it updates the existing order.\n\n*NOTE: Resending an Order with a different `order_key` will result in Order duplication.**\n\nThe order can be in following 4 statuses:\n- `unfulfilled` will create order for ShipMonk to process\n- `cancelled` will create cancelled order or cancel existing order\n- `fulfilled` will create order in status \"Fulfilled by 3rd party\" or change existing order status to that status or not perform any action if order was fulfilled by ShipMonk\n- `onHold` will create order in status onHold or put an existing order on hold.\n\nCan be useful:\n- if the field `warehouse` is not given, ShipMonk resolves it based on inventory & shipping costs\n- the field `custom_data` can be used for any data that you need to store and then receive back in shipment notification\n- the field `attributes` is only used for a custom development and in most of the cases it won't be needed\n- if the field submit_at is not given, order is submit according to store settings.\n\n## Recipient Tax ID\nThe **recipient_tax_id** field is an optional parameter when submitting an order through the API. However, it is **mandatory** for international shipments to certain countries, such as Mexico, Brazil, and South Korea. This field plays a role in customs clearance, ensuring accurate calculation of duties and taxes at the destination.\n\n### How it's used\nFor orders shipping to destinations where a recipient tax ID is mandatory, failure to include this field on the shipping label will result in the order being placed in the **\"Recipient Tax ID Required\" Action Required status**. Without a valid tax ID, carriers may reject the shipment, returning it to the sender.\n\n### Best Practices\nTo prevent delays, collect the `recipient_tax_id` from the recipient at checkout. This information is unique to the individual or entity receiving the shipment.\n\n### Resolving Missing Recipient Tax ID Issues\nTo address a missing recipient tax ID, you can update the `recipient_tax_id` in one of two ways:\n- **Via API**: Submit the missing tax ID programmatically using the appropriate endpoint.\n- **Manually**: Edit the order details directly in the ShipMonk App.\n\nAdditional Resources\nFor more information, including a current list of countries requiring a recipient tax ID, consult the [Action Required Orders](https://support.shipmonk.com/s/article/Action-Required-Orders) documentation. Refer specifically to the **\"Recipient Tax ID Required\"** section for detailed guidance and troubleshooting steps.\n\n## Lot requirements\nSettings for lot requirements (lot, minimum shelf life, etc.) depend on your account settings. Contact your happiness manager to enable lot management.\n\nIt is possible to set minimum shelf life for the whole order, per order item, or specific lot requirements per order item.\n- If you set the minimum shelf life for the whole order, you can't use settings at the item level.\n- If you set the minimum shelf life for an order item, you can't set specific lot controls for the same order item.\n\nIf the lot requirement is not applicable to the mapped bundle, the order is accepted, but the item mapping ends with action required and you have to update the bundles or set different lot requirements.\n\nYou can override the requirements from public API manually in the application. New request from API will override the manual settings, also empty lot settings will remove existing lot restrictions.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "order"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"store_id\": \"<integer>\",\n  \"order_number\": \"<string>\",\n  \"order_key\": \"<string>\",\n  \"items\": [\n    {\n      \"sku\": \"<string>\",\n      \"quantity\": \"<integer>\",\n      \"line_key\": null,\n      \"name\": null,\n      \"price\": null,\n      \"packing_group\": {\n        \"key\": \"<string>\",\n        \"name\": null\n      },\n      \"image_url\": null,\n      \"lot_requirements\": {\n        \"minimum_shelf_life_days\": null\n      }\n    },\n    {\n      \"sku\": \"<string>\",\n      \"quantity\": \"<integer>\",\n      \"line_key\": null,\n      \"name\": null,\n      \"price\": null,\n      \"packing_group\": {\n        \"key\": \"<string>\",\n        \"name\": null\n      },\n      \"image_url\": null,\n      \"lot_requirements\": {\n        \"minimum_shelf_life_days\": null\n      }\n    }\n  ],\n  \"ship_to\": {\n    \"name\": null,\n    \"company\": null,\n    \"street1\": null,\n    \"street2\": null,\n    \"state\": null,\n    \"city\": null,\n    \"zip\": null,\n    \"country_code\": null,\n    \"phone\": null\n  },\n  \"requested_shipping_service\": \"<string>\",\n  \"ordered_at\": \"<dateTime>\",\n  \"order_status\": \"<string>\",\n  \"trading_partner\": null,\n  \"order_type\": \"<string>\",\n  \"customer_email\": null,\n  \"shipping_paid\": null,\n  \"taxes_paid\": null,\n  \"currency_code\": \"USD\",\n  \"customer_notes\": null,\n  \"internal_notes\": null,\n  \"warehouse\": null,\n  \"gift_message\": null,\n  \"gift_from\": null,\n  \"submit_at\": null,\n  \"special_requirements\": {\n    \"special_instruction\": null,\n    \"pack_list_required\": false,\n    \"order_level_packing_slip\": {\n      \"type\": \"<string>\",\n      \"name\": null,\n      \"shipping_data_required\": false,\n      \"approved_shipment_id_number_required\": false\n    },\n    \"shipping_label\": {\n      \"url\": \"<string>\"\n    },\n    \"shipping_date\": {\n      \"earliest\": null,\n      \"requested\": null,\n      \"latest\": null\n    },\n    \"delivery_date\": {\n      \"earliest\": null,\n      \"requested\": null,\n      \"latest\": null\n    },\n    \"cancel_date\": null,\n    \"fulfillment_strategy\": \"<string>\"\n  },\n  \"recipient_tax_id\": {\n    \"type\": \"<string>\",\n    \"value\": \"<string>\",\n    \"issuing_country_id\": \"<string>\"\n  },\n  \"minimum_shelf_life_days\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2865561c-4f40-4dff-bb31-78151c628dd2",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"store_id\": 123456,\n  \"order_number\": \"Order-123\",\n  \"order_key\": \"327b5abd-017a-4504-a50d-54f1cea80269\",\n  \"items\": [\n    {\n      \"sku\": \"<string>\",\n      \"quantity\": \"<integer>\",\n      \"line_key\": null,\n      \"name\": null,\n      \"price\": null,\n      \"packing_group\": {\n        \"key\": \"<string>\",\n        \"name\": null\n      },\n      \"image_url\": null,\n      \"lot_requirements\": {\n        \"minimum_shelf_life_days\": null\n      }\n    },\n    {\n      \"sku\": \"<string>\",\n      \"quantity\": \"<integer>\",\n      \"line_key\": null,\n      \"name\": null,\n      \"price\": null,\n      \"packing_group\": {\n        \"key\": \"<string>\",\n        \"name\": null\n      },\n      \"image_url\": null,\n      \"lot_requirements\": {\n        \"minimum_shelf_life_days\": null\n      }\n    }\n  ],\n  \"ship_to\": {\n    \"name\": null,\n    \"company\": null,\n    \"street1\": null,\n    \"street2\": null,\n    \"state\": null,\n    \"city\": null,\n    \"zip\": null,\n    \"country_code\": null,\n    \"phone\": null\n  },\n  \"requested_shipping_service\": \"<string>\",\n  \"ordered_at\": \"2025-07-24 14:53:00\",\n  \"order_status\": \"<string>\",\n  \"trading_partner\": null,\n  \"order_type\": \"<string>\",\n  \"customer_email\": null,\n  \"shipping_paid\": null,\n  \"taxes_paid\": null,\n  \"currency_code\": \"USD\",\n  \"customer_notes\": null,\n  \"internal_notes\": null,\n  \"warehouse\": \"PA1\",\n  \"gift_message\": null,\n  \"gift_from\": null,\n  \"submit_at\": \"2025-07-24 14:53:00\",\n  \"special_requirements\": {\n    \"special_instruction\": null,\n    \"pack_list_required\": false,\n    \"order_level_packing_slip\": {\n      \"type\": \"<string>\",\n      \"name\": null,\n      \"shipping_data_required\": false,\n      \"approved_shipment_id_number_required\": false\n    },\n    \"shipping_label\": {\n      \"url\": \"<string>\"\n    },\n    \"shipping_date\": {\n      \"earliest\": null,\n      \"requested\": null,\n      \"latest\": null\n    },\n    \"delivery_date\": {\n      \"earliest\": null,\n      \"requested\": null,\n      \"latest\": null\n    },\n    \"cancel_date\": null,\n    \"fulfillment_strategy\": \"<string>\"\n  },\n  \"recipient_tax_id\": {\n    \"type\": \"<string>\",\n    \"value\": \"<string>\",\n    \"issuing_country_id\": \"<string>\"\n  },\n  \"minimum_shelf_life_days\": null\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bf10b170-2298-4f88-9775-35f07186ea7f",
+          "name": "Get Order",
+          "request": {
+            "name": "Get Order",
+            "description": {
+              "content": "This endpoint can be used to retrieve data from the order you are calling.The order can be in following 4 statuses (field order_status):\n- `unfulfilled` indicates an order is ready for ShipMonk to process\n- `cancelled` indicates an order was cancelled\n- `fulfilled` indicates an order has been marked as \"Fulfilled by 3rd party\", unless already fulfilled by ShipMonk\n- `onHold` indicates an order is placed on hold\n\nYou can retrieve orders from all of your stores. In case you have not unique orderKeys across stores you can specify the storeId.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "orders"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "orderKey",
+                  "value": "",
+                  "description": "Filter by the external system's unique order identifier (order_key). Returns only orders matching this value; omit to skip this filter."
+                },
+                {
+                  "disabled": false,
+                  "key": "orderNumber",
+                  "value": "",
+                  "description": "Filter by the customer-facing order identifier (order_number). Returns only orders matching this value; omit to skip this filter."
+                },
+                {
+                  "disabled": false,
+                  "key": "storeId",
+                  "value": "",
+                  "description": "Filter by the internal numeric identifier of the store that owns the order. Omit to return orders across all stores."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "5934e9e4-07d3-46df-9fe4-82e349ec76bc",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "orderKey",
+                      "value": "327b5abd-017a-4504-a50d-54f1cea80269"
+                    },
+                    {
+                      "key": "orderNumber",
+                      "value": "Order-123"
+                    },
+                    {
+                      "key": "storeId",
+                      "value": "123456"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 6796,\n  \"data\": {\n    \"order_key\": \"string\",\n    \"order_number\": \"string\",\n    \"order_type\": \"internal_warehouse_transfer\",\n    \"store\": {\n      \"id\": 8,\n      \"name\": \"string\"\n    },\n    \"warehouse\": {\n      \"identifier\": \"string\",\n      \"id\": 116,\n      \"name\": \"string\",\n      \"warehouse_wms_type\": \"deposco\"\n    },\n    \"trading_partner\": {\n      \"id\": 2569,\n      \"identifier\": \"string\",\n      \"name\": \"string\",\n      \"account\": {\n        \"id\": 1913,\n        \"name\": \"string\"\n      }\n    },\n    \"ordered_at\": \"1997-01-08T06:53:45.003Z\",\n    \"customer_email\": \"string\",\n    \"shipping_method\": {\n      \"id\": 8987,\n      \"name\": \"string\",\n      \"carrier\": {\n        \"id\": 6635,\n        \"name\": \"string\"\n      }\n    },\n    \"requested_shipping_service\": \"string\",\n    \"shipping_paid\": 8164.285947713511,\n    \"tax_paid\": 8504.555084175723,\n    \"order_costs\": {\n      \"estimated_shipping_related_charges\": {\n        \"amount\": 7676.399916771937,\n        \"currency\": \"string\"\n      },\n      \"estimated_packaging_material_charges\": {\n        \"amount\": 7810.162894480025,\n        \"currency\": \"string\"\n      },\n      \"estimated_pick_and_pack_charges\": {\n        \"amount\": 8108.532167724302,\n        \"currency\": \"string\"\n      }\n    },\n    \"ship_from\": {\n      \"name\": \"string\",\n      \"company\": \"string\",\n      \"street1\": \"string\",\n      \"street2\": null,\n      \"state\": null,\n      \"city\": null,\n      \"zip\": null,\n      \"country_code\": null,\n      \"phone\": \"string\",\n      \"email\": null,\n      \"residential\": null\n    },\n    \"ship_to\": {\n      \"name\": null,\n      \"company\": \"string\",\n      \"street1\": null,\n      \"street2\": null,\n      \"state\": null,\n      \"city\": null,\n      \"zip\": \"string\",\n      \"country_code\": \"string\",\n      \"phone\": null,\n      \"email\": \"string\",\n      \"residential\": null\n    },\n    \"order_status\": \"cancelled\",\n    \"processing_status\": \"undeliverable\",\n    \"items\": [\n      {\n        \"line_key\": null,\n        \"sku\": \"string\",\n        \"name\": \"string\",\n        \"quantity\": 3760,\n        \"price\": null,\n        \"image_url\": null,\n        \"fulfilled_quantity\": 3918,\n        \"source\": \"packaging\",\n        \"products\": [\n          {\n            \"sku\": \"string\",\n            \"quantity\": 8788,\n            \"backordered_quantity\": 5053,\n            \"lot\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"other_potential_lots\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          },\n          {\n            \"sku\": \"string\",\n            \"quantity\": 5852,\n            \"backordered_quantity\": 3451,\n            \"lot\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"other_potential_lots\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          }\n        ]\n      },\n      {\n        \"line_key\": \"string\",\n        \"sku\": \"string\",\n        \"name\": \"string\",\n        \"quantity\": 8760,\n        \"price\": null,\n        \"image_url\": null,\n        \"fulfilled_quantity\": 2099,\n        \"source\": \"claim_reship\",\n        \"products\": [\n          {\n            \"sku\": \"string\",\n            \"quantity\": 2323,\n            \"backordered_quantity\": 5207,\n            \"lot\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"other_potential_lots\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          },\n          {\n            \"sku\": \"string\",\n            \"quantity\": 9135,\n            \"backordered_quantity\": 354,\n            \"lot\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"other_potential_lots\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          }\n        ]\n      }\n    ],\n    \"attributes\": [\n      {\n        \"name\": \"string\",\n        \"value\": \"string\"\n      },\n      {\n        \"name\": \"string\",\n        \"value\": \"string\"\n      }\n    ],\n    \"currency_code\": \"string\",\n    \"references\": [\n      {\n        \"type\": \"<string>\",\n        \"value\": \"string\"\n      },\n      {\n        \"type\": \"<string>\",\n        \"value\": \"string\"\n      }\n    ],\n    \"custom_data\": [\n      {\n        \"name\": \"string\",\n        \"value\": \"string\"\n      },\n      {\n        \"name\": \"string\",\n        \"value\": \"string\"\n      }\n    ],\n    \"special_requirements\": {\n      \"special_instruction\": \"string\",\n      \"carton_labels\": [\n        {\n          \"name\": \"string\",\n          \"url\": \"string\"\n        },\n        {\n          \"name\": null,\n          \"url\": \"string\"\n        }\n      ],\n      \"additional_documents\": [\n        {\n          \"name\": null,\n          \"url\": \"string\"\n        },\n        {\n          \"name\": \"string\",\n          \"url\": \"string\"\n        }\n      ],\n      \"shipping_label\": {\n        \"url\": \"string\"\n      },\n      \"shipping_date\": {\n        \"earliest\": null,\n        \"requested\": \"1991-04-04T13:15:25.244Z\",\n        \"latest\": null\n      },\n      \"delivery_date\": {\n        \"earliest\": \"1982-06-28T04:07:27.750Z\",\n        \"requested\": \"1961-05-20T21:50:21.433Z\",\n        \"latest\": null\n      },\n      \"cancel_date\": \"1967-10-25T08:00:37.642Z\",\n      \"pack_list_required\": false\n    },\n    \"actions_required\": {\n      \"item_mapping\": false,\n      \"address\": false,\n      \"shipping_mapping\": true,\n      \"customs\": true,\n      \"at_risk\": false,\n      \"routing\": true,\n      \"freight_quote\": true,\n      \"freight_info\": true,\n      \"ship_short\": false,\n      \"hs_code\": true,\n      \"global_e_label\": false,\n      \"ship_monk_hazmat_carrier_service_not_available\": false,\n      \"automation_rule\": true,\n      \"pending_b2b_routing\": true,\n      \"value_added_service_problem\": false\n    },\n    \"master_tracking_number\": \"string\",\n    \"tracking_url\": \"string\",\n    \"returns\": [\n      {\n        \"rma\": \"string\"\n      },\n      {\n        \"rma\": \"string\"\n      }\n    ],\n    \"packages\": [\n      {\n        \"number\": null,\n        \"tracking_number\": null,\n        \"tracking_url\": \"string\",\n        \"weight_lb\": {\n          \"value\": 8247.292342503768,\n          \"unit\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"pallet_weight_lb\": {\n          \"value\": 1413.5967623798606,\n          \"unit\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"pallet_number\": null,\n        \"box_number\": null,\n        \"carton_labels\": [\n          {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": \"string\"\n          },\n          {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": \"string\"\n          }\n        ],\n        \"packed_products\": [\n          {\n            \"sku\": \"string\",\n            \"quantity\": 3415,\n            \"lots\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          },\n          {\n            \"sku\": \"string\",\n            \"quantity\": 551,\n            \"lots\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          }\n        ],\n        \"packing_group\": {\n          \"key\": \"string\",\n          \"name\": null\n        },\n        \"packed_items\": [\n          {\n            \"sku\": \"string\",\n            \"line_key\": null,\n            \"quantity\": 5661\n          },\n          {\n            \"sku\": \"string\",\n            \"line_key\": null,\n            \"quantity\": 6930\n          }\n        ]\n      },\n      {\n        \"number\": 1932,\n        \"tracking_number\": null,\n        \"tracking_url\": null,\n        \"weight_lb\": {\n          \"value\": 8667.414228498586,\n          \"unit\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"pallet_weight_lb\": {\n          \"value\": 769.7827642322219,\n          \"unit\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"pallet_number\": null,\n        \"box_number\": 5112,\n        \"carton_labels\": [\n          {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": null\n          },\n          {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"identifier\": \"string\"\n          }\n        ],\n        \"packed_products\": [\n          {\n            \"sku\": \"string\",\n            \"quantity\": 2757,\n            \"lots\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          },\n          {\n            \"sku\": \"string\",\n            \"quantity\": 6331,\n            \"lots\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          }\n        ],\n        \"packing_group\": {\n          \"key\": \"string\",\n          \"name\": null\n        },\n        \"packed_items\": [\n          {\n            \"sku\": \"string\",\n            \"line_key\": null,\n            \"quantity\": 8306\n          },\n          {\n            \"sku\": \"string\",\n            \"line_key\": \"string\",\n            \"quantity\": 2012\n          }\n        ]\n      }\n    ],\n    \"tax_id\": {\n      \"tax_id_type\": \"<string>\",\n      \"value\": \"string\",\n      \"issuing_country\": {\n        \"code\": \"string\",\n        \"name\": null\n      }\n    },\n    \"recipient_tax_id\": {\n      \"tax_id_type\": \"<string>\",\n      \"value\": \"string\",\n      \"issuing_country\": {\n        \"code\": \"string\",\n        \"name\": null\n      }\n    },\n    \"shipment_data\": {\n      \"carrier\": \"OnTrac\",\n      \"service\": null,\n      \"carrier_tracking_url\": null,\n      \"carrier_alpha_code\": \"string\",\n      \"carrier_trans_method_code\": null,\n      \"bill_of_lading_number\": null,\n      \"master_bill_of_lading_number\": null,\n      \"load_number\": \"string\",\n      \"authorization_number\": \"string\",\n      \"estimated_shipping_cost\": null,\n      \"routing\": {\n        \"routing_key\": \"string\"\n      }\n    },\n    \"order_parts\": {\n      \"main_order\": {\n        \"order_number\": \"string\",\n        \"parts\": [\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        ]\n      }\n    },\n    \"shipped_at\": null,\n    \"updated_at\": null,\n    \"order_size\": \"extra_large\",\n    \"extra_data\": [\n      {\n        \"label\": \"carrierShippingMethod\",\n        \"value\": \"string\"\n      },\n      {\n        \"label\": \"carrierShippingMethod\",\n        \"value\": \"string\"\n      }\n    ],\n    \"serial_numbers\": [\n      {\n        \"line_key\": null,\n        \"serial_numbers\": [\n          {\n            \"sku\": \"string\",\n            \"serial_number\": \"string\"\n          },\n          {\n            \"sku\": \"string\",\n            \"serial_number\": \"string\"\n          }\n        ]\n      },\n      {\n        \"line_key\": \"string\",\n        \"serial_numbers\": [\n          {\n            \"sku\": \"string\",\n            \"serial_number\": \"string\"\n          },\n          {\n            \"sku\": \"string\",\n            \"serial_number\": \"string\"\n          }\n        ]\n      }\n    ],\n    \"gift_message\": null,\n    \"gift_from\": \"string\",\n    \"customer_notes\": null,\n    \"order_detail_url\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1007d1ff-00b2-400b-a21e-45091f8fac6a",
+          "name": "Retrieve List of Orders",
+          "request": {
+            "name": "Retrieve List of Orders",
+            "description": {
+              "content": "When no filters are specified, the endpoint will return up to the first 1,000,000 orders, based on selected ordering. If filters are used, this endpoint will return a maximum of 10,000 orders.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "orders-list"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "1-based page number to return. Defaults to 1."
+                },
+                {
+                  "disabled": false,
+                  "key": "pageSize",
+                  "value": "100",
+                  "description": "Number of results per page. Defaults to a server-configured value; check the response metadata for the effective size."
+                },
+                {
+                  "disabled": false,
+                  "key": "sortOrder",
+                  "value": "<string>",
+                  "description": "Sort direction by internal order id: DESC (newest first) or ASC (oldest first)."
+                },
+                {
+                  "disabled": false,
+                  "key": "orderKeys",
+                  "value": "",
+                  "description": "Filter to orders whose order_key matches any value in this list."
+                },
+                {
+                  "disabled": false,
+                  "key": "orderNumbers",
+                  "value": "",
+                  "description": "Filter to orders whose order_number matches any value in this list."
+                },
+                {
+                  "disabled": false,
+                  "key": "orderStatus",
+                  "value": "<string>",
+                  "description": "Filter by current order status (see PublicApiOrderStatus enum); omit to return all statuses."
+                },
+                {
+                  "disabled": false,
+                  "key": "orderType",
+                  "value": "<string>",
+                  "description": "Filter by order type (see OrderType enum); omit to return all types."
+                },
+                {
+                  "disabled": false,
+                  "key": "updatedAtStart",
+                  "value": "",
+                  "description": "Lower bound (inclusive) on updated_at as an ISO 8601 timestamp; returns orders updated at or after this time."
+                },
+                {
+                  "disabled": false,
+                  "key": "updatedAtEnd",
+                  "value": "",
+                  "description": "Upper bound (inclusive) on updated_at as an ISO 8601 timestamp; returns orders updated at or before this time."
+                },
+                {
+                  "disabled": false,
+                  "key": "shippedAtStart",
+                  "value": "",
+                  "description": "Lower bound (inclusive) on shipped_at as an ISO 8601 timestamp; returns orders shipped at or after this time."
+                },
+                {
+                  "disabled": false,
+                  "key": "shippedAtEnd",
+                  "value": "",
+                  "description": "Upper bound (inclusive) on shipped_at as an ISO 8601 timestamp; returns orders shipped at or before this time."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "543fd27d-0b4f-41cb-bd2e-7b2cff20b013",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "orders-list"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
+                    },
+                    {
+                      "key": "sortOrder",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderKeys",
+                      "value": ""
+                    },
+                    {
+                      "key": "orderNumbers",
+                      "value": ""
+                    },
+                    {
+                      "key": "orderStatus",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "orderType",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "updatedAtStart",
+                      "value": "2025-07-24 14:53:00"
+                    },
+                    {
+                      "key": "updatedAtEnd",
+                      "value": "2025-07-24 14:53:00"
+                    },
+                    {
+                      "key": "shippedAtStart",
+                      "value": "2025-07-24 14:53:00"
+                    },
+                    {
+                      "key": "shippedAtEnd",
+                      "value": "2025-07-24 14:53:00"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 5182,\n  \"data\": {\n    \"orders\": [\n      {\n        \"order_key\": \"string\",\n        \"order_number\": \"string\",\n        \"order_type\": \"<string>\",\n        \"store\": {\n          \"id\": 2015,\n          \"name\": \"string\"\n        },\n        \"warehouse\": {\n          \"identifier\": \"string\",\n          \"id\": 2416,\n          \"name\": \"string\",\n          \"warehouse_wms_type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"trading_partner\": {\n          \"id\": 424,\n          \"identifier\": \"string\",\n          \"name\": \"string\",\n          \"account\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"ordered_at\": \"2002-05-21T03:28:58.214Z\",\n        \"customer_email\": \"string\",\n        \"shipping_method\": {\n          \"id\": 1415,\n          \"name\": \"string\",\n          \"carrier\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"requested_shipping_service\": \"string\",\n        \"shipping_paid\": 7245.817766203736,\n        \"tax_paid\": 2077.062657748189,\n        \"order_costs\": {\n          \"estimated_shipping_related_charges\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"estimated_packaging_material_charges\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"estimated_pick_and_pack_charges\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"ship_from\": {\n          \"name\": null,\n          \"company\": null,\n          \"street1\": \"string\",\n          \"street2\": null,\n          \"state\": null,\n          \"city\": null,\n          \"zip\": \"string\",\n          \"country_code\": \"string\",\n          \"phone\": \"string\",\n          \"email\": null,\n          \"residential\": false\n        },\n        \"ship_to\": {\n          \"name\": \"string\",\n          \"company\": \"string\",\n          \"street1\": null,\n          \"street2\": null,\n          \"state\": null,\n          \"city\": \"string\",\n          \"zip\": null,\n          \"country_code\": \"string\",\n          \"phone\": null,\n          \"email\": \"string\",\n          \"residential\": null\n        },\n        \"order_status\": \"<string>\",\n        \"processing_status\": \"cancellation_requested\",\n        \"items\": [\n          {\n            \"line_key\": null,\n            \"sku\": \"string\",\n            \"name\": null,\n            \"quantity\": 9678,\n            \"price\": 5920.530553320484,\n            \"image_url\": \"string\",\n            \"fulfilled_quantity\": null,\n            \"source\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"products\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          },\n          {\n            \"line_key\": null,\n            \"sku\": \"string\",\n            \"name\": null,\n            \"quantity\": 1510,\n            \"price\": 4090.751283959403,\n            \"image_url\": \"string\",\n            \"fulfilled_quantity\": 1649,\n            \"source\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"products\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          }\n        ],\n        \"attributes\": [\n          {\n            \"name\": \"string\",\n            \"value\": \"string\"\n          },\n          {\n            \"name\": \"string\",\n            \"value\": \"string\"\n          }\n        ],\n        \"currency_code\": \"string\",\n        \"references\": [\n          {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"value\": \"string\"\n          },\n          {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"value\": \"string\"\n          }\n        ],\n        \"custom_data\": [\n          {\n            \"name\": \"string\",\n            \"value\": \"string\"\n          },\n          {\n            \"name\": \"string\",\n            \"value\": \"string\"\n          }\n        ],\n        \"special_requirements\": {\n          \"special_instruction\": \"string\",\n          \"carton_labels\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"additional_documents\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"shipping_label\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"shipping_date\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"delivery_date\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"cancel_date\": \"2008-05-10T02:55:09.672Z\",\n          \"pack_list_required\": true\n        },\n        \"actions_required\": {\n          \"item_mapping\": true,\n          \"address\": false,\n          \"shipping_mapping\": false,\n          \"customs\": false,\n          \"at_risk\": false,\n          \"routing\": false,\n          \"freight_quote\": true,\n          \"freight_info\": false,\n          \"ship_short\": false,\n          \"hs_code\": false,\n          \"global_e_label\": false,\n          \"ship_monk_hazmat_carrier_service_not_available\": true,\n          \"automation_rule\": false,\n          \"pending_b2b_routing\": false,\n          \"value_added_service_problem\": true\n        },\n        \"master_tracking_number\": null,\n        \"tracking_url\": \"string\",\n        \"returns\": [\n          {\n            \"rma\": \"string\"\n          },\n          {\n            \"rma\": \"string\"\n          }\n        ],\n        \"packages\": [\n          {\n            \"number\": 1650,\n            \"tracking_number\": \"string\",\n            \"tracking_url\": null,\n            \"weight_lb\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"pallet_weight_lb\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"pallet_number\": null,\n            \"box_number\": 550,\n            \"carton_labels\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"packed_products\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"packing_group\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"packed_items\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          },\n          {\n            \"number\": 5250,\n            \"tracking_number\": null,\n            \"tracking_url\": null,\n            \"weight_lb\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"pallet_weight_lb\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"pallet_number\": null,\n            \"box_number\": 8610,\n            \"carton_labels\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"packed_products\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"packing_group\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"packed_items\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          }\n        ],\n        \"tax_id\": {\n          \"tax_id_type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"value\": \"string\",\n          \"issuing_country\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"recipient_tax_id\": {\n          \"tax_id_type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"value\": \"string\",\n          \"issuing_country\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"shipment_data\": {\n          \"carrier\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"service\": \"string\",\n          \"carrier_tracking_url\": \"string\",\n          \"carrier_alpha_code\": null,\n          \"carrier_trans_method_code\": \"string\",\n          \"bill_of_lading_number\": null,\n          \"master_bill_of_lading_number\": \"string\",\n          \"load_number\": \"string\",\n          \"authorization_number\": null,\n          \"estimated_shipping_cost\": 9803.500708620471,\n          \"routing\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"order_parts\": {\n          \"main_order\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"shipped_at\": null,\n        \"updated_at\": null,\n        \"order_size\": \"unknown\",\n        \"extra_data\": [\n          {\n            \"label\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"value\": \"string\"\n          },\n          {\n            \"label\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"value\": \"string\"\n          }\n        ],\n        \"serial_numbers\": [\n          {\n            \"line_key\": null,\n            \"serial_numbers\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          },\n          {\n            \"line_key\": null,\n            \"serial_numbers\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          }\n        ],\n        \"gift_message\": null,\n        \"gift_from\": null,\n        \"customer_notes\": null,\n        \"order_detail_url\": \"string\"\n      },\n      {\n        \"order_key\": \"string\",\n        \"order_number\": \"string\",\n        \"order_type\": \"<string>\",\n        \"store\": {\n          \"id\": 3726,\n          \"name\": \"string\"\n        },\n        \"warehouse\": {\n          \"identifier\": \"string\",\n          \"id\": 686,\n          \"name\": \"string\",\n          \"warehouse_wms_type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"trading_partner\": {\n          \"id\": 7334,\n          \"identifier\": \"string\",\n          \"name\": \"string\",\n          \"account\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"ordered_at\": \"1987-02-27T21:19:32.626Z\",\n        \"customer_email\": \"string\",\n        \"shipping_method\": {\n          \"id\": 6209,\n          \"name\": \"string\",\n          \"carrier\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"requested_shipping_service\": null,\n        \"shipping_paid\": 7001.514759046959,\n        \"tax_paid\": 4112.305638233645,\n        \"order_costs\": {\n          \"estimated_shipping_related_charges\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"estimated_packaging_material_charges\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"estimated_pick_and_pack_charges\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"ship_from\": {\n          \"name\": \"string\",\n          \"company\": null,\n          \"street1\": null,\n          \"street2\": null,\n          \"state\": \"string\",\n          \"city\": \"string\",\n          \"zip\": \"string\",\n          \"country_code\": \"string\",\n          \"phone\": \"string\",\n          \"email\": null,\n          \"residential\": true\n        },\n        \"ship_to\": {\n          \"name\": null,\n          \"company\": null,\n          \"street1\": \"string\",\n          \"street2\": null,\n          \"state\": null,\n          \"city\": \"string\",\n          \"zip\": \"string\",\n          \"country_code\": null,\n          \"phone\": \"string\",\n          \"email\": null,\n          \"residential\": false\n        },\n        \"order_status\": \"<string>\",\n        \"processing_status\": \"awaiting_carrier_processing\",\n        \"items\": [\n          {\n            \"line_key\": null,\n            \"sku\": \"string\",\n            \"name\": \"string\",\n            \"quantity\": 8648,\n            \"price\": 2301.0126121285757,\n            \"image_url\": null,\n            \"fulfilled_quantity\": null,\n            \"source\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"products\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          },\n          {\n            \"line_key\": \"string\",\n            \"sku\": \"string\",\n            \"name\": \"string\",\n            \"quantity\": 6630,\n            \"price\": 8221.025303847837,\n            \"image_url\": null,\n            \"fulfilled_quantity\": null,\n            \"source\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"products\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          }\n        ],\n        \"attributes\": [\n          {\n            \"name\": \"string\",\n            \"value\": \"string\"\n          },\n          {\n            \"name\": \"string\",\n            \"value\": \"string\"\n          }\n        ],\n        \"currency_code\": \"string\",\n        \"references\": [\n          {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"value\": \"string\"\n          },\n          {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"value\": \"string\"\n          }\n        ],\n        \"custom_data\": [\n          {\n            \"name\": \"string\",\n            \"value\": \"string\"\n          },\n          {\n            \"name\": \"string\",\n            \"value\": \"string\"\n          }\n        ],\n        \"special_requirements\": {\n          \"special_instruction\": \"string\",\n          \"carton_labels\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"additional_documents\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          \"shipping_label\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"shipping_date\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"delivery_date\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"cancel_date\": null,\n          \"pack_list_required\": true\n        },\n        \"actions_required\": {\n          \"item_mapping\": true,\n          \"address\": true,\n          \"shipping_mapping\": true,\n          \"customs\": true,\n          \"at_risk\": false,\n          \"routing\": true,\n          \"freight_quote\": true,\n          \"freight_info\": true,\n          \"ship_short\": false,\n          \"hs_code\": false,\n          \"global_e_label\": true,\n          \"ship_monk_hazmat_carrier_service_not_available\": true,\n          \"automation_rule\": true,\n          \"pending_b2b_routing\": true,\n          \"value_added_service_problem\": false\n        },\n        \"master_tracking_number\": null,\n        \"tracking_url\": \"string\",\n        \"returns\": [\n          {\n            \"rma\": \"string\"\n          },\n          {\n            \"rma\": \"string\"\n          }\n        ],\n        \"packages\": [\n          {\n            \"number\": 619,\n            \"tracking_number\": \"string\",\n            \"tracking_url\": null,\n            \"weight_lb\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"pallet_weight_lb\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"pallet_number\": 8806,\n            \"box_number\": 8377,\n            \"carton_labels\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"packed_products\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"packing_group\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"packed_items\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          },\n          {\n            \"number\": null,\n            \"tracking_number\": \"string\",\n            \"tracking_url\": \"string\",\n            \"weight_lb\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"pallet_weight_lb\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"pallet_number\": 9128,\n            \"box_number\": null,\n            \"carton_labels\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"packed_products\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ],\n            \"packing_group\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"packed_items\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          }\n        ],\n        \"tax_id\": {\n          \"tax_id_type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"value\": \"string\",\n          \"issuing_country\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"recipient_tax_id\": {\n          \"tax_id_type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"value\": \"string\",\n          \"issuing_country\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"shipment_data\": {\n          \"carrier\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"service\": \"string\",\n          \"carrier_tracking_url\": null,\n          \"carrier_alpha_code\": \"string\",\n          \"carrier_trans_method_code\": null,\n          \"bill_of_lading_number\": null,\n          \"master_bill_of_lading_number\": null,\n          \"load_number\": null,\n          \"authorization_number\": null,\n          \"estimated_shipping_cost\": null,\n          \"routing\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"order_parts\": {\n          \"main_order\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"shipped_at\": null,\n        \"updated_at\": \"1965-04-28T12:35:13.575Z\",\n        \"order_size\": \"large\",\n        \"extra_data\": [\n          {\n            \"label\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"value\": \"string\"\n          },\n          {\n            \"label\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"value\": \"string\"\n          }\n        ],\n        \"serial_numbers\": [\n          {\n            \"line_key\": \"string\",\n            \"serial_numbers\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          },\n          {\n            \"line_key\": \"string\",\n            \"serial_numbers\": [\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              },\n              {\n                \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n              }\n            ]\n          }\n        ],\n        \"gift_message\": null,\n        \"gift_from\": \"string\",\n        \"customer_notes\": null,\n        \"order_detail_url\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "21127f93-6237-45ea-ac65-379e8490ae1d",
+          "name": "Complete Order",
+          "request": {
+            "name": "Complete Order",
+            "description": {
+              "content": "Simulates warehouse shipment of an order in your Sandbox environment. Cannot be used in production.\n\nThe order must be in a submitted status with available inventory, a valid address, and a valid shipping method.\n\nA shipment notification is sent after the delay configured for the store under Account Settings > Stores, defaulting to 20 minutes.\n\nFor D2C orders, there is approximately a 1-minute delay (up to 5 minutes) between the order transitioning from awaiting pick up to en route. During this window, an awaiting shipment webhook is delivered to simulate the real fulfillment process.\n\nYou can also simulate order completion directly in the ShipMonk UI. See our Sandbox guide for instructions.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "sandbox",
+                "complete-order"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_key\": \"<string>\",\n  \"store_id\": \"<integer>\",\n  \"pack_type\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "59a3bb02-3e28-4ecb-bb1a-a586d83847ee",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "sandbox",
+                    "complete-order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order_key\": \"327b5abd-017a-4504-a50d-54f1cea80269\",\n  \"store_id\": 123456,\n  \"pack_type\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 1652\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fe9c4496-4181-49bc-aaec-db3abe0a3d3e",
+          "name": "Submit Order",
+          "request": {
+            "name": "Submit Order",
+            "description": {
+              "content": "Submits an order for fulfillment or reschedules its submit date.\n\nSubmitting an order makes it eligible for the operations team to begin fulfillment. Once submitted, the order enters the fulfillment pipeline and edit restrictions apply:\n\n- During picking, order items cannot be changed.\n- Once packed, no fields on the order can be changed.\n\nThis endpoint serves two purposes:\n\n- Submit immediately — pass a submit_at timestamp in the past (or now) to release the order into the fulfillment queue right away.\n- Reschedule the submit date — even though submit_at can be set when creating an order, this is the simplest way to change it after the fact.\n\nWhen submit_at is in the future, inventory is reserved immediately and the order is released into the fulfillment queue at the scheduled time.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "integrations",
+                "submit-order"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "Api-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_key\": \"<string>\",\n  \"store_id\": \"<integer>\",\n  \"submit_at\": \"<dateTime>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "4f1a8197-e402-4a52-b9aa-c4aae7dd809a",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "integrations",
+                    "submit-order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "Api-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order_key\": \"327b5abd-017a-4504-a50d-54f1cea80269\",\n  \"store_id\": 123456,\n  \"submit_at\": \"2025-07-24 14:53:00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": 1652\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.shipmonk.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "Api-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "98d6e9eb-90ff-4dac-ad36-31fcec3b7e5e",
+    "name": "ShipMonk Orders API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Orders surface of the ShipMonk public fulfillment API.",
+      "type": "text/plain"
+    }
+  }
+}
