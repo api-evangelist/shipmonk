@@ -17,6 +17,18 @@ tags:
 - Logistics
 - Fulfillment
 - 3PL
+- E-Commerce
+- Warehousing
+- Inventory
+- Shipping
+- Returns
+- Supply Chain
+- Direct to Consumer
+- Order Management
+tags_raw:
+- Logistics
+- Fulfillment
+- 3PL
 - Ecommerce
 - Warehousing
 - Inventory
@@ -39,6 +51,11 @@ apis:
   humanURL: https://apidocs.shipmonk.com/reference/webhooks
   baseURL: https://api.shipmonk.com
   tags:
+  - Logistics
+  - Fulfillment
+  - Webhook
+  - Event
+  tags_raw:
   - Logistics
   - Fulfillment
   - Webhooks
@@ -74,6 +91,8 @@ apis:
   humanURL: https://apidocs.shipmonk.com/reference
   baseURL: https://api.shipmonk.com
   tags:
+  - Order
+  tags_raw:
   - Orders
   properties:
   - type: OpenAPI
@@ -94,6 +113,8 @@ apis:
   humanURL: https://apidocs.shipmonk.com/reference
   baseURL: https://api.shipmonk.com
   tags:
+  - Product
+  tags_raw:
   - Products
   properties:
   - type: OpenAPI
