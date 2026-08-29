@@ -1,0 +1,46 @@
+slug: shipmonk
+provider: ShipMonk
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Transportation & Logistics
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 3
+edges:
+- tag: Receivings
+  spec_file: shipmonk-receivings-api-openapi.yml
+  capability_id: BC-2460.10
+  capability_id_l1: BC-2460
+  capability_name: Inbound Operations Management
+  confidence: 0.9
+  evidence: POST /v1/integrations/receiving  Create or Update Receiving; ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingReceiptOutput,
+    PublicApiPalletOutput, PublicApiLpnOutput
+  reason: Inbound receiving of goods into the 3PL warehouse with receipts, pallets and LPNs — plainly
+    inbound warehouse operations.
+- tag: Returns
+  spec_file: shipmonk-returns-api-openapi.yml
+  capability_id: BC-2460.50
+  capability_id_l1: BC-2460
+  capability_name: Returns and Reverse Operations Management
+  confidence: 0.9
+  evidence: POST /v1/integrations/returns  Create or Update Return; ShipMonk_Warehouse_Returns_Enum_ReturnItemFinalDisposition,
+    ReturnReason
+  reason: Return intake, status and final disposition of returned items at the fulfillment centre — reverse
+    logistics operations.
+- tag: Orders
+  spec_file: shipmonk-orders-api-openapi.yml
+  capability_id: BC-2460.30
+  capability_id_l1: BC-2460
+  capability_name: Outbound Operations Management
+  confidence: 0.7
+  evidence: POST /v1/integrations/submit-order  Submit Order; schema Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiPackageCartonLabelOutput,
+    PackingGroupOutput, CreateOrUpdateOrderShippingLabelInput
+  reason: ShipMonk is a 3PL fulfillment provider; the Orders tag is the intake and lifecycle of pick-and-pack
+    fulfillment orders, with packing groups, carton labels and shipping labels — i.e. warehouse outbound
+    operations rather than generic sales order taking.
