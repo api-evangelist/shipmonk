@@ -1,17 +1,16 @@
 openapi: 3.2.0
 info:
-  title: ShipMonk Products API
+  title: Shipmonk Products API
   version: v1.024
-  description: The Products surface of the ShipMonk public fulfillment API.
+  description: 'Operations tagged Products across 2 of this provider''s published API definitions: shipmonk-openapi.json, shipmonk-products-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.shipmonk.com
   description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production. Just write us at api@shipmonk.com and we will handle it.
 - url: https://sandbox.shipmonk.dev
   description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed contracts.'
-security:
-- api_key_header_Api-Key: []
 tags:
 - name: Products
+  description: ''
 paths:
   /v1/integrations/product:
     post:
@@ -54,6 +53,11 @@ paths:
             schema:
               $ref: '#/components/schemas/ShipMonk_PublicApi_Product_ProductCreate_CreateProductInput'
       summary: Create Product
+    servers:
+    - url: https://api.shipmonk.com
+      description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production. Just write us at api@shipmonk.com and we will handle it.
+    - url: https://sandbox.shipmonk.dev
+      description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed contracts.'
   /v1/integrations/products/search:
     post:
       operationId: post-v1-integrations-products-search
@@ -89,6 +93,11 @@ paths:
             schema:
               $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Input_SearchProductsInput'
       summary: Products for Inventory Sync
+    servers:
+    - url: https://api.shipmonk.com
+      description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production. Just write us at api@shipmonk.com and we will handle it.
+    - url: https://sandbox.shipmonk.dev
+      description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed contracts.'
   /v1/integrations/products/search/paginate:
     get:
       operationId: get-v1-integrations-products-search-paginate
@@ -126,6 +135,11 @@ paths:
 
         The response is the same as the legacy /products endpoint (Retrieve List of Products).'
       summary: Fetch results from Products for Inventory Sync
+    servers:
+    - url: https://api.shipmonk.com
+      description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production. Just write us at api@shipmonk.com and we will handle it.
+    - url: https://sandbox.shipmonk.dev
+      description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed contracts.'
   /v1/products:
     get:
       operationId: get-v1-products
@@ -252,21 +266,13 @@ paths:
       - api_key_header_Api-Key: []
       description: Results are not guaranteed to be consistent across paginated calls. As inventory is updated during fulfillment, products shift position in the sort order and may reappear on later pages. For consistent pagination, use the Products for Inventory Sync endpoint instead.
       summary: Retrieve List of Products
+    servers:
+    - url: https://api.shipmonk.com
+      description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production. Just write us at api@shipmonk.com and we will handle it.
+    - url: https://sandbox.shipmonk.dev
+      description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed contracts.'
 components:
   schemas:
-    Fulfillment_CommonBundle_ApiResource_IntegrationDataOutput:
-      type: object
-      properties:
-        name:
-          description: Key of the custom data entry.
-          type: string
-        value:
-          description: Value of the custom data entry; may be any JSON-serializable structure.
-          type: object
-      required:
-      - name
-      - value
-      title: Integration Data Output
     ShipMonk_OMS_HsCode_Enum_HsCodeRegion:
       type:
       - string
@@ -275,20 +281,179 @@ components:
       - uk
       - eu
       title: Hs Code Region
-    Fulfillment_PublicApiBundle_ApiResource_Warehouse_WarehouseDetailOutput:
+    Fulfillment_PublicApiBundle_ApiResource_Product_BundleOutput:
       type: object
       properties:
-        id:
-          type: integer
-        name:
+        bundle_sku:
+          description: SKU of the bundle product that contains this item as a component.
           type: string
-        identifier:
-          type: string
+        products:
+          description: Component products that make up this bundle.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_PublicApiBundle_ApiResource_Product_BundleProductOutput'
       required:
-      - id
+      - bundle_sku
+      - products
+      title: Bundle Output
+    ShipMonk_Measurement_ValueObject_LengthUnit:
+      type:
+      - string
+      enum:
+      - m
+      - cm
+      - mm
+      - ft
+      - in
+      title: Length Unit
+    Fulfillment_PublicApiBundle_ApiResource_Inventory_InventoryDetailOutput:
+      type: object
+      properties:
+        quantity_total_final:
+          description: 'Total finalized quantity across all locations: units that have completed receiving and are fully accounted for in inventory.'
+          type: integer
+        quantity_total_available:
+          description: Total quantity available to allocate to new orders across all locations.
+          type: integer
+        quantity_total_on_hand:
+          description: Total quantity physically present in warehouses (including allocated, quarantined and unavailable units).
+          type: integer
+        quantity_total_quarantined:
+          description: Total quantity held in quarantine (e.g., pending inspection) and not available for fulfillment.
+          type: integer
+        quantity_total_unavailable:
+          description: Total quantity unavailable for fulfillment for reasons other than quarantine (e.g., damaged or reserved).
+          type: integer
+        locations:
+          description: Per-warehouse breakdown of the inventory totals above.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_PublicApiBundle_ApiResource_Location_LocationListOutput'
+      required:
+      - quantity_total_final
+      - quantity_total_available
+      - quantity_total_on_hand
+      - quantity_total_quarantined
+      - quantity_total_unavailable
+      - locations
+      title: Inventory Detail Output
+    ShipMonk_PublicApi_Product_ProductCreate_IntegrationCustomDataItemInput:
+      type: object
+      properties:
+        name:
+          description: Key of the custom data item. Must be 2-255 characters.
+          type: string
+          minLength: 2
+          maxLength: 255
+        value:
+          description: Value of the custom data item. Maximum 65536 characters.
+          type: string
+          maxLength: 65536
+      required:
       - name
-      - identifier
-      title: Warehouse Detail Output
+      - value
+      title: Integration Custom Data Item Input
+    ShipMonk_PublicApi_Product_ProductCreate_IntegrationHsCodePerRegionInput:
+      type: object
+      properties:
+        hs_code:
+          description: Harmonized System (HS) code for customs classification. Must be 1-255 characters.
+          type: string
+          minLength: 1
+          maxLength: 255
+        region:
+          description: 'Destination region this HS code applies to: us, uk, or eu.'
+          $ref: '#/components/schemas/ShipMonk_OMS_HsCode_Enum_HsCodeRegion'
+      required:
+      - hs_code
+      - region
+      title: Integration Hs Code Per Region Input
+    Fulfillment_InventoryBundle_Enum_ProductType:
+      type:
+      - string
+      enum:
+      - pick_and_pack
+      - insert
+      - packaging
+      title: Product Type
+    Fulfillment_InventoryBundle_Enum_PackagingType:
+      type:
+      - string
+      enum:
+      - poly_mailer
+      - bubble_mailer
+      - box
+      - slap_a_label
+      - custom
+      title: Packaging Type
+    Fulfillment_PublicApiBundle_ApiResource_LotControl_LotControlWithQuantityOutput:
+      type: object
+      properties:
+        lot:
+          description: Lot identification (lot number and/or expiration date) for this inventory entry. Null when the inventory is not tracked by lot.
+          anyOf:
+          - $ref: '#/components/schemas/Fulfillment_PublicApiBundle_ApiResource_LotControl_LotControlOutput'
+          - type: 'null'
+        quantity_on_hand:
+          description: Quantity physically on hand for this lot at the location.
+          type: integer
+      required:
+      - lot
+      - quantity_on_hand
+      title: Lot Control With Quantity Output
+    ShipMonk_Measurement_Output_DimensionsOutput:
+      type: object
+      properties:
+        length:
+          description: Length in the unit specified by the sibling "unit" field.
+          type: number
+          format: double
+        width:
+          description: Width in the unit specified by the sibling "unit" field.
+          type: number
+          format: double
+        height:
+          description: Height in the unit specified by the sibling "unit" field.
+          type: number
+          format: double
+        unit:
+          description: 'Unit of measurement applied to length, width and height. Allowed values: m, cm, mm, ft, in.'
+          $ref: '#/components/schemas/ShipMonk_Measurement_ValueObject_LengthUnit'
+      required:
+      - length
+      - width
+      - height
+      - unit
+      title: Dimensions Output
+    Fulfillment_AdminApiBundle_ApiResource_ProductHsCodeDetailOutput:
+      type: object
+      properties:
+        hs_code:
+          description: Harmonized System code used for customs classification in international trade.
+          type: string
+        region:
+          description: 'Region for which this HS code applies. Allowed values: us, uk, eu.'
+          $ref: '#/components/schemas/ShipMonk_OMS_HsCode_Enum_HsCodeRegion'
+      required:
+      - hs_code
+      - region
+      title: Product Hs Code Detail Output
+    ShipMonk_OMS_Product_Enum_ProductHandlingUnitType:
+      type:
+      - string
+      enum:
+      - inner_carton
+      - master_carton
+      - pallet
+      title: Product Handling Unit Type
+    Fulfillment_PublicApiBundle_Enum_ProductInventorySearchSortBy:
+      type:
+      - string
+      enum:
+      - id
+      - created_at
+      - inventory_on_hand_last_updated_at
+      title: Product Inventory Search Sort By
     ShipMonk_Measurement_Output_WeightOutput:
       type: object
       properties:
@@ -303,14 +468,72 @@ components:
       - value
       - unit
       title: Weight Output
-    Fulfillment_PublicApiBundle_Enum_ProductInventorySearchSortBy:
+    ShipMonk_PublicApi_Product_ProductCreate_ProductHandlingUnitInput:
+      type: object
+      properties:
+        type:
+          description: 'Type of the handling unit. Allowed values: inner_carton, master_carton, pallet.'
+          $ref: '#/components/schemas/ShipMonk_OMS_Product_Enum_ProductHandlingUnitType'
+        weight_lb:
+          description: Weight of the handling unit in pounds; must be positive. Provide when known to support shipping and storage calculations.
+          type:
+          - number
+          - 'null'
+          format: double
+          exclusiveMinimum: 0
+          default: null
+        dimensions_in:
+          description: Physical dimensions of the handling unit in inches. Provide when known to support shipping and storage calculations.
+          anyOf:
+          - $ref: '#/components/schemas/ShipMonk_PublicApi_Product_ProductCreate_DimensionsInInput'
+          - type: 'null'
+          default: null
+        count:
+          description: Number of individual product units contained in this handling unit. Must be a positive integer.
+          type:
+          - integer
+          - 'null'
+      required:
+      - type
+      - count
+      title: Product Handling Unit Input
+    ShipMonk_Measurement_ValueObject_WeightUnit:
       type:
       - string
       enum:
-      - id
-      - created_at
-      - inventory_on_hand_last_updated_at
-      title: Product Inventory Search Sort By
+      - kg
+      - g
+      - lb
+      - oz
+      title: Weight Unit
+    Fulfillment_PublicApiBundle_ApiResource_Product_ProductSearchOutput:
+      type: object
+      properties:
+        total:
+          description: Total number of results matching the search criteria.
+          type: integer
+        cursor:
+          description: Cursor to pass to the paginate endpoint to retrieve results. Null when there are no results.
+          type:
+          - string
+          - 'null'
+      required:
+      - total
+      - cursor
+      title: Product Search Output
+    Fulfillment_PublicApiBundle_Input_ProductSearchSortInput:
+      type: object
+      properties:
+        sort_by:
+          description: 'Field to sort the results by. Allowed values: id, created_at, inventory_on_hand_last_updated_at.'
+          $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Enum_ProductInventorySearchSortBy'
+          default: id
+        sort_order:
+          description: 'Sort direction. Allowed values: ASC (ascending), DESC (descending).'
+          $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Enum_PublicApiOrdering'
+          default: ASC
+      required: []
+      title: Product Search Sort Input
     ShipMonk_PublicApi_Product_ProductCreate_DimensionsInInput:
       type: object
       properties:
@@ -334,88 +557,21 @@ components:
       - height
       - length
       title: Dimensions In Input
-    Fulfillment_PublicApiBundle_Input_DateTimeRangeInclusiveInput:
+    Fulfillment_PublicApiBundle_Input_SearchProductsInput:
       type: object
       properties:
-        is_after_or_equal:
-          description: Lower bound (inclusive) of the date-time range, in ISO 8601 format.
-          type: string
-          format: date-time
-          default: null
-          example: '2025-07-24 14:53:00'
-        is_before_or_equal:
-          description: Upper bound (inclusive) of the date-time range, in ISO 8601 format.
-          type: string
-          format: date-time
-          default: null
-          example: '2025-07-24 14:53:00'
-      required: []
-      title: Date Time Range Inclusive Input
-    ShipMonk_Measurement_ValueObject_LengthUnit:
-      type:
-      - string
-      enum:
-      - m
-      - cm
-      - mm
-      - ft
-      - in
-      title: Length Unit
-    Fulfillment_AccountApiBundle_ApiResource_MessageOutput:
-      type: object
-      properties:
-        message:
-          type: string
-      required:
-      - message
-      title: Message Output
-    ShipMonk_OMS_Product_Enum_ProductHandlingUnitType:
-      type:
-      - string
-      enum:
-      - inner_carton
-      - master_carton
-      - pallet
-      title: Product Handling Unit Type
-    Fulfillment_PublicApiBundle_Input_ProductSearchFiltersInput:
-      type: object
-      properties:
-        search:
-          description: String to match against SKU, name or barcode. SKU and name match by substring ("air" matches "chair"); barcodes must match exactly.
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          maxLength: 255
-          default: null
-        status:
-          description: Filter results by product status. Omit to return products in any status.
+        filters:
           anyOf:
-          - $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Enum_ProductStatusFilterEnum'
+          - $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Input_ProductSearchFiltersInput'
           - type: 'null'
           default: null
-        created_at:
-          description: Filter products by creation date-time range (inclusive). Applies to products created via API or manually.
+        sort:
           anyOf:
-          - $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Input_DateTimeRangeInclusiveInput'
-          - type: 'null'
-          default: null
-        inventory_on_hand_last_updated_at:
-          description: Filter products by the date-time their on-hand inventory was last updated. Updates occur on receiving, inventory adjustments, packing, etc., and may lag changes by a few seconds.
-          anyOf:
-          - $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Input_DateTimeRangeInclusiveInput'
+          - $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Input_ProductSearchSortInput'
           - type: 'null'
           default: null
       required: []
-      title: Product Search Filters Input
-    Fulfillment_PublicApiBundle_Enum_ProductStatusFilterEnum:
-      type:
-      - string
-      enum:
-      - blacklisted
-      - active
-      - disabled
-      title: Product Status Filter Enum
+      title: Search Products Input
     Fulfillment_PublicApiBundle_ApiResource_Product_ProductHandlingUnitOutput:
       type: object
       properties:
@@ -441,58 +597,6 @@ components:
       - dimensions
       - count
       title: Product Handling Unit Output
-    Fulfillment_PublicApiBundle_ApiResource_Product_ProductSearchOutput:
-      type: object
-      properties:
-        total:
-          description: Total number of results matching the search criteria.
-          type: integer
-        cursor:
-          description: Cursor to pass to the paginate endpoint to retrieve results. Null when there are no results.
-          type:
-          - string
-          - 'null'
-      required:
-      - total
-      - cursor
-      title: Product Search Output
-    ShipMonk_Measurement_ValueObject_WeightUnit:
-      type:
-      - string
-      enum:
-      - kg
-      - g
-      - lb
-      - oz
-      title: Weight Unit
-    Fulfillment_PublicApiBundle_ApiResource_Product_BundleProductOutput:
-      type: object
-      properties:
-        sku:
-          description: SKU of the product included in the bundle.
-          type: string
-        quantity:
-          description: Number of units of this product included per bundle.
-          type: integer
-      required:
-      - sku
-      - quantity
-      title: Bundle Product Output
-    ShipMonk_PublicApi_Product_ProductCreate_IntegrationHsCodePerRegionInput:
-      type: object
-      properties:
-        hs_code:
-          description: Harmonized System (HS) code for customs classification. Must be 1-255 characters.
-          type: string
-          minLength: 1
-          maxLength: 255
-        region:
-          description: 'Destination region this HS code applies to: us, uk, or eu.'
-          $ref: '#/components/schemas/ShipMonk_OMS_HsCode_Enum_HsCodeRegion'
-      required:
-      - hs_code
-      - region
-      title: Integration Hs Code Per Region Input
     Fulfillment_PublicApiBundle_ApiResource_Product_ProductListOutput:
       type: object
       properties:
@@ -629,41 +733,6 @@ components:
       - product_bundles
       - product_handling_units
       title: Product List Output
-    Fulfillment_PublicApiBundle_ApiResource_Location_LocationListOutput:
-      type: object
-      properties:
-        quantity_final:
-          description: 'Finalized quantity at this warehouse: units fully received and accounted for in inventory.'
-          type: integer
-        quantity_available:
-          description: Quantity available to allocate to new orders at this warehouse.
-          type: integer
-        quantity_on_hand:
-          description: Quantity physically present at this warehouse (including allocated, quarantined and unavailable units).
-          type: integer
-        quarantined_quantity:
-          description: Quantity held in quarantine at this warehouse and not available for fulfillment.
-          type: integer
-        quantity_unavailable:
-          description: Quantity at this warehouse unavailable for fulfillment for reasons other than quarantine.
-          type: integer
-        quantity_by_lot:
-          description: On-hand quantity at this warehouse broken down by lot/expiration.
-          type: array
-          items:
-            $ref: '#/components/schemas/Fulfillment_PublicApiBundle_ApiResource_LotControl_LotControlWithQuantityOutput'
-        warehouse:
-          description: Warehouse where these inventory quantities are held.
-          $ref: '#/components/schemas/Fulfillment_PublicApiBundle_ApiResource_Warehouse_WarehouseDetailOutput'
-      required:
-      - quantity_final
-      - quantity_available
-      - quantity_on_hand
-      - quarantined_quantity
-      - quantity_unavailable
-      - quantity_by_lot
-      - warehouse
-      title: Location List Output
     ShipMonk_PublicApi_Product_ProductCreate_CreateProductInput:
       type: object
       properties:
@@ -779,52 +848,86 @@ components:
       - country_of_origin
       - barcodes
       title: Create Product Input
-    ShipMonk_PublicApi_Product_ProductCreate_IntegrationCustomDataItemInput:
+    Fulfillment_PublicApiBundle_ApiResource_Warehouse_WarehouseDetailOutput:
       type: object
       properties:
+        id:
+          type: integer
         name:
-          description: Key of the custom data item. Must be 2-255 characters.
           type: string
-          minLength: 2
-          maxLength: 255
-        value:
-          description: Value of the custom data item. Maximum 65536 characters.
+        identifier:
           type: string
-          maxLength: 65536
       required:
+      - id
       - name
-      - value
-      title: Integration Custom Data Item Input
-    Fulfillment_PublicApiBundle_ApiResource_Product_BundleOutput:
+      - identifier
+      title: Warehouse Detail Output
+    Fulfillment_PublicApiBundle_ApiResource_Location_LocationListOutput:
       type: object
       properties:
-        bundle_sku:
-          description: SKU of the bundle product that contains this item as a component.
-          type: string
-        products:
-          description: Component products that make up this bundle.
+        quantity_final:
+          description: 'Finalized quantity at this warehouse: units fully received and accounted for in inventory.'
+          type: integer
+        quantity_available:
+          description: Quantity available to allocate to new orders at this warehouse.
+          type: integer
+        quantity_on_hand:
+          description: Quantity physically present at this warehouse (including allocated, quarantined and unavailable units).
+          type: integer
+        quarantined_quantity:
+          description: Quantity held in quarantine at this warehouse and not available for fulfillment.
+          type: integer
+        quantity_unavailable:
+          description: Quantity at this warehouse unavailable for fulfillment for reasons other than quarantine.
+          type: integer
+        quantity_by_lot:
+          description: On-hand quantity at this warehouse broken down by lot/expiration.
           type: array
           items:
-            $ref: '#/components/schemas/Fulfillment_PublicApiBundle_ApiResource_Product_BundleProductOutput'
+            $ref: '#/components/schemas/Fulfillment_PublicApiBundle_ApiResource_LotControl_LotControlWithQuantityOutput'
+        warehouse:
+          description: Warehouse where these inventory quantities are held.
+          $ref: '#/components/schemas/Fulfillment_PublicApiBundle_ApiResource_Warehouse_WarehouseDetailOutput'
       required:
-      - bundle_sku
-      - products
-      title: Bundle Output
-    Fulfillment_PublicApiBundle_ApiResource_LotControl_LotControlWithQuantityOutput:
+      - quantity_final
+      - quantity_available
+      - quantity_on_hand
+      - quarantined_quantity
+      - quantity_unavailable
+      - quantity_by_lot
+      - warehouse
+      title: Location List Output
+    Fulfillment_PublicApiBundle_Input_ProductSearchFiltersInput:
       type: object
       properties:
-        lot:
-          description: Lot identification (lot number and/or expiration date) for this inventory entry. Null when the inventory is not tracked by lot.
+        search:
+          description: String to match against SKU, name or barcode. SKU and name match by substring ("air" matches "chair"); barcodes must match exactly.
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          maxLength: 255
+          default: null
+        status:
+          description: Filter results by product status. Omit to return products in any status.
           anyOf:
-          - $ref: '#/components/schemas/Fulfillment_PublicApiBundle_ApiResource_LotControl_LotControlOutput'
+          - $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Enum_ProductStatusFilterEnum'
           - type: 'null'
-        quantity_on_hand:
-          description: Quantity physically on hand for this lot at the location.
-          type: integer
-      required:
-      - lot
-      - quantity_on_hand
-      title: Lot Control With Quantity Output
+          default: null
+        created_at:
+          description: Filter products by creation date-time range (inclusive). Applies to products created via API or manually.
+          anyOf:
+          - $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Input_DateTimeRangeInclusiveInput'
+          - type: 'null'
+          default: null
+        inventory_on_hand_last_updated_at:
+          description: Filter products by the date-time their on-hand inventory was last updated. Updates occur on receiving, inventory adjustments, packing, etc., and may lag changes by a few seconds.
+          anyOf:
+          - $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Input_DateTimeRangeInclusiveInput'
+          - type: 'null'
+          default: null
+      required: []
+      title: Product Search Filters Input
     Fulfillment_PublicApiBundle_ApiResource_Product_ProductSearchResultsOutput:
       type: object
       properties:
@@ -846,109 +949,31 @@ components:
       - total
       - next_cursor
       title: Product Search Results Output
-    ShipMonk_PublicApi_Product_ProductCreate_IntegrationProductLotControlSettingInput:
+    Fulfillment_PublicApiBundle_Input_DateTimeRangeInclusiveInput:
       type: object
       properties:
-        is_lot_number_required:
-          description: When true, a lot number must be captured every time this product is received into inventory.
-          type: boolean
-        is_expiration_date_required:
-          description: When true, an expiration date must be captured every time this product is received into inventory.
-          type: boolean
-        is_labeled_with_expiration_date_only:
-          description: When true, the product label shows only the expiration date (without the lot number). Can only be enabled when both is_lot_number_required and is_expiration_date_required are true.
-          type: boolean
-          default: false
-      required:
-      - is_lot_number_required
-      - is_expiration_date_required
-      title: Integration Product Lot Control Setting Input
-    ShipMonk_PublicApi_Product_ProductCreate_ProductHandlingUnitInput:
-      type: object
-      properties:
-        type:
-          description: 'Type of the handling unit. Allowed values: inner_carton, master_carton, pallet.'
-          $ref: '#/components/schemas/ShipMonk_OMS_Product_Enum_ProductHandlingUnitType'
-        weight_lb:
-          description: Weight of the handling unit in pounds; must be positive. Provide when known to support shipping and storage calculations.
-          type:
-          - number
-          - 'null'
-          format: double
-          exclusiveMinimum: 0
-          default: null
-        dimensions_in:
-          description: Physical dimensions of the handling unit in inches. Provide when known to support shipping and storage calculations.
-          anyOf:
-          - $ref: '#/components/schemas/ShipMonk_PublicApi_Product_ProductCreate_DimensionsInInput'
-          - type: 'null'
-          default: null
-        count:
-          description: Number of individual product units contained in this handling unit. Must be a positive integer.
-          type:
-          - integer
-          - 'null'
-      required:
-      - type
-      - count
-      title: Product Handling Unit Input
-    Fulfillment_PublicApiBundle_Input_ProductSearchSortInput:
-      type: object
-      properties:
-        sort_by:
-          description: 'Field to sort the results by. Allowed values: id, created_at, inventory_on_hand_last_updated_at.'
-          $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Enum_ProductInventorySearchSortBy'
-          default: id
-        sort_order:
-          description: 'Sort direction. Allowed values: ASC (ascending), DESC (descending).'
-          $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Enum_PublicApiOrdering'
-          default: ASC
-      required: []
-      title: Product Search Sort Input
-    Fulfillment_AdminApiBundle_ApiResource_ProductHsCodeDetailOutput:
-      type: object
-      properties:
-        hs_code:
-          description: Harmonized System code used for customs classification in international trade.
+        is_after_or_equal:
+          description: Lower bound (inclusive) of the date-time range, in ISO 8601 format.
           type: string
-        region:
-          description: 'Region for which this HS code applies. Allowed values: us, uk, eu.'
-          $ref: '#/components/schemas/ShipMonk_OMS_HsCode_Enum_HsCodeRegion'
-      required:
-      - hs_code
-      - region
-      title: Product Hs Code Detail Output
-    Fulfillment_PublicApiBundle_ApiResource_Inventory_InventoryDetailOutput:
+          format: date-time
+          default: null
+          example: '2025-07-24 14:53:00'
+        is_before_or_equal:
+          description: Upper bound (inclusive) of the date-time range, in ISO 8601 format.
+          type: string
+          format: date-time
+          default: null
+          example: '2025-07-24 14:53:00'
+      required: []
+      title: Date Time Range Inclusive Input
+    Fulfillment_AccountApiBundle_ApiResource_MessageOutput:
       type: object
       properties:
-        quantity_total_final:
-          description: 'Total finalized quantity across all locations: units that have completed receiving and are fully accounted for in inventory.'
-          type: integer
-        quantity_total_available:
-          description: Total quantity available to allocate to new orders across all locations.
-          type: integer
-        quantity_total_on_hand:
-          description: Total quantity physically present in warehouses (including allocated, quarantined and unavailable units).
-          type: integer
-        quantity_total_quarantined:
-          description: Total quantity held in quarantine (e.g., pending inspection) and not available for fulfillment.
-          type: integer
-        quantity_total_unavailable:
-          description: Total quantity unavailable for fulfillment for reasons other than quarantine (e.g., damaged or reserved).
-          type: integer
-        locations:
-          description: Per-warehouse breakdown of the inventory totals above.
-          type: array
-          items:
-            $ref: '#/components/schemas/Fulfillment_PublicApiBundle_ApiResource_Location_LocationListOutput'
+        message:
+          type: string
       required:
-      - quantity_total_final
-      - quantity_total_available
-      - quantity_total_on_hand
-      - quantity_total_quarantined
-      - quantity_total_unavailable
-      - locations
-      title: Inventory Detail Output
+      - message
+      title: Message Output
     Fulfillment_PublicApiBundle_ApiResource_LotControl_LotControlOutput:
       type: object
       properties:
@@ -967,55 +992,36 @@ components:
       - lot_number
       - expiration_date
       title: Lot Control Output
-    ShipMonk_Measurement_Output_DimensionsOutput:
+    Fulfillment_PublicApiBundle_ApiResource_Product_BundleProductOutput:
       type: object
       properties:
-        length:
-          description: Length in the unit specified by the sibling "unit" field.
-          type: number
-          format: double
-        width:
-          description: Width in the unit specified by the sibling "unit" field.
-          type: number
-          format: double
-        height:
-          description: Height in the unit specified by the sibling "unit" field.
-          type: number
-          format: double
-        unit:
-          description: 'Unit of measurement applied to length, width and height. Allowed values: m, cm, mm, ft, in.'
-          $ref: '#/components/schemas/ShipMonk_Measurement_ValueObject_LengthUnit'
+        sku:
+          description: SKU of the product included in the bundle.
+          type: string
+        quantity:
+          description: Number of units of this product included per bundle.
+          type: integer
       required:
-      - length
-      - width
-      - height
-      - unit
-      title: Dimensions Output
-    Fulfillment_PublicApiBundle_Input_SearchProductsInput:
+      - sku
+      - quantity
+      title: Bundle Product Output
+    ShipMonk_PublicApi_Product_ProductCreate_IntegrationProductLotControlSettingInput:
       type: object
       properties:
-        filters:
-          anyOf:
-          - $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Input_ProductSearchFiltersInput'
-          - type: 'null'
-          default: null
-        sort:
-          anyOf:
-          - $ref: '#/components/schemas/Fulfillment_PublicApiBundle_Input_ProductSearchSortInput'
-          - type: 'null'
-          default: null
-      required: []
-      title: Search Products Input
-    Fulfillment_InventoryBundle_Enum_PackagingType:
-      type:
-      - string
-      enum:
-      - poly_mailer
-      - bubble_mailer
-      - box
-      - slap_a_label
-      - custom
-      title: Packaging Type
+        is_lot_number_required:
+          description: When true, a lot number must be captured every time this product is received into inventory.
+          type: boolean
+        is_expiration_date_required:
+          description: When true, an expiration date must be captured every time this product is received into inventory.
+          type: boolean
+        is_labeled_with_expiration_date_only:
+          description: When true, the product label shows only the expiration date (without the lot number). Can only be enabled when both is_lot_number_required and is_expiration_date_required are true.
+          type: boolean
+          default: false
+      required:
+      - is_lot_number_required
+      - is_expiration_date_required
+      title: Integration Product Lot Control Setting Input
     Fulfillment_PublicApiBundle_Enum_PublicApiOrdering:
       type:
       - string
@@ -1023,16 +1029,32 @@ components:
       - DESC
       - ASC
       title: Ordering
-    Fulfillment_InventoryBundle_Enum_ProductType:
+    Fulfillment_CommonBundle_ApiResource_IntegrationDataOutput:
+      type: object
+      properties:
+        name:
+          description: Key of the custom data entry.
+          type: string
+        value:
+          description: Value of the custom data entry; may be any JSON-serializable structure.
+          type: object
+      required:
+      - name
+      - value
+      title: Integration Data Output
+    Fulfillment_PublicApiBundle_Enum_ProductStatusFilterEnum:
       type:
       - string
       enum:
-      - pick_and_pack
-      - insert
-      - packaging
-      title: Product Type
+      - blacklisted
+      - active
+      - disabled
+      title: Product Status Filter Enum
   securitySchemes:
     api_key_header_Api-Key:
       type: apiKey
       in: header
       name: Api-Key
+x-refined-from:
+- shipmonk-openapi.json
+- shipmonk-products-openapi.yml

@@ -1,17 +1,16 @@
 openapi: 3.2.0
 info:
-  title: ShipMonk Orders API
+  title: Shipmonk Orders API
   version: v1.024
-  description: The Orders surface of the ShipMonk public fulfillment API.
+  description: 'Operations tagged Orders across 2 of this provider''s published API definitions: shipmonk-openapi.json, shipmonk-orders-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.shipmonk.com
   description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production. Just write us at api@shipmonk.com and we will handle it.
 - url: https://sandbox.shipmonk.dev
   description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed contracts.'
-security:
-- api_key_header_Api-Key: []
 tags:
 - name: Orders
+  description: ''
 paths:
   /v1/integrations/order:
     post:
@@ -111,6 +110,11 @@ paths:
             schema:
               $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderInput'
       summary: Create or Update Order
+    servers:
+    - url: https://api.shipmonk.com
+      description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production. Just write us at api@shipmonk.com and we will handle it.
+    - url: https://sandbox.shipmonk.dev
+      description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed contracts.'
   /v1/integrations/orders:
     get:
       operationId: get-v1-integrations-orders
@@ -182,6 +186,11 @@ paths:
 
         You can retrieve orders from all of your stores. In case you have not unique orderKeys across stores you can specify the storeId.'
       summary: Get Order
+    servers:
+    - url: https://api.shipmonk.com
+      description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production. Just write us at api@shipmonk.com and we will handle it.
+    - url: https://sandbox.shipmonk.dev
+      description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed contracts.'
   /v1/integrations/orders-list:
     get:
       operationId: get-v1-integrations-orders-list
@@ -313,6 +322,11 @@ paths:
       - api_key_header_Api-Key: []
       description: When no filters are specified, the endpoint will return up to the first 1,000,000 orders, based on selected ordering. If filters are used, this endpoint will return a maximum of 10,000 orders.
       summary: Retrieve List of Orders
+    servers:
+    - url: https://api.shipmonk.com
+      description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production. Just write us at api@shipmonk.com and we will handle it.
+    - url: https://sandbox.shipmonk.dev
+      description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed contracts.'
   /v1/integrations/sandbox/complete-order:
     post:
       operationId: post-v1-integrations-sandbox-complete-order
@@ -353,6 +367,11 @@ paths:
             schema:
               $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Input_CompleteOrderInput'
       summary: Complete Order
+    servers:
+    - url: https://api.shipmonk.com
+      description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production. Just write us at api@shipmonk.com and we will handle it.
+    - url: https://sandbox.shipmonk.dev
+      description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed contracts.'
   /v1/integrations/submit-order:
     post:
       operationId: post-v1-integrations-submit-order
@@ -400,186 +419,596 @@ paths:
             schema:
               $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Input_SubmitOrderIntoQueueForFulfillmentAtDateInput'
       summary: Submit Order
+    servers:
+    - url: https://api.shipmonk.com
+      description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production. Just write us at api@shipmonk.com and we will handle it.
+    - url: https://sandbox.shipmonk.dev
+      description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed contracts.'
 components:
   schemas:
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderInput:
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiPackageCartonLabelOutput:
       type: object
       properties:
-        store_id:
-          description: Identifier of the store the order belongs to.
-          type: integer
-          minimum: 1
-          example: 123456
-        order_number:
-          description: Customer-facing order identifier (e.g. shown on the packing slip). Uniqueness is recommended but not enforced. Immutable after creation.
+        type:
+          description: Kind of label printed on the carton. Values include order- and carton-level pack lists, retailer packing slips, carton/pallet labels, GS1 labels, and customized or special-instruction labels.
+          $ref: '#/components/schemas/ShipMonk_OMS_RequiredLabels_Enum_PackingLabelType'
+        identifier:
+          description: Identifier printed on the label (e.g. SSCC); null if the label type has no identifier.
+          type:
+          - string
+          - 'null'
+      required:
+      - type
+      - identifier
+      title: Package Carton Label Output
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderPartOutput:
+      type: object
+      properties:
+        main_order:
+          description: Reference to the original (main) order from which this order was split.
+          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderPartMainOrderOutput'
+      required:
+      - main_order
+      title: Order Part Output
+    Fulfillment_AccountApiBundle_Input_Order_CreateUpdateFulfillmentRequirements_SpecialRequirementsDatesInput:
+      type: object
+      properties:
+        earliest:
+          type:
+          - string
+          - 'null'
+          format: date
+          default: null
+        requested:
+          type:
+          - string
+          - 'null'
+          format: date
+          default: null
+        latest:
+          type:
+          - string
+          - 'null'
+          format: date
+          default: null
+      required: []
+      title: Special Requirements Dates Input
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderAdditionalDocumentInput:
+      type: object
+      properties:
+        name:
+          description: Human-readable name of the document, shown in reports and to warehouse staff.
           type: string
           maxLength: 255
-          example: Order-123
-        order_key:
-          description: Stable external identifier used to associate this order on subsequent updates; must be unique per order and acts as the upsert key.
+        url:
+          description: Publicly accessible URL of the PDF document to print and enclose with the shipment.
           type: string
-          maxLength: 255
-          example: 327b5abd-017a-4504-a50d-54f1cea80269
-        items:
-          description: Line items to be fulfilled in the order.
-          type: array
-          items:
-            $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemInput'
-        ship_to:
-          description: Recipient's shipping destination address; used to generate the shipping label and select the carrier service.
-          $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderShipToInput'
-        requested_shipping_service:
-          description: The shipping option passed from your integration (e.g., Free Shipping, 2-Day Shipping); must match a Shipping Mapping configured in ShipMonk — if no match is found, the order will be placed in Action Required and cannot be fulfilled until resolved.
-          type: string
-          maxLength: 255
-        ordered_at:
-          description: ISO 8601 timestamp when the order was originally placed in the source system.
-          type: string
-          format: date-time
-          example: '2025-07-24 14:53:00'
-        order_status:
-          description: 'Current status of the order. Allowed values: `unfulfilled` (ready to be picked/shipped), `fulfilled` (already shipped externally), `cancelled` (will not be shipped), `onHold` (paused, will not be picked until released).'
-          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Type_OrderSyncOrderStatus'
-        attributes:
-          description: Free-form key/value pairs stored on the order, used for custom development.
-          type: array
-          items:
-            $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderAttributeInput'
-          default: []
-        trading_partner:
-          description: Name of the retailer or trading partner for B2B/EDI orders; required to apply the partner's routing and labeling rules.
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        order_type:
-          description: Classifies how the order should be fulfilled. If not specified, defaults to direct_to_consumer. Orders intended for retail or B2B distribution must use retail to meet compliance requirements.
-          anyOf:
-          - $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderOrderType'
-          - type: 'null'
-          default: null
-        customer_email:
-          description: Recipient email address forwarded to the carrier for delivery notifications.
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        shipping_paid:
-          description: Amount the customer paid for shipping, expressed in the order's `currency_code`. Informational only; does not affect rated postage.
-          type:
-          - number
-          - 'null'
-          format: double
-          minimum: 0
-          default: null
-        taxes_paid:
-          description: Tax amount the customer paid, in the order's `currency_code`. Informational only; used for customs paperwork on international shipments.
-          type:
-          - number
-          - 'null'
-          format: double
-          minimum: 0
-          default: null
-        currency_code:
-          description: ISO 4217 three-letter currency code for `shipping_paid`, `taxes_paid`, and item prices (e.g., 'USD', 'EUR').
-          type:
-          - string
-          - 'null'
-          maxLength: 3
-          default: USD
-        references:
-          description: External identifiers (e.g., PO number, marketplace order ID) linking this order back to upstream systems; informational only.
-          type: array
-          items:
-            $ref: '#/components/schemas/Fulfillment_AccountApiBundle_Input_Order_OrderReferenceInput'
-          default: []
-        customer_notes:
-          description: Notes provided by the buyer (e.g., delivery preferences). Stored on creation only; subsequent updates are ignored once a value is set.
-          type:
-          - string
-          - 'null'
-          maxLength: 65535
-          default: null
-        internal_notes:
-          description: Notes for internal warehouse staff, not shown to the buyer. Stored on creation only; ignored on subsequent updates.
-          type:
-          - string
-          - 'null'
-          maxLength: 65535
-          default: null
-        warehouse:
-          description: Identifier of the warehouse that must fulfill this order (e.g., 'FL1', 'CA1'). Use the codes provided by your account manager; omit to let the system pick the best warehouse.
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-          example: PA1
-        gift_message:
-          description: Message printed on a gift note included with the shipment. Stored on creation only; ignored on subsequent updates.
-          type:
-          - string
-          - 'null'
-          maxLength: 65535
-          default: null
-        gift_from:
-          description: Sender name printed on the gift note alongside `gift_message`.
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        custom_data:
-          description: Free-form key/value metadata stored on the order; not interpreted by fulfillment logic and returned as-is in order reads.
-          type: array
-          items:
-            $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderCustomDataInput'
-          default: []
-        b2b_attributes:
-          description: B2B-specific attributes (e.g., ASN, routing instructions) used when fulfilling retailer orders. Contact api@shipmonk.com to enable B2B order processing on your account before sending these.
-          type: array
-          items:
-            $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderB2BAttributeInput'
-          default: []
-        submit_at:
-          description: ISO 8601 timestamp at which the order should be released to the warehouse for picking. Until this time the order is held; omit to release immediately.
-          type:
-          - string
-          - 'null'
-          format: date-time
-          default: null
-          example: '2025-07-24 14:53:00'
-        special_requirements:
-          description: Optional bundle of special handling requirements (packing slip, carton labels, custom dates, pre-generated shipping label, etc.) to apply to this order.
-          anyOf:
-          - $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderSpecialRequirementsInput'
-          - type: 'null'
-          default: null
-        recipient_tax_id:
-          description: Recipient's tax identifier (e.g., VAT, EORI) required for customs clearance on international shipments.
-          anyOf:
-          - $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderTaxIdInput'
-          - type: 'null'
-          default: null
-        minimum_shelf_life_days:
-          description: Minimum remaining shelf life (in days from the ship date) required for every lot-controlled item in the order; omit to accept any shelf life.
+          maxLength: 2048
+      required:
+      - name
+      - url
+      title: Create Or Update Order Additional Document Input
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderPackageDataOutput:
+      type: object
+      properties:
+        number:
+          description: Sequential index (1-based) of this package within the order; null if not assigned.
           type:
           - integer
           - 'null'
-          minimum: 1
+        tracking_number:
+          description: Carrier tracking number for this package; null if not yet generated or untrackable.
+          type:
+          - string
+          - 'null'
+        tracking_url:
+          description: Carrier URL for tracking this package; null if not yet available.
+          type:
+          - string
+          - 'null'
+        weight_lb:
+          description: Total weight of the package (the unit, despite the field name, is provided in the value object); null if not measured.
+          anyOf:
+          - $ref: '#/components/schemas/ShipMonk_Measurement_Output_WeightOutput'
+          - type: 'null'
+        pallet_weight_lb:
+          description: Weight of the pallet on which this package is shipped (unit given inside the value object); null if not palletized or not measured.
+          anyOf:
+          - $ref: '#/components/schemas/ShipMonk_Measurement_Output_WeightOutput'
+          - type: 'null'
+        pallet_number:
+          description: Index (1-based) of the pallet that contains this package; null if not palletized.
+          type:
+          - integer
+          - 'null'
+        box_number:
+          description: Index (1-based) of the box within its pallet; null if not palletized.
+          type:
+          - integer
+          - 'null'
+        carton_labels:
+          description: Carton-level labels (e.g. packing slip, pallet label) applied to this package.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiPackageCartonLabelOutput'
+        packed_products:
+          description: Products contained in this package, aggregated by SKU with packed quantities and lot details.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiPackedProductOutput'
+        packing_group:
+          description: Packing group this package belongs to, used to split an order across multiple shipments; null if not grouped.
+          anyOf:
+          - $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PackingGroupOutput'
+          - type: 'null'
+        packed_items:
+          description: Order line items packed in this package, with per-line quantities.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_OrderPackedItemOutput'
+      required:
+      - number
+      - tracking_number
+      - tracking_url
+      - weight_lb
+      - pallet_weight_lb
+      - pallet_number
+      - box_number
+      - carton_labels
+      - packed_products
+      - packing_group
+      - packed_items
+      title: Order Package Data Output
+    ShipMonk_Measurement_ValueObject_WeightUnit:
+      type:
+      - string
+      enum:
+      - kg
+      - g
+      - lb
+      - oz
+      title: Weight Unit
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemB2BAttributeInput:
+      type: object
+      properties:
+        name:
+          description: Name (key) of the B2B attribute; should be unique within the item's b2b_attributes list.
+          type: string
+          maxLength: 255
+        value:
+          description: Value of the B2B attribute identified by the sibling `name` (free-form string).
+          type: string
+          maxLength: 255
+      required:
+      - name
+      - value
+      title: Create Or Update Order Item B2 B Attribute Input
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderShippingLabelInput:
+      type: object
+      properties:
+        url:
+          description: Publicly accessible URL pointing to the pre-generated shipping label PDF or PNG.
+          type: string
+          maxLength: 2048
+      required:
+      - url
+      title: Create Or Update Order Shipping Label Input
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderReferenceOutput:
+      type: object
+      properties:
+        type:
+          description: 'Type of order reference. One of: order_number, original_imported_order_number, customer_order_number, po_number, reference_number, b2b_routing_reference, release_number, job_number, depositor_order_number.'
+          $ref: '#/components/schemas/Fulfillment_OrderBundle_Enum_OrderReferenceType'
+        value:
+          description: The reference identifier value, interpreted according to type.
+          type: string
+      required:
+      - type
+      - value
+      title: Order Reference Output
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PackingGroupOutput:
+      type: object
+      properties:
+        key:
+          description: Stable identifier of the packing group, unique within the order.
+          type: string
+        name:
+          description: Human-readable name of the packing group; null if unnamed.
+          type:
+          - string
+          - 'null'
+      required:
+      - key
+      - name
+      title: Packing Group Output
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemPackingGroupInput:
+      type: object
+      properties:
+        key:
+          description: Stable key identifying the packing group; items with the same key are packed together.
+          type: string
+          maxLength: 255
+        name:
+          description: Optional human-readable name for the packing group, shown to warehouse staff.
+          type:
+          - string
+          - 'null'
+          maxLength: 255
           default: null
       required:
-      - store_id
-      - order_number
+      - key
+      title: Create Or Update Order Item Packing Group Input
+    Fulfillment_PublicApiBundle_ApiResource_Carrier_PublicApiCarrierDetailOutput:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+      - id
+      - name
+      title: Carrier Detail Output
+    Fulfillment_PublicApiBundle_ApiResource_Order_PublicApiOrderTaxIdOutput:
+      type: object
+      properties:
+        tax_id_type:
+          description: 'Type of tax identifier. One of: VAT, IOSS, TIN, EIN, EORI, ARN, RFC, CPF, CNPJ, PCCC.'
+          $ref: '#/components/schemas/Fulfillment_UserBundle_Enum_TaxIdType'
+        value:
+          description: Tax identification number, formatted according to its type and issuing country.
+          type: string
+        issuing_country:
+          description: Country that issued the tax identification number.
+          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiCountryDetailOutput'
+      required:
+      - tax_id_type
+      - value
+      - issuing_country
+      title: Order Tax Id Output
+    Fulfillment_IntegrationsBundle_Input_CompleteOrderInput:
+      type: object
+      properties:
+        order_key:
+          description: Unique identifier of the order in the external (caller's) system, as originally supplied when the order was created.
+          type: string
+          example: 327b5abd-017a-4504-a50d-54f1cea80269
+        store_id:
+          description: Identifier of the store this return belongs to.
+          type: integer
+          example: 123456
+        pack_type:
+          description: 'Optional packaging type for the simulated fulfillment: ''singlepack'' (all items in one box) or ''multipack'' (items split across multiple boxes).'
+          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Enum_SandboxPackType'
+          default: singlepack
+      required:
       - order_key
-      - items
-      - ship_to
-      - requested_shipping_service
-      - ordered_at
-      - order_status
-      title: Create Or Update Order Input
+      - store_id
+      title: Complete Order Input
+    Fulfillment_AccountApiBundle_Input_Order_OrderReferenceInput:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/Fulfillment_OrderBundle_Enum_OrderReferenceType'
+        value:
+          type: string
+          pattern: \S
+      required:
+      - type
+      - value
+      title: Order Reference Input
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderPartMainOrderOutput:
+      type: object
+      properties:
+        order_number:
+          description: Order number of the main order this part was split from.
+          type: string
+        parts:
+          description: List of all part orders created from splitting the main order.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderPartItemOutput'
+      required:
+      - order_number
+      - parts
+      title: Order Part Main Order Output
+    Fulfillment_OrderBundle_Input_Enum_OrderItemSpecialInstructionType:
+      type:
+      - string
+      enum:
+      - embroidery
+      title: Order Item Special Instruction Type
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderDetailCustomDataOutput:
+      type: object
+      properties:
+        name:
+          description: Key name of the custom data entry.
+          type: string
+        value:
+          description: Value of the custom data entry.
+          type: string
+      required:
+      - name
+      - value
+      title: Order Detail Custom Data Output
+    Fulfillment_IntegrationsBundle_Enum_ShipmentNotificationExtraDataType:
+      type:
+      - string
+      enum:
+      - carrierShippingMethod
+      title: Shipment Notification Extra Data Type
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSerialNumberOutput:
+      type: object
+      properties:
+        line_key:
+          description: Key of the order line item these serial numbers belong to; null when serial numbers cannot be matched to a specific line.
+          type:
+          - string
+          - 'null'
+        serial_numbers:
+          description: Serial numbers recorded for units fulfilled on this order line.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSerialNumberItemOutput'
+      required:
+      - line_key
+      - serial_numbers
+      title: Serial Number Output
+    Fulfillment_OrderBundle_Enum_OrderListStatus:
+      type:
+      - string
+      enum:
+      - backorder
+      - unable_to_submit
+      - queued_to_submit
+      - subscription
+      - package_forwarding
+      - awaiting_label_request_from_merchant_facility
+      - on_hold
+      - submitted
+      - pick_in_progress
+      - pack_in_progress
+      - packed
+      - awaiting_pick_up
+      - awaiting_carrier_processing
+      - en_route
+      - delivered
+      - undeliverable
+      - shipped_untrackable
+      - fulfilled_by_3rd
+      - cancellation_requested
+      - cancelled
+      - updating
+      title: Order List Status
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiAccountTradingPartnerOutput:
+      type: object
+      properties:
+        id:
+          description: Internal numeric identifier of the trading partner.
+          type: integer
+        identifier:
+          description: Short human-readable code identifying the trading partner.
+          type: string
+        name:
+          description: Display name of the trading partner.
+          type: string
+        account:
+          description: Merchant account that owns this trading partner relationship.
+          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiAccountForTradingPartnerOutput'
+      required:
+      - id
+      - identifier
+      - name
+      - account
+      title: Account Trading Partner Output
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderReturnDataOutput:
+      type: object
+      properties:
+        rma:
+          description: Return Merchandise Authorization (RMA) number identifying this return.
+          type: string
+      required:
+      - rma
+      title: Order Return Data Output
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderCustomDataInput:
+      type: object
+      properties:
+        name:
+          description: Key (name) of the custom data entry; should be unique within the item's custom_data list.
+          type: string
+          minLength: 2
+          maxLength: 255
+        value:
+          description: Value stored under the corresponding custom_data name.
+          type: string
+      required:
+      - name
+      - value
+      title: Create Or Update Order Custom Data Input
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_OrderPackedItemOutput:
+      type: object
+      properties:
+        sku:
+          description: Stock-keeping unit (SKU) of the order item that was packed.
+          type: string
+        line_key:
+          description: Identifier of the order line this packed item refers to; null when the packed item is not tied to a specific line.
+          type:
+          - string
+          - 'null'
+        quantity:
+          description: Number of units of this SKU packed in this package.
+          type: integer
+      required:
+      - sku
+      - line_key
+      - quantity
+      title: Order Packed Item Output
+    Fulfillment_IntegrationsBundle_Type_OrderSyncOrderStatus:
+      type:
+      - string
+      enum:
+      - unfulfilled
+      - fulfilled
+      - cancelled
+      - onHold
+      x-enumDescriptions:
+        unfulfilled: Order will be fulfilled by ShipMonk
+        fulfilled: Order has been already fulfilled, ShipMonk won't fulfill this order
+        cancelled: Order won't be fulfilled by ShipMonk
+        onHold: Order is temporarily on hold and can be restored or cancelled any time
+      title: Order Sync Order Status
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiShipmentDataOutput:
+      type: object
+      properties:
+        carrier:
+          description: Name of the carrier handling the shipment. For standard shipments it is one value from the list. In cases involving custom labels or freight shipments, the field may contain values outside of this list.
+          anyOf:
+          - $ref: '#/components/schemas/ShipMonk_ShippingConnector_ValueObject_PublicApiCarrierIdentifier'
+          - type: string
+        service:
+          description: Carrier service level used (e.g. Ground, Express); null if the carrier does not report a service level.
+          type:
+          - string
+          - 'null'
+        carrier_tracking_url:
+          description: Public URL provided by the carrier to track the shipment; null if not available.
+          type:
+          - string
+          - 'null'
+        carrier_alpha_code:
+          description: Carrier's Standard Carrier Alpha Code (SCAC), a 2-4 letter identifier; null if not assigned.
+          type:
+          - string
+          - 'null'
+        carrier_trans_method_code:
+          description: Carrier transportation method code (e.g. air, ground, ocean); null if not provided by the carrier.
+          type:
+          - string
+          - 'null'
+        bill_of_lading_number:
+          description: Bill of lading (BOL) number, the transport document identifier issued by the carrier; null if not yet assigned.
+          type:
+          - string
+          - 'null'
+        master_bill_of_lading_number:
+          description: Master bill of lading number grouping multiple BOLs under a consolidated shipment; null if not consolidated.
+          type:
+          - string
+          - 'null'
+        load_number:
+          description: Carrier-assigned load number identifying the freight load this shipment belongs to; null if not provided.
+          type:
+          - string
+          - 'null'
+        authorization_number:
+          description: Carrier authorization number (e.g. PRO or pickup authorization) issued for the shipment; null if not provided.
+          type:
+          - string
+          - 'null'
+        estimated_shipping_cost:
+          description: Estimated shipping cost in the order's currency; null if not yet calculated.
+          type:
+          - number
+          - 'null'
+          format: double
+        routing:
+          description: Routing information assigned to the shipment (e.g. for retailer-routed freight); null when routing is not applicable.
+          anyOf:
+          - $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiRoutingDataOutput'
+          - type: 'null'
+      required:
+      - carrier
+      - service
+      - carrier_tracking_url
+      - carrier_alpha_code
+      - carrier_trans_method_code
+      - bill_of_lading_number
+      - master_bill_of_lading_number
+      - load_number
+      - authorization_number
+      - estimated_shipping_cost
+      - routing
+      title: Shipment Data Output
+    Fulfillment_OrderBundle_Enum_OrderSize:
+      type:
+      - string
+      enum:
+      - unknown
+      - regular
+      - oversized_item
+      - large
+      - extra_large
+      title: Order Size
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderCartonLabelInput:
+      type: object
+      properties:
+        type:
+          description: Type of label requested to be applied to the carton (e.g., gs1, shipmonk_gs1, customized_carton_labels). Values include order- and carton-level pack lists, retailer packing slips, carton/pallet labels, GS1 labels, and customized or special-instruction labels. Incorrect configuration may result in retailer chargebacks. The ShipMonk B2B team will provide label configuration guidance during the retailer setup process (https://support.shipmonk.com/s/article/New-Retailer-Setup).
+          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Enum_CartonLabelType'
+          default: custom
+        name:
+          description: Human-readable name of the carton label template; used to identify the label in reports.
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+        url:
+          description: Publicly accessible URL of the carton label PDF; required when `type` is `custom`.
+          type:
+          - string
+          - 'null'
+          maxLength: 2048
+          default: null
+        shipping_data_required:
+          description: If true, carrier tracking and address data must be merged onto the carton label before printing.
+          type: boolean
+          default: false
+        approved_shipment_id_number_required:
+          description: If true, the retailer's approved shipment ID (e.g., an ASN number returned after the shipment notice) must be printed on the label. The order will not ship until the ID is supplied.
+          type: boolean
+          default: false
+        data_source:
+          description: 'Where the label data comes from. Allowed values: `internal` (data already supplied with the order), `third-party-after-shipment-notification` (label is rendered after a third party returns data following the shipment notification).'
+          $ref: '#/components/schemas/ShipMonk_OMS_RequiredLabels_Enum_RequiredLabelDataSource'
+          default: internal
+      required: []
+      title: Create Or Update Order Carton Label Input
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiExtraDataOutput:
+      type: object
+      properties:
+        label:
+          description: 'Identifier of the extra data type. Currently supported: carrierShippingMethod.'
+          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Enum_ShipmentNotificationExtraDataType'
+        value:
+          description: Value corresponding to the label of the extra data entry.
+          type: string
+      required:
+      - label
+      - value
+      title: Extra Data Output
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiWarehouseDetailOutput:
+      type: object
+      properties:
+        identifier:
+          description: Short human-readable code identifying the warehouse.
+          type: string
+        id:
+          description: Internal numeric identifier of the warehouse.
+          type: integer
+        name:
+          description: Display name of the warehouse.
+          type: string
+        warehouse_wms_type:
+          description: 'Warehouse management system (WMS) backing the warehouse. One of: shipmonk (ShipMonk-operated), merchant_facility (merchant''s own facility).'
+          $ref: '#/components/schemas/ShipMonk_WmsConnector_Order_ValueObject_WmsType'
+      required:
+      - identifier
+      - id
+      - name
+      - warehouse_wms_type
+      title: Warehouse Detail Output
     Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderItemOutput:
       type: object
       properties:
@@ -634,13 +1063,200 @@ components:
       - source
       - products
       title: Order Item Output
-    ShipMonk_OMS_RequiredLabels_Enum_RequiredLabelDataSource:
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSpecialInstructionDateOutput:
+      type: object
+      properties:
+        earliest:
+          description: Earliest acceptable date for the event (ISO-8601 date); null if no lower bound.
+          type:
+          - string
+          - 'null'
+          format: date-time
+        requested:
+          description: Preferred target date for the event (ISO-8601 date); null if not specified.
+          type:
+          - string
+          - 'null'
+          format: date-time
+        latest:
+          description: Latest acceptable date for the event (ISO-8601 date); null if no upper bound.
+          type:
+          - string
+          - 'null'
+          format: date-time
+      required:
+      - earliest
+      - requested
+      - latest
+      title: Special Instruction Date Output
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderAttributeOutput:
+      type: object
+      properties:
+        name:
+          description: Key of the custom attribute.
+          type: string
+        value:
+          description: Value of the custom attribute.
+          type: string
+      required:
+      - name
+      - value
+      title: Order Attribute Output
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemLotRequirementsInput:
+      type: object
+      properties:
+        minimum_shelf_life_days:
+          description: Minimum remaining shelf life (in days from the ship date) that any allocated lot must have. Omit to accept any shelf life.
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+          default: null
+        lot_controls:
+          description: Specific lots (by lot number and/or expiration date) that must be used to fulfill this item. Leave empty to allow any qualifying lot.
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemLotControlInput'
+          default: []
+      required: []
+      title: Create Or Update Order Item Lot Requirements Input
+    Fulfillment_PublicApiBundle_ApiResource_ShippingMethod_PublicApiShippingMethodDetailOutput:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        carrier:
+          $ref: '#/components/schemas/Fulfillment_PublicApiBundle_ApiResource_Carrier_PublicApiCarrierDetailOutput'
+      required:
+      - id
+      - name
+      - carrier
+      title: Shipping Method Detail Output
+    Fulfillment_PublicApiBundle_Enum_PublicApiOrdering:
       type:
       - string
       enum:
-      - internal
-      - third-party-after-shipment-notification
-      title: Required Label Data Source
+      - DESC
+      - ASC
+      title: Ordering
+    Fulfillment_IntegrationsBundle_Input_SubmitOrderIntoQueueForFulfillmentAtDateInput:
+      type: object
+      properties:
+        order_key:
+          description: Unique identifier of the order in the external (caller's) system, as originally supplied when the order was created.
+          type: string
+          example: 327b5abd-017a-4504-a50d-54f1cea80269
+        store_id:
+          description: Identifier of the store this return belongs to.
+          type: integer
+          example: 123456
+        submit_at:
+          description: ISO 8601 timestamp at which the order should be released into the fulfillment queue; submitting in the past releases it immediately.
+          type: string
+          format: date-time
+          example: '2025-07-24 14:53:00'
+      required:
+      - order_key
+      - store_id
+      - submit_at
+      title: Submit Order Into Queue For Fulfillment At Date Input
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemEmbroiderySpecialInstructionValueInput:
+      type: object
+      properties:
+        type:
+          description: Type of embroidery
+          $ref: '#/components/schemas/ShipMonk_OMS_Order_Enum_Embroidery_EmbroideryType'
+        location:
+          description: Location on the product where the embroidery should be placed
+          type: string
+          maxLength: 255
+        color:
+          description: Thread color for the embroidery
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+        font:
+          description: Font for embroidered text
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+        line1:
+          description: First line of embroidery text
+          type:
+          - string
+          - 'null'
+          maxLength: 25
+          default: null
+        line2:
+          description: Second line of embroidery text
+          type:
+          - string
+          - 'null'
+          maxLength: 25
+          default: null
+        line3:
+          description: Third line of embroidery text
+          type:
+          - string
+          - 'null'
+          maxLength: 25
+          default: null
+        logo_url:
+          description: URL of the logo file to be embroidered on the product
+          type:
+          - string
+          - 'null'
+          maxLength: 2048
+          default: null
+        file_identifier:
+          description: File identifier for the embroidery design
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+        symbol:
+          description: Symbol identifier for embroidery designs
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+        symbol_color:
+          description: Color of the embroidered symbol
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+      required:
+      - type
+      - location
+      title: Create Or Update Order Item Embroidery Special Instruction Value Input
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderItemProductLotOutput:
+      type: object
+      properties:
+        number:
+          description: Lot (batch) number assigned to the product. Null when the lot has no number recorded.
+          type:
+          - string
+          - 'null'
+        expiration_date:
+          description: Lot expiration date in ISO 8601 format (YYYY-MM-DD), or null if not applicable.
+          type:
+          - string
+          - 'null'
+          format: date
+      required:
+      - number
+      - expiration_date
+      title: Order Item Product Lot Output
     ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemSpecialInstructionInput:
       oneOf:
       - $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemEmbroiderySpecialInstructionInput'
@@ -649,6 +1265,208 @@ components:
         mapping:
           embroidery: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemEmbroiderySpecialInstructionInput'
       title: Create Or Update Order Item Special Instruction Input
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderOrderType:
+      type:
+      - string
+      enum:
+      - direct_to_consumer
+      - retail
+      - amazon
+      - transfer
+      - removal_liquidation
+      - disposal
+      - bonded_inventory_clearance
+      - work_order
+      title: Create Or Update Order Order Type
+    ShipMonk_OMS_Order_Enum_OrderType:
+      type:
+      - string
+      enum:
+      - direct_to_consumer
+      - retail
+      - amazon
+      - transfer
+      - internal_warehouse_transfer
+      - removal_liquidation
+      - disposal
+      - bonded_inventory_clearance
+      - work_order
+      title: Order Type
+    Fulfillment_OrderBundle_Enum_OrderReferenceType:
+      type:
+      - string
+      enum:
+      - order_number
+      - original_imported_order_number
+      - customer_order_number
+      - po_number
+      - reference_number
+      - b2b_routing_reference
+      - release_number
+      - job_number
+      - depositor_order_number
+      title: Order Reference Type
+    Fulfillment_OrderBundle_Enum_OrderItemSource:
+      type:
+      - string
+      enum:
+      - imported
+      - manual
+      - inserted
+      - packaging
+      - claim_reship
+      title: Order Item Source
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiPackedProductOutput:
+      type: object
+      properties:
+        sku:
+          description: Stock-keeping unit (SKU) of the product packed in this package.
+          type: string
+        quantity:
+          description: Number of units of this SKU packed in this package.
+          type: integer
+        lots:
+          description: Lot/batch identifiers and quantities for the packed units, when lot tracking applies.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderItemProductLotOutput'
+      required:
+      - sku
+      - quantity
+      - lots
+      title: Packed Product Output
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderItemProductOutput:
+      type: object
+      properties:
+        sku:
+          description: Stock Keeping Unit (SKU) identifying the product being ordered.
+          type: string
+        quantity:
+          description: Number of units of this physical product allocated to the order line.
+          type: integer
+        backordered_quantity:
+          description: Number of units of this product that could not be allocated because of insufficient stock.
+          type: integer
+        lot:
+          description: Inventory lot (batch) selected for this product. Null when the product is not lot-tracked or no lot has been assigned yet.
+          anyOf:
+          - $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderItemProductLotOutput'
+          - type: 'null'
+        other_potential_lots:
+          description: Other inventory lots that could alternatively be used to fulfill this product.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderItemProductLotOutput'
+      required:
+      - sku
+      - quantity
+      - backordered_quantity
+      - lot
+      - other_potential_lots
+      title: Order Item Product Output
+    Fulfillment_UserBundle_Enum_TaxIdType:
+      type:
+      - string
+      enum:
+      - VAT
+      - IOSS
+      - TIN
+      - EIN
+      - EORI
+      - ARN
+      - RFC
+      - CPF
+      - CNPJ
+      - PCCC
+      title: Tax Id Type
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiCountryDetailOutput:
+      type: object
+      properties:
+        code:
+          description: ISO 3166-1 alpha-2 country code; null if unknown.
+          type:
+          - string
+          - 'null'
+        name:
+          description: Country name in English; null if unknown.
+          type:
+          - string
+          - 'null'
+      required:
+      - code
+      - name
+      title: Country Detail Output
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiShippingOrderDetailAddressOutput:
+      type: object
+      properties:
+        name:
+          description: Full name of the recipient or contact at this address.
+          type:
+          - string
+          - 'null'
+        company:
+          description: Company name at this address, if any.
+          type:
+          - string
+          - 'null'
+        street1:
+          description: Primary street address line (e.g. number and street).
+          type:
+          - string
+          - 'null'
+        street2:
+          description: Secondary street address line (e.g. apartment, suite, or unit).
+          type:
+          - string
+          - 'null'
+        state:
+          description: State, province, or region of the address.
+          type:
+          - string
+          - 'null'
+        city:
+          description: City or locality of the address.
+          type:
+          - string
+          - 'null'
+        zip:
+          description: Postal or ZIP code of the address.
+          type:
+          - string
+          - 'null'
+        country_code:
+          description: ISO 3166-1 alpha-2 country code (e.g. US, DE).
+          type:
+          - string
+          - 'null'
+        phone:
+          description: Contact phone number for the address.
+          type:
+          - string
+          - 'null'
+        email:
+          description: Contact email for the address.
+          type:
+          - string
+          - 'null'
+        residential:
+          description: true if the address is residential, false if commercial, null if unknown.
+          type:
+          - boolean
+          - 'null'
+      required:
+      - name
+      - company
+      - street1
+      - street2
+      - state
+      - city
+      - zip
+      - country_code
+      - phone
+      - email
+      - residential
+      title: Shipping Order Detail Address Output
     ShipMonk_OMS_Order_Enum_Embroidery_EmbroideryType:
       type:
       - string
@@ -659,15 +1477,142 @@ components:
       - logo_identifier
       - text_with_symbol
       title: Embroidery Type
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderReturnDataOutput:
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderTaxIdInput:
       type: object
       properties:
-        rma:
-          description: Return Merchandise Authorization (RMA) number identifying this return.
+        type:
+          description: 'Type of tax identifier supplied in `value`. Allowed: `VAT`, `IOSS`, `TIN`, `EIN`, `EORI`, `ARN`, `RFC`, `CPF`, `CNPJ`, `PCCC`.'
+          $ref: '#/components/schemas/Fulfillment_UserBundle_Enum_TaxIdType'
+        value:
+          description: The tax identifier string itself, formatted according to the rules of the chosen `type` and `issuing_country_id`.
+          type: string
+          maxLength: 255
+        issuing_country_id:
+          description: ISO 3166-1 alpha-2 country code of the authority that issued the tax ID (e.g., 'DE' for a German VAT number).
+          type: string
+          minLength: 2
+          maxLength: 2
+      required:
+      - type
+      - value
+      - issuing_country_id
+      title: Create Or Update Order Tax Id Input
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemEmbroiderySpecialInstructionInput:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/Fulfillment_OrderBundle_Input_Enum_OrderItemSpecialInstructionType'
+        values:
+          description: List of embroidery instruction values
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemEmbroiderySpecialInstructionValueInput'
+      required:
+      - type
+      - values
+      title: Create Or Update Order Item Embroidery Special Instruction Input
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSerialNumberItemOutput:
+      type: object
+      properties:
+        sku:
+          description: Stock Keeping Unit (SKU) identifying the product.
+          type: string
+        serial_number:
+          description: Serial number recorded for the fulfilled unit.
           type: string
       required:
-      - rma
-      title: Order Return Data Output
+      - sku
+      - serial_number
+      title: Serial Number Item Output
+    Fulfillment_IntegrationsBundle_Enum_CartonLabelType:
+      type:
+      - string
+      enum:
+      - gs1
+      - shipmonk_gs1
+      - customized_carton_labels
+      - custom
+      title: Carton Label Type
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSpecialInstructionNameUrlOutput:
+      type: object
+      properties:
+        name:
+          description: Human-readable name or description of the document; null if unnamed.
+          type:
+          - string
+          - 'null'
+        url:
+          description: URL from which the document file can be downloaded.
+          type: string
+      required:
+      - name
+      - url
+      title: Special Instruction Name Url Output
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSpecialRequirementsOutput:
+      type: object
+      properties:
+        special_instruction:
+          description: Free-text special handling instructions for the order, or null if none.
+          type:
+          - string
+          - 'null'
+        carton_labels:
+          description: Carton labels (name and download URL) that must be applied to the order's cartons.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSpecialInstructionNameUrlOutput'
+        additional_documents:
+          description: Additional documents (name and download URL) that must accompany the order.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSpecialInstructionNameUrlOutput'
+        shipping_label:
+          description: Customer-provided shipping label to be used for the order; null if not supplied.
+          anyOf:
+          - $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiShippingLabelOutput'
+          - type: 'null'
+        shipping_date:
+          description: Requested shipping date with earliest, requested, and latest dates (ISO-8601); null if none requested.
+          anyOf:
+          - $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSpecialInstructionDateOutput'
+          - type: 'null'
+        delivery_date:
+          description: Requested delivery date with earliest, requested, and latest dates (ISO-8601); null if none requested.
+          anyOf:
+          - $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSpecialInstructionDateOutput'
+          - type: 'null'
+        cancel_date:
+          description: Date (ISO-8601) after which the order should be cancelled if not yet shipped; null if no cutoff.
+          type:
+          - string
+          - 'null'
+          format: date-time
+        pack_list_required:
+          description: True if a packing list document must be included with the shipment.
+          type: boolean
+      required:
+      - special_instruction
+      - carton_labels
+      - additional_documents
+      - shipping_label
+      - shipping_date
+      - delivery_date
+      - cancel_date
+      - pack_list_required
+      title: Special Requirements Output
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiAccountForTradingPartnerOutput:
+      type: object
+      properties:
+        id:
+          description: Internal numeric identifier of the merchant account.
+          type: integer
+        name:
+          description: Display name of the merchant account.
+          type: string
+      required:
+      - id
+      - name
+      title: Account For Trading Partner Output
     Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderDetailOutput:
       type: object
       properties:
@@ -899,530 +1844,238 @@ components:
       - customer_notes
       - order_detail_url
       title: Order Detail Output
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiPackedProductOutput:
-      type: object
-      properties:
-        sku:
-          description: Stock-keeping unit (SKU) of the product packed in this package.
-          type: string
-        quantity:
-          description: Number of units of this SKU packed in this package.
-          type: integer
-        lots:
-          description: Lot/batch identifiers and quantities for the packed units, when lot tracking applies.
-          type: array
-          items:
-            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderItemProductLotOutput'
-      required:
-      - sku
-      - quantity
-      - lots
-      title: Packed Product Output
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderAttributeOutput:
-      type: object
-      properties:
-        name:
-          description: Key of the custom attribute.
-          type: string
-        value:
-          description: Value of the custom attribute.
-          type: string
-      required:
-      - name
-      - value
-      title: Order Attribute Output
-    ShipMonk_OMS_RequiredLabels_Enum_PackingLabelType:
-      type:
-      - string
-      enum:
-      - shipmonk_pack_list_order_level
-      - shipmonk_pack_list_carton_level
-      - retailer_packing_slip_order_level
-      - shipmonk_carton_label
-      - shipmonk_pallet_label
-      - gs1_label
-      - shipmonk_gs1
-      - customized_carton_labels
-      - liquid_iv_packing_list
-      - custom_pack_list_order_level
-      - special_instructions
-      title: Packing Label Type
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderPartOutput:
-      type: object
-      properties:
-        main_order:
-          description: Reference to the original (main) order from which this order was split.
-          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderPartMainOrderOutput'
-      required:
-      - main_order
-      title: Order Part Output
-    ShipMonk_Measurement_ValueObject_WeightUnit:
-      type:
-      - string
-      enum:
-      - kg
-      - g
-      - lb
-      - oz
-      title: Weight Unit
-    Fulfillment_IntegrationsBundle_Type_OrderSyncOrderStatus:
-      type:
-      - string
-      enum:
-      - unfulfilled
-      - fulfilled
-      - cancelled
-      - onHold
-      x-enumDescriptions:
-        unfulfilled: Order will be fulfilled by ShipMonk
-        fulfilled: Order has been already fulfilled, ShipMonk won't fulfill this order
-        cancelled: Order won't be fulfilled by ShipMonk
-        onHold: Order is temporarily on hold and can be restored or cancelled any time
-      title: Order Sync Order Status
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderPartMainOrderOutput:
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderPartItemOutput:
       type: object
       properties:
         order_number:
-          description: Order number of the main order this part was split from.
+          description: Order number of this part order.
           type: string
-        parts:
-          description: List of all part orders created from splitting the main order.
-          type: array
-          items:
-            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderPartItemOutput'
       required:
       - order_number
-      - parts
-      title: Order Part Main Order Output
-    Fulfillment_IntegrationsBundle_Enum_ShipmentNotificationExtraDataType:
-      type:
-      - string
-      enum:
-      - carrierShippingMethod
-      title: Shipment Notification Extra Data Type
-    Fulfillment_OrderBundle_Enum_OrderSize:
-      type:
-      - string
-      enum:
-      - unknown
-      - regular
-      - oversized_item
-      - large
-      - extra_large
-      title: Order Size
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSpecialInstructionNameUrlOutput:
+      title: Order Part Item Output
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderB2BAttributeInput:
       type: object
       properties:
         name:
-          description: Human-readable name or description of the document; null if unnamed.
-          type:
-          - string
-          - 'null'
-        url:
-          description: URL from which the document file can be downloaded.
-          type: string
-      required:
-      - name
-      - url
-      title: Special Instruction Name Url Output
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderAttributeInput:
-      type: object
-      properties:
-        name:
-          description: Key identifying the custom attribute; must be unique within the order's attributes array.
+          description: Name (key) of the B2B attribute; should be unique within the item's b2b_attributes list.
           type: string
           maxLength: 255
         value:
-          description: Value paired with the attribute `name` on the order.
-          type: string
-          maxLength: 255
+          anyOf:
+          - type: integer
+          - type: number
+          - type: boolean
+          - type: string
+          - type: array
       required:
       - name
       - value
-      title: Create Or Update Order Attribute Input
-    Fulfillment_PublicApiBundle_Enum_PublicApiOrdering:
+      title: Create Or Update Order B2 B Attribute Input
+    ShipMonk_WmsConnector_Order_ValueObject_WmsType:
       type:
       - string
       enum:
-      - DESC
-      - ASC
-      title: Ordering
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSerialNumberOutput:
+      - shipmonk
+      - deposco
+      - merchant_facility
+      title: Wms Type
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemLotControlInput:
       type: object
       properties:
-        line_key:
-          description: Key of the order line item these serial numbers belong to; null when serial numbers cannot be matched to a specific line.
-          type:
-          - string
-          - 'null'
-        serial_numbers:
-          description: Serial numbers recorded for units fulfilled on this order line.
-          type: array
-          items:
-            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSerialNumberItemOutput'
-      required:
-      - line_key
-      - serial_numbers
-      title: Serial Number Output
-    Fulfillment_PublicApiBundle_ApiResource_Carrier_PublicApiCarrierDetailOutput:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-      required:
-      - id
-      - name
-      title: Carrier Detail Output
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderShippingLabelInput:
-      type: object
-      properties:
-        url:
-          description: Publicly accessible URL pointing to the pre-generated shipping label PDF or PNG.
-          type: string
-          maxLength: 2048
-      required:
-      - url
-      title: Create Or Update Order Shipping Label Input
-    ShipMonk_ShippingConnector_ValueObject_PublicApiCarrierIdentifier:
-      type:
-      - string
-      enum:
-      - CanadaPost
-      - Cirro
-      - DHL eCommerce
-      - DHL Express
-      - DPD
-      - FedEx
-      - Global-E
-      - International Bridge
-      - OnTrac
-      - Passport
-      - Royal Mail
-      - ShipMonk
-      - SpeedX
-      - UPS
-      - USPS
-      title: Carrier Identifier
-    ShipMonk_Measurement_Output_WeightOutput:
-      type: object
-      properties:
-        value:
-          description: Numeric weight value, expressed in the unit given by the unit field.
-          type: number
-          format: double
-        unit:
-          description: 'Unit of measure for the weight value. One of: kg, g, lb, oz.'
-          $ref: '#/components/schemas/ShipMonk_Measurement_ValueObject_WeightUnit'
-      required:
-      - value
-      - unit
-      title: Weight Output
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderShipToInput:
-      type: object
-      properties:
-        name:
-          description: Full name of the recipient as it should appear on the shipping label.
+        lot_number:
+          description: Specific lot number that must be picked for this item; omit to allow any lot.
           type:
           - string
           - 'null'
           maxLength: 255
           default: null
-        company:
-          description: Recipient's company name as it should appear on the shipping label; omit for residential deliveries.
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        street1:
-          description: First line of the recipient's street address (e.g., house number and street).
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        street2:
-          description: Second line of the recipient's street address (apartment, suite, or unit); omit if not applicable.
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        state:
-          description: State, province, or region; use the ISO 3166-2 subdivision code where one exists (e.g., 'CA' for California).
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        city:
-          description: City of the recipient's address.
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        zip:
-          description: Postal or ZIP code of the recipient's address.
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        country_code:
-          description: ISO 3166-1 alpha-2 country code of the recipient (e.g., 'US', 'GB').
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        phone:
-          description: Recipient phone number in E.164 format; used by carriers for delivery contact.
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-      required: []
-      title: Create Or Update Order Ship To Input
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderItemProductLotOutput:
-      type: object
-      properties:
-        number:
-          description: Lot (batch) number assigned to the product. Null when the lot has no number recorded.
-          type:
-          - string
-          - 'null'
         expiration_date:
-          description: Lot expiration date in ISO 8601 format (YYYY-MM-DD), or null if not applicable.
+          description: Required expiration date of the picked lot in ISO 8601 (YYYY-MM-DD) format; omit to allow any expiration.
           type:
           - string
           - 'null'
           format: date
-      required:
-      - number
-      - expiration_date
-      title: Order Item Product Lot Output
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiStoreNameOutput:
+          default: null
+      required: []
+      title: Create Or Update Order Item Lot Control Input
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderInput:
       type: object
       properties:
-        id:
-          description: Internal numeric identifier of the store.
+        store_id:
+          description: Identifier of the store the order belongs to.
           type: integer
-        name:
-          description: Display name of the store.
+          minimum: 1
+          example: 123456
+        order_number:
+          description: Customer-facing order identifier (e.g. shown on the packing slip). Uniqueness is recommended but not enforced. Immutable after creation.
           type: string
-      required:
-      - id
-      - name
-      title: Store Name Output
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderList_PublicApiOrderListOutput:
-      type: object
-      properties:
-        orders:
-          description: Orders matching the request criteria for the current page.
+          maxLength: 255
+          example: Order-123
+        order_key:
+          description: Stable external identifier used to associate this order on subsequent updates; must be unique per order and acts as the upsert key.
+          type: string
+          maxLength: 255
+          example: 327b5abd-017a-4504-a50d-54f1cea80269
+        items:
+          description: Line items to be fulfilled in the order.
           type: array
           items:
-            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderDetailOutput'
-      required:
-      - orders
-      title: Order List Output
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderCustomDataInput:
-      type: object
-      properties:
-        name:
-          description: Key (name) of the custom data entry; should be unique within the item's custom_data list.
-          type: string
-          minLength: 2
-          maxLength: 255
-        value:
-          description: Value stored under the corresponding custom_data name.
-          type: string
-      required:
-      - name
-      - value
-      title: Create Or Update Order Custom Data Input
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSerialNumberItemOutput:
-      type: object
-      properties:
-        sku:
-          description: Stock Keeping Unit (SKU) identifying the product.
-          type: string
-        serial_number:
-          description: Serial number recorded for the fulfilled unit.
-          type: string
-      required:
-      - sku
-      - serial_number
-      title: Serial Number Item Output
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderOrderType:
-      type:
-      - string
-      enum:
-      - direct_to_consumer
-      - retail
-      - amazon
-      - transfer
-      - removal_liquidation
-      - disposal
-      - bonded_inventory_clearance
-      - work_order
-      title: Create Or Update Order Order Type
-    ShipMonk_Money_Output_MoneyOutput:
-      type: object
-      properties:
-        amount:
-          description: Decimal monetary amount in the currency given by the sibling currency field.
-          type: number
-          format: double
-        currency:
-          description: ISO 4217 currency code (e.g. USD, EUR) for the accompanying amount.
-          type: string
-      required:
-      - amount
-      - currency
-      title: Money Output
-    Fulfillment_OrderBundle_Enum_OrderItemSource:
-      type:
-      - string
-      enum:
-      - imported
-      - manual
-      - inserted
-      - packaging
-      - claim_reship
-      title: Order Item Source
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemPackingGroupInput:
-      type: object
-      properties:
-        key:
-          description: Stable key identifying the packing group; items with the same key are packed together.
+            $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemInput'
+        ship_to:
+          description: Recipient's shipping destination address; used to generate the shipping label and select the carrier service.
+          $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderShipToInput'
+        requested_shipping_service:
+          description: The shipping option passed from your integration (e.g., Free Shipping, 2-Day Shipping); must match a Shipping Mapping configured in ShipMonk — if no match is found, the order will be placed in Action Required and cannot be fulfilled until resolved.
           type: string
           maxLength: 255
-        name:
-          description: Optional human-readable name for the packing group, shown to warehouse staff.
+        ordered_at:
+          description: ISO 8601 timestamp when the order was originally placed in the source system.
+          type: string
+          format: date-time
+          example: '2025-07-24 14:53:00'
+        order_status:
+          description: 'Current status of the order. Allowed values: `unfulfilled` (ready to be picked/shipped), `fulfilled` (already shipped externally), `cancelled` (will not be shipped), `onHold` (paused, will not be picked until released).'
+          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Type_OrderSyncOrderStatus'
+        attributes:
+          description: Free-form key/value pairs stored on the order, used for custom development.
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderAttributeInput'
+          default: []
+        trading_partner:
+          description: Name of the retailer or trading partner for B2B/EDI orders; required to apply the partner's routing and labeling rules.
           type:
           - string
           - 'null'
           maxLength: 255
           default: null
-      required:
-      - key
-      title: Create Or Update Order Item Packing Group Input
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiWarehouseDetailOutput:
-      type: object
-      properties:
-        identifier:
-          description: Short human-readable code identifying the warehouse.
-          type: string
-        id:
-          description: Internal numeric identifier of the warehouse.
-          type: integer
-        name:
-          description: Display name of the warehouse.
-          type: string
-        warehouse_wms_type:
-          description: 'Warehouse management system (WMS) backing the warehouse. One of: shipmonk (ShipMonk-operated), merchant_facility (merchant''s own facility).'
-          $ref: '#/components/schemas/ShipMonk_WmsConnector_Order_ValueObject_WmsType'
-      required:
-      - identifier
-      - id
-      - name
-      - warehouse_wms_type
-      title: Warehouse Detail Output
-    Fulfillment_OrderBundle_Enum_OrderListStatus:
-      type:
-      - string
-      enum:
-      - backorder
-      - unable_to_submit
-      - queued_to_submit
-      - subscription
-      - package_forwarding
-      - awaiting_label_request_from_merchant_facility
-      - on_hold
-      - submitted
-      - pick_in_progress
-      - pack_in_progress
-      - packed
-      - awaiting_pick_up
-      - awaiting_carrier_processing
-      - en_route
-      - delivered
-      - undeliverable
-      - shipped_untrackable
-      - fulfilled_by_3rd
-      - cancellation_requested
-      - cancelled
-      - updating
-      title: Order List Status
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiShippingLabelOutput:
-      type: object
-      properties:
-        url:
-          description: URL from which the customer-provided shipping label can be downloaded.
-          type: string
-      required:
-      - url
-      title: Shipping Label Output
-    Fulfillment_UserBundle_Enum_TaxIdType:
-      type:
-      - string
-      enum:
-      - VAT
-      - IOSS
-      - TIN
-      - EIN
-      - EORI
-      - ARN
-      - RFC
-      - CPF
-      - CNPJ
-      - PCCC
-      title: Tax Id Type
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSpecialInstructionDateOutput:
-      type: object
-      properties:
-        earliest:
-          description: Earliest acceptable date for the event (ISO-8601 date); null if no lower bound.
+        order_type:
+          description: Classifies how the order should be fulfilled. If not specified, defaults to direct_to_consumer. Orders intended for retail or B2B distribution must use retail to meet compliance requirements.
+          anyOf:
+          - $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderOrderType'
+          - type: 'null'
+          default: null
+        customer_email:
+          description: Recipient email address forwarded to the carrier for delivery notifications.
           type:
           - string
           - 'null'
-          format: date-time
-        requested:
-          description: Preferred target date for the event (ISO-8601 date); null if not specified.
-          type:
-          - string
-          - 'null'
-          format: date-time
-        latest:
-          description: Latest acceptable date for the event (ISO-8601 date); null if no upper bound.
-          type:
-          - string
-          - 'null'
-          format: date-time
-      required:
-      - earliest
-      - requested
-      - latest
-      title: Special Instruction Date Output
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderAdditionalDocumentInput:
-      type: object
-      properties:
-        name:
-          description: Human-readable name of the document, shown in reports and to warehouse staff.
-          type: string
           maxLength: 255
-        url:
-          description: Publicly accessible URL of the PDF document to print and enclose with the shipment.
-          type: string
-          maxLength: 2048
+          default: null
+        shipping_paid:
+          description: Amount the customer paid for shipping, expressed in the order's `currency_code`. Informational only; does not affect rated postage.
+          type:
+          - number
+          - 'null'
+          format: double
+          minimum: 0
+          default: null
+        taxes_paid:
+          description: Tax amount the customer paid, in the order's `currency_code`. Informational only; used for customs paperwork on international shipments.
+          type:
+          - number
+          - 'null'
+          format: double
+          minimum: 0
+          default: null
+        currency_code:
+          description: ISO 4217 three-letter currency code for `shipping_paid`, `taxes_paid`, and item prices (e.g., 'USD', 'EUR').
+          type:
+          - string
+          - 'null'
+          maxLength: 3
+          default: USD
+        references:
+          description: External identifiers (e.g., PO number, marketplace order ID) linking this order back to upstream systems; informational only.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_AccountApiBundle_Input_Order_OrderReferenceInput'
+          default: []
+        customer_notes:
+          description: Notes provided by the buyer (e.g., delivery preferences). Stored on creation only; subsequent updates are ignored once a value is set.
+          type:
+          - string
+          - 'null'
+          maxLength: 65535
+          default: null
+        internal_notes:
+          description: Notes for internal warehouse staff, not shown to the buyer. Stored on creation only; ignored on subsequent updates.
+          type:
+          - string
+          - 'null'
+          maxLength: 65535
+          default: null
+        warehouse:
+          description: Identifier of the warehouse that must fulfill this order (e.g., 'FL1', 'CA1'). Use the codes provided by your account manager; omit to let the system pick the best warehouse.
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+          example: PA1
+        gift_message:
+          description: Message printed on a gift note included with the shipment. Stored on creation only; ignored on subsequent updates.
+          type:
+          - string
+          - 'null'
+          maxLength: 65535
+          default: null
+        gift_from:
+          description: Sender name printed on the gift note alongside `gift_message`.
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+        custom_data:
+          description: Free-form key/value metadata stored on the order; not interpreted by fulfillment logic and returned as-is in order reads.
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderCustomDataInput'
+          default: []
+        b2b_attributes:
+          description: B2B-specific attributes (e.g., ASN, routing instructions) used when fulfilling retailer orders. Contact api@shipmonk.com to enable B2B order processing on your account before sending these.
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderB2BAttributeInput'
+          default: []
+        submit_at:
+          description: ISO 8601 timestamp at which the order should be released to the warehouse for picking. Until this time the order is held; omit to release immediately.
+          type:
+          - string
+          - 'null'
+          format: date-time
+          default: null
+          example: '2025-07-24 14:53:00'
+        special_requirements:
+          description: Optional bundle of special handling requirements (packing slip, carton labels, custom dates, pre-generated shipping label, etc.) to apply to this order.
+          anyOf:
+          - $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderSpecialRequirementsInput'
+          - type: 'null'
+          default: null
+        recipient_tax_id:
+          description: Recipient's tax identifier (e.g., VAT, EORI) required for customs clearance on international shipments.
+          anyOf:
+          - $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderTaxIdInput'
+          - type: 'null'
+          default: null
+        minimum_shelf_life_days:
+          description: Minimum remaining shelf life (in days from the ship date) required for every lot-controlled item in the order; omit to accept any shelf life.
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+          default: null
       required:
-      - name
-      - url
-      title: Create Or Update Order Additional Document Input
+      - store_id
+      - order_number
+      - order_key
+      - items
+      - ship_to
+      - requested_shipping_service
+      - ordered_at
+      - order_status
+      title: Create Or Update Order Input
     Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderActionsRequiredOutput:
       type: object
       properties:
@@ -1489,586 +2142,13 @@ components:
       - pending_b2b_routing
       - value_added_service_problem
       title: Order Actions Required Output
-    ShipMonk_OMS_Order_Enum_OrderType:
+    ShipMonk_OMS_RequiredLabels_Enum_RequiredLabelDataSource:
       type:
       - string
       enum:
-      - direct_to_consumer
-      - retail
-      - amazon
-      - transfer
-      - internal_warehouse_transfer
-      - removal_liquidation
-      - disposal
-      - bonded_inventory_clearance
-      - work_order
-      title: Order Type
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiShipmentDataOutput:
-      type: object
-      properties:
-        carrier:
-          description: Name of the carrier handling the shipment. For standard shipments it is one value from the list. In cases involving custom labels or freight shipments, the field may contain values outside of this list.
-          anyOf:
-          - $ref: '#/components/schemas/ShipMonk_ShippingConnector_ValueObject_PublicApiCarrierIdentifier'
-          - type: string
-        service:
-          description: Carrier service level used (e.g. Ground, Express); null if the carrier does not report a service level.
-          type:
-          - string
-          - 'null'
-        carrier_tracking_url:
-          description: Public URL provided by the carrier to track the shipment; null if not available.
-          type:
-          - string
-          - 'null'
-        carrier_alpha_code:
-          description: Carrier's Standard Carrier Alpha Code (SCAC), a 2-4 letter identifier; null if not assigned.
-          type:
-          - string
-          - 'null'
-        carrier_trans_method_code:
-          description: Carrier transportation method code (e.g. air, ground, ocean); null if not provided by the carrier.
-          type:
-          - string
-          - 'null'
-        bill_of_lading_number:
-          description: Bill of lading (BOL) number, the transport document identifier issued by the carrier; null if not yet assigned.
-          type:
-          - string
-          - 'null'
-        master_bill_of_lading_number:
-          description: Master bill of lading number grouping multiple BOLs under a consolidated shipment; null if not consolidated.
-          type:
-          - string
-          - 'null'
-        load_number:
-          description: Carrier-assigned load number identifying the freight load this shipment belongs to; null if not provided.
-          type:
-          - string
-          - 'null'
-        authorization_number:
-          description: Carrier authorization number (e.g. PRO or pickup authorization) issued for the shipment; null if not provided.
-          type:
-          - string
-          - 'null'
-        estimated_shipping_cost:
-          description: Estimated shipping cost in the order's currency; null if not yet calculated.
-          type:
-          - number
-          - 'null'
-          format: double
-        routing:
-          description: Routing information assigned to the shipment (e.g. for retailer-routed freight); null when routing is not applicable.
-          anyOf:
-          - $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiRoutingDataOutput'
-          - type: 'null'
-      required:
-      - carrier
-      - service
-      - carrier_tracking_url
-      - carrier_alpha_code
-      - carrier_trans_method_code
-      - bill_of_lading_number
-      - master_bill_of_lading_number
-      - load_number
-      - authorization_number
-      - estimated_shipping_cost
-      - routing
-      title: Shipment Data Output
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_OrderPackedItemOutput:
-      type: object
-      properties:
-        sku:
-          description: Stock-keeping unit (SKU) of the order item that was packed.
-          type: string
-        line_key:
-          description: Identifier of the order line this packed item refers to; null when the packed item is not tied to a specific line.
-          type:
-          - string
-          - 'null'
-        quantity:
-          description: Number of units of this SKU packed in this package.
-          type: integer
-      required:
-      - sku
-      - line_key
-      - quantity
-      title: Order Packed Item Output
-    Fulfillment_OrderBundle_Input_Enum_OrderItemSpecialInstructionType:
-      type:
-      - string
-      enum:
-      - embroidery
-      title: Order Item Special Instruction Type
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderPartItemOutput:
-      type: object
-      properties:
-        order_number:
-          description: Order number of this part order.
-          type: string
-      required:
-      - order_number
-      title: Order Part Item Output
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderItemProductOutput:
-      type: object
-      properties:
-        sku:
-          description: Stock Keeping Unit (SKU) identifying the product being ordered.
-          type: string
-        quantity:
-          description: Number of units of this physical product allocated to the order line.
-          type: integer
-        backordered_quantity:
-          description: Number of units of this product that could not be allocated because of insufficient stock.
-          type: integer
-        lot:
-          description: Inventory lot (batch) selected for this product. Null when the product is not lot-tracked or no lot has been assigned yet.
-          anyOf:
-          - $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderItemProductLotOutput'
-          - type: 'null'
-        other_potential_lots:
-          description: Other inventory lots that could alternatively be used to fulfill this product.
-          type: array
-          items:
-            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderItemProductLotOutput'
-      required:
-      - sku
-      - quantity
-      - backordered_quantity
-      - lot
-      - other_potential_lots
-      title: Order Item Product Output
-    Fulfillment_OrderBundle_Enum_FulfillmentStrategy:
-      type:
-      - string
-      enum:
-      - standard
-      - drop-ship
-      - cross-dock
-      title: Fulfillment Strategy
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemLotRequirementsInput:
-      type: object
-      properties:
-        minimum_shelf_life_days:
-          description: Minimum remaining shelf life (in days from the ship date) that any allocated lot must have. Omit to accept any shelf life.
-          type:
-          - integer
-          - 'null'
-          minimum: 1
-          default: null
-        lot_controls:
-          description: Specific lots (by lot number and/or expiration date) that must be used to fulfill this item. Leave empty to allow any qualifying lot.
-          type: array
-          items:
-            $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemLotControlInput'
-          default: []
-      required: []
-      title: Create Or Update Order Item Lot Requirements Input
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiShippingOrderDetailAddressOutput:
-      type: object
-      properties:
-        name:
-          description: Full name of the recipient or contact at this address.
-          type:
-          - string
-          - 'null'
-        company:
-          description: Company name at this address, if any.
-          type:
-          - string
-          - 'null'
-        street1:
-          description: Primary street address line (e.g. number and street).
-          type:
-          - string
-          - 'null'
-        street2:
-          description: Secondary street address line (e.g. apartment, suite, or unit).
-          type:
-          - string
-          - 'null'
-        state:
-          description: State, province, or region of the address.
-          type:
-          - string
-          - 'null'
-        city:
-          description: City or locality of the address.
-          type:
-          - string
-          - 'null'
-        zip:
-          description: Postal or ZIP code of the address.
-          type:
-          - string
-          - 'null'
-        country_code:
-          description: ISO 3166-1 alpha-2 country code (e.g. US, DE).
-          type:
-          - string
-          - 'null'
-        phone:
-          description: Contact phone number for the address.
-          type:
-          - string
-          - 'null'
-        email:
-          description: Contact email for the address.
-          type:
-          - string
-          - 'null'
-        residential:
-          description: true if the address is residential, false if commercial, null if unknown.
-          type:
-          - boolean
-          - 'null'
-      required:
-      - name
-      - company
-      - street1
-      - street2
-      - state
-      - city
-      - zip
-      - country_code
-      - phone
-      - email
-      - residential
-      title: Shipping Order Detail Address Output
-    Fulfillment_AccountApiBundle_Input_Order_CreateUpdateFulfillmentRequirements_SpecialRequirementsDatesInput:
-      type: object
-      properties:
-        earliest:
-          type:
-          - string
-          - 'null'
-          format: date
-          default: null
-        requested:
-          type:
-          - string
-          - 'null'
-          format: date
-          default: null
-        latest:
-          type:
-          - string
-          - 'null'
-          format: date
-          default: null
-      required: []
-      title: Special Requirements Dates Input
-    Fulfillment_IntegrationsBundle_Input_CompleteOrderInput:
-      type: object
-      properties:
-        order_key:
-          description: Unique identifier of the order in the external (caller's) system, as originally supplied when the order was created.
-          type: string
-          example: 327b5abd-017a-4504-a50d-54f1cea80269
-        store_id:
-          description: Identifier of the store this return belongs to.
-          type: integer
-          example: 123456
-        pack_type:
-          description: 'Optional packaging type for the simulated fulfillment: ''singlepack'' (all items in one box) or ''multipack'' (items split across multiple boxes).'
-          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Enum_SandboxPackType'
-          default: singlepack
-      required:
-      - order_key
-      - store_id
-      title: Complete Order Input
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiAccountTradingPartnerOutput:
-      type: object
-      properties:
-        id:
-          description: Internal numeric identifier of the trading partner.
-          type: integer
-        identifier:
-          description: Short human-readable code identifying the trading partner.
-          type: string
-        name:
-          description: Display name of the trading partner.
-          type: string
-        account:
-          description: Merchant account that owns this trading partner relationship.
-          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiAccountForTradingPartnerOutput'
-      required:
-      - id
-      - identifier
-      - name
-      - account
-      title: Account Trading Partner Output
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderCartonLabelInput:
-      type: object
-      properties:
-        type:
-          description: Type of label requested to be applied to the carton (e.g., gs1, shipmonk_gs1, customized_carton_labels). Values include order- and carton-level pack lists, retailer packing slips, carton/pallet labels, GS1 labels, and customized or special-instruction labels. Incorrect configuration may result in retailer chargebacks. The ShipMonk B2B team will provide label configuration guidance during the retailer setup process (https://support.shipmonk.com/s/article/New-Retailer-Setup).
-          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Enum_CartonLabelType'
-          default: custom
-        name:
-          description: Human-readable name of the carton label template; used to identify the label in reports.
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        url:
-          description: Publicly accessible URL of the carton label PDF; required when `type` is `custom`.
-          type:
-          - string
-          - 'null'
-          maxLength: 2048
-          default: null
-        shipping_data_required:
-          description: If true, carrier tracking and address data must be merged onto the carton label before printing.
-          type: boolean
-          default: false
-        approved_shipment_id_number_required:
-          description: If true, the retailer's approved shipment ID (e.g., an ASN number returned after the shipment notice) must be printed on the label. The order will not ship until the ID is supplied.
-          type: boolean
-          default: false
-        data_source:
-          description: 'Where the label data comes from. Allowed values: `internal` (data already supplied with the order), `third-party-after-shipment-notification` (label is rendered after a third party returns data following the shipment notification).'
-          $ref: '#/components/schemas/ShipMonk_OMS_RequiredLabels_Enum_RequiredLabelDataSource'
-          default: internal
-      required: []
-      title: Create Or Update Order Carton Label Input
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiExtraDataOutput:
-      type: object
-      properties:
-        label:
-          description: 'Identifier of the extra data type. Currently supported: carrierShippingMethod.'
-          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Enum_ShipmentNotificationExtraDataType'
-        value:
-          description: Value corresponding to the label of the extra data entry.
-          type: string
-      required:
-      - label
-      - value
-      title: Extra Data Output
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemB2BAttributeInput:
-      type: object
-      properties:
-        name:
-          description: Name (key) of the B2B attribute; should be unique within the item's b2b_attributes list.
-          type: string
-          maxLength: 255
-        value:
-          description: Value of the B2B attribute identified by the sibling `name` (free-form string).
-          type: string
-          maxLength: 255
-      required:
-      - name
-      - value
-      title: Create Or Update Order Item B2 B Attribute Input
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PackingGroupOutput:
-      type: object
-      properties:
-        key:
-          description: Stable identifier of the packing group, unique within the order.
-          type: string
-        name:
-          description: Human-readable name of the packing group; null if unnamed.
-          type:
-          - string
-          - 'null'
-      required:
-      - key
-      - name
-      title: Packing Group Output
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiRoutingDataOutput:
-      type: object
-      properties:
-        routing_key:
-          description: Identifier of the routing instructions assigned to this shipment (used to match retailer routing guides).
-          type: string
-      required:
-      - routing_key
-      title: Routing Data Output
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemEmbroiderySpecialInstructionInput:
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/Fulfillment_OrderBundle_Input_Enum_OrderItemSpecialInstructionType'
-        values:
-          description: List of embroidery instruction values
-          type: array
-          items:
-            $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemEmbroiderySpecialInstructionValueInput'
-      required:
-      - type
-      - values
-      title: Create Or Update Order Item Embroidery Special Instruction Input
-    Fulfillment_IntegrationsBundle_Input_SubmitOrderIntoQueueForFulfillmentAtDateInput:
-      type: object
-      properties:
-        order_key:
-          description: Unique identifier of the order in the external (caller's) system, as originally supplied when the order was created.
-          type: string
-          example: 327b5abd-017a-4504-a50d-54f1cea80269
-        store_id:
-          description: Identifier of the store this return belongs to.
-          type: integer
-          example: 123456
-        submit_at:
-          description: ISO 8601 timestamp at which the order should be released into the fulfillment queue; submitting in the past releases it immediately.
-          type: string
-          format: date-time
-          example: '2025-07-24 14:53:00'
-      required:
-      - order_key
-      - store_id
-      - submit_at
-      title: Submit Order Into Queue For Fulfillment At Date Input
-    Fulfillment_IntegrationsBundle_Enum_CartonLabelType:
-      type:
-      - string
-      enum:
-      - gs1
-      - shipmonk_gs1
-      - customized_carton_labels
-      - custom
-      title: Carton Label Type
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderDetailCustomDataOutput:
-      type: object
-      properties:
-        name:
-          description: Key name of the custom data entry.
-          type: string
-        value:
-          description: Value of the custom data entry.
-          type: string
-      required:
-      - name
-      - value
-      title: Order Detail Custom Data Output
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderCostsOutput:
-      type: object
-      properties:
-        estimated_shipping_related_charges:
-          description: Estimated shipping-related charges for the order. Null when no estimate is available.
-          anyOf:
-          - $ref: '#/components/schemas/ShipMonk_Money_Output_MoneyOutput'
-          - type: 'null'
-        estimated_packaging_material_charges:
-          description: Estimated charges for packaging materials used in the order. Null when no estimate is available.
-          anyOf:
-          - $ref: '#/components/schemas/ShipMonk_Money_Output_MoneyOutput'
-          - type: 'null'
-        estimated_pick_and_pack_charges:
-          description: Estimated charges for picking and packing labor for the order. Null when no estimate is available.
-          anyOf:
-          - $ref: '#/components/schemas/ShipMonk_Money_Output_MoneyOutput'
-          - type: 'null'
-      required:
-      - estimated_shipping_related_charges
-      - estimated_packaging_material_charges
-      - estimated_pick_and_pack_charges
-      title: Order Costs Output
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiAccountForTradingPartnerOutput:
-      type: object
-      properties:
-        id:
-          description: Internal numeric identifier of the merchant account.
-          type: integer
-        name:
-          description: Display name of the merchant account.
-          type: string
-      required:
-      - id
-      - name
-      title: Account For Trading Partner Output
-    Fulfillment_AccountApiBundle_Input_Order_OrderReferenceInput:
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/Fulfillment_OrderBundle_Enum_OrderReferenceType'
-        value:
-          type: string
-          pattern: \S
-      required:
-      - type
-      - value
-      title: Order Reference Input
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderSpecialRequirementsInput:
-      type: object
-      properties:
-        special_instruction:
-          description: Free-form instructions shown to warehouse staff while processing the order (e.g., 'fragile, do not stack').
-          type:
-          - string
-          - 'null'
-          pattern: \S
-          default: null
-        pack_list_required:
-          description: If true, a packing list document is enclosed in the shipment. Stored on creation only; ignored on subsequent updates.
-          type: boolean
-          default: false
-        carton_labels:
-          description: Carton labels (e.g., GS1, retailer-customized) that must be printed and affixed to each carton during packing.
-          type: array
-          items:
-            $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderCartonLabelInput'
-          default: []
-        order_level_packing_slip:
-          description: Configuration of the packing slip generated for the whole order (as opposed to per-carton); omit to use the account default.
-          anyOf:
-          - $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderPackingSlipInput'
-          - type: 'null'
-          default: null
-        shipping_label:
-          description: Pre-generated shipping label supplied by the merchant; when present, the warehouse uses this label instead of buying postage.
-          anyOf:
-          - $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderShippingLabelInput'
-          - type: 'null'
-          default: null
-        additional_documents:
-          description: Extra documents (e.g., commercial invoices, MSDS, certificates) that must be printed and enclosed with the shipment.
-          type: array
-          items:
-            $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderAdditionalDocumentInput'
-          default: []
-        shipping_date:
-          description: Requested ship-by date (single date or range, in ISO 8601). Warehouse will attempt to ship within this window.
-          anyOf:
-          - $ref: '#/components/schemas/Fulfillment_AccountApiBundle_Input_Order_CreateUpdateFulfillmentRequirements_SpecialRequirementsDatesInput'
-          - type: 'null'
-          default: null
-        delivery_date:
-          description: Required delivery date (single date or range, in ISO 8601). Warehouse picks a service expected to arrive within this window.
-          anyOf:
-          - $ref: '#/components/schemas/Fulfillment_AccountApiBundle_Input_Order_CreateUpdateFulfillmentRequirements_SpecialRequirementsDatesInput'
-          - type: 'null'
-          default: null
-        cancel_date:
-          description: ISO 8601 date after which the order should be auto-cancelled if it has not yet shipped; omit to disable auto-cancellation.
-          type:
-          - string
-          - 'null'
-          format: date
-          default: null
-        fulfillment_strategy:
-          description: 'Fulfillment strategy for this order: standard (default D2C pick-and-pack), drop_ship (retailer D2C via EDI, requires Retailer Setup), cross_dock (pre-packed manufacturer orders received in bulk and routed outbound without pick-and-pack).'
-          anyOf:
-          - $ref: '#/components/schemas/Fulfillment_OrderBundle_Enum_FulfillmentStrategy'
-          - type: 'null'
-          default: null
-      required: []
-      title: Create Or Update Order Special Requirements Input
-    Fulfillment_OrderBundle_Enum_OrderReferenceType:
-      type:
-      - string
-      enum:
-      - order_number
-      - original_imported_order_number
-      - customer_order_number
-      - po_number
-      - reference_number
-      - b2b_routing_reference
-      - release_number
-      - job_number
-      - depositor_order_number
-      title: Order Reference Type
+      - internal
+      - third-party-after-shipment-notification
+      title: Required Label Data Source
     Fulfillment_IntegrationsBundle_ApiResource_Output_Order_Enum_PublicApiOrderStatus:
       type:
       - string
@@ -2078,90 +2158,77 @@ components:
       - onHold
       - cancelled
       title: Order Status
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderPackageDataOutput:
+    ShipMonk_OMS_RequiredLabels_Enum_PackingLabelType:
+      type:
+      - string
+      enum:
+      - shipmonk_pack_list_order_level
+      - shipmonk_pack_list_carton_level
+      - retailer_packing_slip_order_level
+      - shipmonk_carton_label
+      - shipmonk_pallet_label
+      - gs1_label
+      - shipmonk_gs1
+      - customized_carton_labels
+      - liquid_iv_packing_list
+      - custom_pack_list_order_level
+      - special_instructions
+      title: Packing Label Type
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderList_PublicApiOrderListOutput:
       type: object
       properties:
-        number:
-          description: Sequential index (1-based) of this package within the order; null if not assigned.
-          type:
-          - integer
-          - 'null'
-        tracking_number:
-          description: Carrier tracking number for this package; null if not yet generated or untrackable.
-          type:
-          - string
-          - 'null'
-        tracking_url:
-          description: Carrier URL for tracking this package; null if not yet available.
-          type:
-          - string
-          - 'null'
-        weight_lb:
-          description: Total weight of the package (the unit, despite the field name, is provided in the value object); null if not measured.
-          anyOf:
-          - $ref: '#/components/schemas/ShipMonk_Measurement_Output_WeightOutput'
-          - type: 'null'
-        pallet_weight_lb:
-          description: Weight of the pallet on which this package is shipped (unit given inside the value object); null if not palletized or not measured.
-          anyOf:
-          - $ref: '#/components/schemas/ShipMonk_Measurement_Output_WeightOutput'
-          - type: 'null'
-        pallet_number:
-          description: Index (1-based) of the pallet that contains this package; null if not palletized.
-          type:
-          - integer
-          - 'null'
-        box_number:
-          description: Index (1-based) of the box within its pallet; null if not palletized.
-          type:
-          - integer
-          - 'null'
-        carton_labels:
-          description: Carton-level labels (e.g. packing slip, pallet label) applied to this package.
+        orders:
+          description: Orders matching the request criteria for the current page.
           type: array
           items:
-            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiPackageCartonLabelOutput'
-        packed_products:
-          description: Products contained in this package, aggregated by SKU with packed quantities and lot details.
-          type: array
-          items:
-            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiPackedProductOutput'
-        packing_group:
-          description: Packing group this package belongs to, used to split an order across multiple shipments; null if not grouped.
-          anyOf:
-          - $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PackingGroupOutput'
-          - type: 'null'
-        packed_items:
-          description: Order line items packed in this package, with per-line quantities.
-          type: array
-          items:
-            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_OrderPackedItemOutput'
+            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderDetailOutput'
       required:
-      - number
-      - tracking_number
-      - tracking_url
-      - weight_lb
-      - pallet_weight_lb
-      - pallet_number
-      - box_number
-      - carton_labels
-      - packed_products
-      - packing_group
-      - packed_items
-      title: Order Package Data Output
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderReferenceOutput:
+      - orders
+      title: Order List Output
+    ShipMonk_Measurement_Output_WeightOutput:
       type: object
       properties:
-        type:
-          description: 'Type of order reference. One of: order_number, original_imported_order_number, customer_order_number, po_number, reference_number, b2b_routing_reference, release_number, job_number, depositor_order_number.'
-          $ref: '#/components/schemas/Fulfillment_OrderBundle_Enum_OrderReferenceType'
         value:
-          description: The reference identifier value, interpreted according to type.
+          description: Numeric weight value, expressed in the unit given by the unit field.
+          type: number
+          format: double
+        unit:
+          description: 'Unit of measure for the weight value. One of: kg, g, lb, oz.'
+          $ref: '#/components/schemas/ShipMonk_Measurement_ValueObject_WeightUnit'
+      required:
+      - value
+      - unit
+      title: Weight Output
+    Fulfillment_IntegrationsBundle_Crate_OrderSyncOutput:
+      type: object
+      properties:
+        message:
+          description: Human-readable message indicating whether the order was created or updated.
           type: string
       required:
-      - type
-      - value
-      title: Order Reference Output
+      - message
+      title: Order Sync Output
+    Fulfillment_OrderBundle_Enum_FulfillmentStrategy:
+      type:
+      - string
+      enum:
+      - standard
+      - drop-ship
+      - cross-dock
+      title: Fulfillment Strategy
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiStoreNameOutput:
+      type: object
+      properties:
+        id:
+          description: Internal numeric identifier of the store.
+          type: integer
+        name:
+          description: Display name of the store.
+          type: string
+      required:
+      - id
+      - name
+      title: Store Name Output
     ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderPackingSlipInput:
       type: object
       properties:
@@ -2186,129 +2253,12 @@ components:
           default: false
       required: []
       title: Create Or Update Order Packing Slip Input
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiCountryDetailOutput:
-      type: object
-      properties:
-        code:
-          description: ISO 3166-1 alpha-2 country code; null if unknown.
-          type:
-          - string
-          - 'null'
-        name:
-          description: Country name in English; null if unknown.
-          type:
-          - string
-          - 'null'
-      required:
-      - code
-      - name
-      title: Country Detail Output
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderTaxIdInput:
-      type: object
-      properties:
-        type:
-          description: 'Type of tax identifier supplied in `value`. Allowed: `VAT`, `IOSS`, `TIN`, `EIN`, `EORI`, `ARN`, `RFC`, `CPF`, `CNPJ`, `PCCC`.'
-          $ref: '#/components/schemas/Fulfillment_UserBundle_Enum_TaxIdType'
-        value:
-          description: The tax identifier string itself, formatted according to the rules of the chosen `type` and `issuing_country_id`.
-          type: string
-          maxLength: 255
-        issuing_country_id:
-          description: ISO 3166-1 alpha-2 country code of the authority that issued the tax ID (e.g., 'DE' for a German VAT number).
-          type: string
-          minLength: 2
-          maxLength: 2
-      required:
-      - type
-      - value
-      - issuing_country_id
-      title: Create Or Update Order Tax Id Input
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSpecialRequirementsOutput:
-      type: object
-      properties:
-        special_instruction:
-          description: Free-text special handling instructions for the order, or null if none.
-          type:
-          - string
-          - 'null'
-        carton_labels:
-          description: Carton labels (name and download URL) that must be applied to the order's cartons.
-          type: array
-          items:
-            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSpecialInstructionNameUrlOutput'
-        additional_documents:
-          description: Additional documents (name and download URL) that must accompany the order.
-          type: array
-          items:
-            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSpecialInstructionNameUrlOutput'
-        shipping_label:
-          description: Customer-provided shipping label to be used for the order; null if not supplied.
-          anyOf:
-          - $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiShippingLabelOutput'
-          - type: 'null'
-        shipping_date:
-          description: Requested shipping date with earliest, requested, and latest dates (ISO-8601); null if none requested.
-          anyOf:
-          - $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSpecialInstructionDateOutput'
-          - type: 'null'
-        delivery_date:
-          description: Requested delivery date with earliest, requested, and latest dates (ISO-8601); null if none requested.
-          anyOf:
-          - $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiSpecialInstructionDateOutput'
-          - type: 'null'
-        cancel_date:
-          description: Date (ISO-8601) after which the order should be cancelled if not yet shipped; null if no cutoff.
-          type:
-          - string
-          - 'null'
-          format: date-time
-        pack_list_required:
-          description: True if a packing list document must be included with the shipment.
-          type: boolean
-      required:
-      - special_instruction
-      - carton_labels
-      - additional_documents
-      - shipping_label
-      - shipping_date
-      - delivery_date
-      - cancel_date
-      - pack_list_required
-      title: Special Requirements Output
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderB2BAttributeInput:
-      type: object
-      properties:
-        name:
-          description: Name (key) of the B2B attribute; should be unique within the item's b2b_attributes list.
-          type: string
-          maxLength: 255
-        value:
-          anyOf:
-          - type: integer
-          - type: number
-          - type: boolean
-          - type: string
-          - type: array
-      required:
-      - name
-      - value
-      title: Create Or Update Order B2 B Attribute Input
-    Fulfillment_IntegrationsBundle_Crate_OrderSyncOutput:
-      type: object
-      properties:
-        message:
-          description: Human-readable message indicating whether the order was created or updated.
-          type: string
-      required:
-      - message
-      title: Order Sync Output
-    Fulfillment_IntegrationsBundle_Enum_SandboxPackType:
+    Fulfillment_IntegrationsBundle_Enum_OrderLevelPackingSlipType:
       type:
       - string
       enum:
-      - singlepack
-      - multipack
-      title: Sandbox Pack Type
+      - retailer
+      title: Order Level Packing Slip Type
     ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemInput:
       type: object
       properties:
@@ -2383,164 +2333,241 @@ components:
       - sku
       - quantity
       title: Create Or Update Order Item Input
-    Fulfillment_PublicApiBundle_ApiResource_ShippingMethod_PublicApiShippingMethodDetailOutput:
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderAttributeInput:
       type: object
       properties:
-        id:
-          type: integer
         name:
+          description: Key identifying the custom attribute; must be unique within the order's attributes array.
           type: string
-        carrier:
-          $ref: '#/components/schemas/Fulfillment_PublicApiBundle_ApiResource_Carrier_PublicApiCarrierDetailOutput'
-      required:
-      - id
-      - name
-      - carrier
-      title: Shipping Method Detail Output
-    Fulfillment_IntegrationsBundle_Enum_OrderLevelPackingSlipType:
-      type:
-      - string
-      enum:
-      - retailer
-      title: Order Level Packing Slip Type
-    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiPackageCartonLabelOutput:
-      type: object
-      properties:
-        type:
-          description: Kind of label printed on the carton. Values include order- and carton-level pack lists, retailer packing slips, carton/pallet labels, GS1 labels, and customized or special-instruction labels.
-          $ref: '#/components/schemas/ShipMonk_OMS_RequiredLabels_Enum_PackingLabelType'
-        identifier:
-          description: Identifier printed on the label (e.g. SSCC); null if the label type has no identifier.
-          type:
-          - string
-          - 'null'
-      required:
-      - type
-      - identifier
-      title: Package Carton Label Output
-    Fulfillment_PublicApiBundle_ApiResource_Order_PublicApiOrderTaxIdOutput:
-      type: object
-      properties:
-        tax_id_type:
-          description: 'Type of tax identifier. One of: VAT, IOSS, TIN, EIN, EORI, ARN, RFC, CPF, CNPJ, PCCC.'
-          $ref: '#/components/schemas/Fulfillment_UserBundle_Enum_TaxIdType'
+          maxLength: 255
         value:
-          description: Tax identification number, formatted according to its type and issuing country.
+          description: Value paired with the attribute `name` on the order.
           type: string
-        issuing_country:
-          description: Country that issued the tax identification number.
-          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiCountryDetailOutput'
+          maxLength: 255
       required:
-      - tax_id_type
+      - name
       - value
-      - issuing_country
-      title: Order Tax Id Output
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemLotControlInput:
+      title: Create Or Update Order Attribute Input
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderShipToInput:
       type: object
       properties:
-        lot_number:
-          description: Specific lot number that must be picked for this item; omit to allow any lot.
+        name:
+          description: Full name of the recipient as it should appear on the shipping label.
           type:
           - string
           - 'null'
           maxLength: 255
           default: null
-        expiration_date:
-          description: Required expiration date of the picked lot in ISO 8601 (YYYY-MM-DD) format; omit to allow any expiration.
+        company:
+          description: Recipient's company name as it should appear on the shipping label; omit for residential deliveries.
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+        street1:
+          description: First line of the recipient's street address (e.g., house number and street).
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+        street2:
+          description: Second line of the recipient's street address (apartment, suite, or unit); omit if not applicable.
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+        state:
+          description: State, province, or region; use the ISO 3166-2 subdivision code where one exists (e.g., 'CA' for California).
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+        city:
+          description: City of the recipient's address.
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+        zip:
+          description: Postal or ZIP code of the recipient's address.
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+        country_code:
+          description: ISO 3166-1 alpha-2 country code of the recipient (e.g., 'US', 'GB').
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+        phone:
+          description: Recipient phone number in E.164 format; used by carriers for delivery contact.
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+      required: []
+      title: Create Or Update Order Ship To Input
+    Fulfillment_IntegrationsBundle_Enum_SandboxPackType:
+      type:
+      - string
+      enum:
+      - singlepack
+      - multipack
+      title: Sandbox Pack Type
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiRoutingDataOutput:
+      type: object
+      properties:
+        routing_key:
+          description: Identifier of the routing instructions assigned to this shipment (used to match retailer routing guides).
+          type: string
+      required:
+      - routing_key
+      title: Routing Data Output
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiOrderCostsOutput:
+      type: object
+      properties:
+        estimated_shipping_related_charges:
+          description: Estimated shipping-related charges for the order. Null when no estimate is available.
+          anyOf:
+          - $ref: '#/components/schemas/ShipMonk_Money_Output_MoneyOutput'
+          - type: 'null'
+        estimated_packaging_material_charges:
+          description: Estimated charges for packaging materials used in the order. Null when no estimate is available.
+          anyOf:
+          - $ref: '#/components/schemas/ShipMonk_Money_Output_MoneyOutput'
+          - type: 'null'
+        estimated_pick_and_pack_charges:
+          description: Estimated charges for picking and packing labor for the order. Null when no estimate is available.
+          anyOf:
+          - $ref: '#/components/schemas/ShipMonk_Money_Output_MoneyOutput'
+          - type: 'null'
+      required:
+      - estimated_shipping_related_charges
+      - estimated_packaging_material_charges
+      - estimated_pick_and_pack_charges
+      title: Order Costs Output
+    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderSpecialRequirementsInput:
+      type: object
+      properties:
+        special_instruction:
+          description: Free-form instructions shown to warehouse staff while processing the order (e.g., 'fragile, do not stack').
+          type:
+          - string
+          - 'null'
+          pattern: \S
+          default: null
+        pack_list_required:
+          description: If true, a packing list document is enclosed in the shipment. Stored on creation only; ignored on subsequent updates.
+          type: boolean
+          default: false
+        carton_labels:
+          description: Carton labels (e.g., GS1, retailer-customized) that must be printed and affixed to each carton during packing.
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderCartonLabelInput'
+          default: []
+        order_level_packing_slip:
+          description: Configuration of the packing slip generated for the whole order (as opposed to per-carton); omit to use the account default.
+          anyOf:
+          - $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderPackingSlipInput'
+          - type: 'null'
+          default: null
+        shipping_label:
+          description: Pre-generated shipping label supplied by the merchant; when present, the warehouse uses this label instead of buying postage.
+          anyOf:
+          - $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderShippingLabelInput'
+          - type: 'null'
+          default: null
+        additional_documents:
+          description: Extra documents (e.g., commercial invoices, MSDS, certificates) that must be printed and enclosed with the shipment.
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderAdditionalDocumentInput'
+          default: []
+        shipping_date:
+          description: Requested ship-by date (single date or range, in ISO 8601). Warehouse will attempt to ship within this window.
+          anyOf:
+          - $ref: '#/components/schemas/Fulfillment_AccountApiBundle_Input_Order_CreateUpdateFulfillmentRequirements_SpecialRequirementsDatesInput'
+          - type: 'null'
+          default: null
+        delivery_date:
+          description: Required delivery date (single date or range, in ISO 8601). Warehouse picks a service expected to arrive within this window.
+          anyOf:
+          - $ref: '#/components/schemas/Fulfillment_AccountApiBundle_Input_Order_CreateUpdateFulfillmentRequirements_SpecialRequirementsDatesInput'
+          - type: 'null'
+          default: null
+        cancel_date:
+          description: ISO 8601 date after which the order should be auto-cancelled if it has not yet shipped; omit to disable auto-cancellation.
           type:
           - string
           - 'null'
           format: date
           default: null
+        fulfillment_strategy:
+          description: 'Fulfillment strategy for this order: standard (default D2C pick-and-pack), drop_ship (retailer D2C via EDI, requires Retailer Setup), cross_dock (pre-packed manufacturer orders received in bulk and routed outbound without pick-and-pack).'
+          anyOf:
+          - $ref: '#/components/schemas/Fulfillment_OrderBundle_Enum_FulfillmentStrategy'
+          - type: 'null'
+          default: null
       required: []
-      title: Create Or Update Order Item Lot Control Input
-    ShipMonk_WmsConnector_Order_ValueObject_WmsType:
+      title: Create Or Update Order Special Requirements Input
+    Fulfillment_IntegrationsBundle_ApiResource_Output_Order_PublicApiShippingLabelOutput:
+      type: object
+      properties:
+        url:
+          description: URL from which the customer-provided shipping label can be downloaded.
+          type: string
+      required:
+      - url
+      title: Shipping Label Output
+    ShipMonk_ShippingConnector_ValueObject_PublicApiCarrierIdentifier:
       type:
       - string
       enum:
-      - shipmonk
-      - deposco
-      - merchant_facility
-      title: Wms Type
-    ShipMonk_PublicApi_Order_OrderCreateOrUpdate_CreateOrUpdateOrderItemEmbroiderySpecialInstructionValueInput:
+      - CanadaPost
+      - Cirro
+      - DHL eCommerce
+      - DHL Express
+      - DPD
+      - FedEx
+      - Global-E
+      - International Bridge
+      - OnTrac
+      - Passport
+      - Royal Mail
+      - ShipMonk
+      - SpeedX
+      - UPS
+      - USPS
+      title: Carrier Identifier
+    ShipMonk_Money_Output_MoneyOutput:
       type: object
       properties:
-        type:
-          description: Type of embroidery
-          $ref: '#/components/schemas/ShipMonk_OMS_Order_Enum_Embroidery_EmbroideryType'
-        location:
-          description: Location on the product where the embroidery should be placed
+        amount:
+          description: Decimal monetary amount in the currency given by the sibling currency field.
+          type: number
+          format: double
+        currency:
+          description: ISO 4217 currency code (e.g. USD, EUR) for the accompanying amount.
           type: string
-          maxLength: 255
-        color:
-          description: Thread color for the embroidery
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        font:
-          description: Font for embroidered text
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        line1:
-          description: First line of embroidery text
-          type:
-          - string
-          - 'null'
-          maxLength: 25
-          default: null
-        line2:
-          description: Second line of embroidery text
-          type:
-          - string
-          - 'null'
-          maxLength: 25
-          default: null
-        line3:
-          description: Third line of embroidery text
-          type:
-          - string
-          - 'null'
-          maxLength: 25
-          default: null
-        logo_url:
-          description: URL of the logo file to be embroidered on the product
-          type:
-          - string
-          - 'null'
-          maxLength: 2048
-          default: null
-        file_identifier:
-          description: File identifier for the embroidery design
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        symbol:
-          description: Symbol identifier for embroidery designs
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        symbol_color:
-          description: Color of the embroidered symbol
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
       required:
-      - type
-      - location
-      title: Create Or Update Order Item Embroidery Special Instruction Value Input
+      - amount
+      - currency
+      title: Money Output
   securitySchemes:
     api_key_header_Api-Key:
       type: apiKey
       in: header
       name: Api-Key
+x-refined-from:
+- shipmonk-openapi.json
+- shipmonk-orders-openapi.yml

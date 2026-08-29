@@ -1,29 +1,43 @@
 {
   "provider": "shipmonk",
   "sources": [
-    "shipmonk-orders-api-openapi.yml",
-    "shipmonk-products-api-openapi.yml",
-    "shipmonk-receivings-api-openapi.yml",
-    "shipmonk-returns-api-openapi.yml",
-    "shipmonk-warehouses-api-openapi.yml"
+    "_original/shipmonk-openapi.json",
+    "_original/shipmonk-orders-openapi.yml",
+    "_original/shipmonk-products-openapi.yml",
+    "_original/shipmonk-receivings-openapi.yml",
+    "_original/shipmonk-returns-openapi.yml",
+    "_original/shipmonk-warehouses-openapi.yml"
   ],
   "outputs": [
     "shipmonk-orders-api-openapi.yml",
     "shipmonk-products-api-openapi.yml",
     "shipmonk-receivings-api-openapi.yml",
     "shipmonk-returns-api-openapi.yml",
-    "shipmonk-warehouses-api-openapi.yml"
+    "shipmonk-warehouses-api-openapi.yml",
+    "shipmonk-webhooks-api-openapi.yml"
   ],
   "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
-    "shipmonk-orders-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "shipmonk-products-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "shipmonk-receivings-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "shipmonk-returns-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "shipmonk-warehouses-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "apis.yml register: already-registered"
+    "sourced from openapi/_original/ (6 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "shipmonk-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "shipmonk-orders-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "shipmonk-products-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "shipmonk-receivings-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "shipmonk-returns-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "shipmonk-warehouses-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "tag 'Orders' spans 2 source specs (shipmonk-openapi.json, shipmonk-orders-openapi.yml): per-path servers applied",
+    "tag 'Products' spans 2 source specs (shipmonk-openapi.json, shipmonk-products-openapi.yml): per-path servers applied",
+    "tag 'Receivings' spans 2 source specs (shipmonk-openapi.json, shipmonk-receivings-openapi.yml): per-path servers applied",
+    "tag 'Returns' spans 2 source specs (shipmonk-openapi.json, shipmonk-returns-openapi.yml): per-path servers applied",
+    "tag 'Warehouses' spans 2 source specs (shipmonk-openapi.json, shipmonk-warehouses-openapi.yml): per-path servers applied"
   ],
-  "skipped": []
+  "skipped": [
+    "shipmonk-orders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shipmonk-products-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shipmonk-receivings-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shipmonk-returns-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "shipmonk-warehouses-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

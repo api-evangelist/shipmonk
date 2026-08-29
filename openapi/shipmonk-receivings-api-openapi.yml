@@ -1,17 +1,20 @@
 openapi: 3.2.0
 info:
-  title: ShipMonk Receivings API
+  title: Shipmonk Receivings API
   version: v1.024
-  description: The Receivings surface of the ShipMonk public fulfillment API.
+  description: 'Operations tagged Receivings across 2 of this provider''s published API definitions: shipmonk-openapi.json, shipmonk-receivings-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.shipmonk.com
   description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production. Just write us at api@shipmonk.com and we will handle it.
 - url: https://sandbox.shipmonk.dev
   description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed contracts.'
-security:
-- api_key_header_Api-Key: []
 tags:
 - name: Receivings
+  description: '## ASN & Receiving Key
+
+    - Each Receiving has an ASN and is uniquely identified by it.
+
+    - Each Receiving can additionally have its own receiving_key and also be uniquely identified by it.'
 paths:
   /v1/integrations/receiving:
     get:
@@ -95,6 +98,11 @@ paths:
             schema:
               $ref: '#/components/schemas/ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_CreateOrUpdateReceivingInput'
       summary: Create or Update Receiving
+    servers:
+    - url: https://api.shipmonk.com
+      description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production. Just write us at api@shipmonk.com and we will handle it.
+    - url: https://sandbox.shipmonk.dev
+      description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed contracts.'
   /v1/integrations/receipts-list:
     get:
       operationId: get-v1-integrations-receipts-list
@@ -180,6 +188,11 @@ paths:
       security:
       - api_key_header_Api-Key: []
       summary: Retrieve List of Receipts
+    servers:
+    - url: https://api.shipmonk.com
+      description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production. Just write us at api@shipmonk.com and we will handle it.
+    - url: https://sandbox.shipmonk.dev
+      description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed contracts.'
   /v1/integrations/receivings-list:
     get:
       operationId: get-v1-integrations-receivings-list
@@ -266,6 +279,11 @@ paths:
       security:
       - api_key_header_Api-Key: []
       summary: Retrieve List of Receivings
+    servers:
+    - url: https://api.shipmonk.com
+      description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production. Just write us at api@shipmonk.com and we will handle it.
+    - url: https://sandbox.shipmonk.dev
+      description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed contracts.'
   /v1/integrations/sandbox/complete-receiving:
     post:
       operationId: post-v1-integrations-sandbox-complete-receiving
@@ -302,76 +320,80 @@ paths:
             schema:
               $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Input_ReceivingCompleteInput'
       summary: Complete Receiving
+    servers:
+    - url: https://api.shipmonk.com
+      description: Once you finish testing on Sandbox, our support team generates you Production API keys and store_id for production. Just write us at api@shipmonk.com and we will handle it.
+    - url: https://sandbox.shipmonk.dev
+      description: 'Sandbox environment is used for preproduction testing. It allows you to play around without worries of corrupting the data. We highly recommend using the Sandbox environment and run tests before going to Production. To get access to the Sandbox, please contact the ShipMonk support team. Note: Sandbox access can only be requested by customers with signed contracts.'
 components:
   schemas:
-    Fulfillment_CommonBundle_ApiResource_IntegrationDataOutput:
+    ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_ReceivingItemInput:
       type: object
       properties:
-        name:
-          description: Key of the custom data entry.
+        sku:
+          description: Stock Keeping Unit (SKU), the client's unique product code.
           type: string
-        value:
-          description: Value of the custom data entry; may be any JSON-serializable structure.
-          type: object
-      required:
-      - name
-      - value
-      title: Integration Data Output
-    Fulfillment_IntegrationsBundle_Input_ReceivingCompleteInput:
-      type: object
-      properties:
-        receiving_key:
-          description: Caller-supplied unique identifier of the receiving (purchase order). Either receiving_key or asn must be provided to identify the target receiving.
+        expected_quantity:
+          description: Number of units expected on this line; must be greater than 0.
+          example: 50
+          type: integer
+          minimum: 1
+        barcode:
+          description: Barcode used to identify the product (e.g. UPC, EAN). Required if the product cannot be resolved by other means; must match an existing product's barcode.
+          example: 0123456789012
           type:
           - string
           - 'null'
-          example: key-123
-        asn:
-          description: Optional filter to retrieve a receiving by its Advance Shipping Notice (ASN) number, a supplier-provided identifier for the incoming shipment.
-          type:
-          - string
-          - 'null'
-          example: ASN-12345
-        completion_mode:
-          description: 'How the sandbox should simulate completion: ''fully_received'' (all expected units), ''short_received'' (fewer than expected), ''excess_received'' (more than expected), or ''partially_received'' (partial completion that leaves the receiving open).'
-          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Enum_ReceivingCompletionMode'
-      required:
-      - completion_mode
-      title: Receiving Complete Input
-    ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_PalletInput:
-      type: object
-      properties:
-        pallet_key:
-          description: Client-supplied key that uniquely identifies this pallet within the request; referenced by cartons.pallet_key.
-          type: string
           maxLength: 255
-        identifiers:
-          description: Optional list of typed identifiers (e.g. SSCC barcode) attached to this pallet; at most one entry per type, and each value must be unique across all cartons and pallets of the receiving.
-          type: array
-          items:
-            $ref: '#/components/schemas/ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_LpnInput'
-          default: []
+          default: null
+        lot:
+          description: Lot/batch tracking data for this line. Provide when the product is lot-tracked; omit or pass null otherwise.
+          anyOf:
+          - $ref: '#/components/schemas/ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_ReceivingItemLotInput'
+          - type: 'null'
+          default: null
+        line_key:
+          description: Optional client-supplied key uniquely identifying this line within the receiving. Required when using the packing-hierarchy fields (carton_key or loose_units_pallet_key); must be unique across items in this request.
+          example: LINE-001
+          type:
+          - string
+          - 'null'
+          default: null
+        carton_key:
+          description: Key referencing a carton in cartons[].carton_key, indicating these units are packed in that carton. Exactly one of carton_key or loose_units_pallet_key must be non-null when using the packing-hierarchy fields.
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+        loose_units_pallet_key:
+          description: Key referencing a pallet in pallets[].pallet_key, indicating these units sit loose on that pallet (no carton). Exactly one of carton_key or loose_units_pallet_key must be non-null when using the packing-hierarchy fields.
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
       required:
-      - pallet_key
-      title: Pallet Input
-    ShipMonk_OMS_Receiving_ApiResource_PublicApiLotControlOutput:
+      - sku
+      - expected_quantity
+      title: Receiving Item Input
+    Fulfillment_IntegrationsBundle_Crate_ReturnOrReceivingItemProductPublicApiOutput:
       type: object
       properties:
-        lot_number:
-          description: Lot number assigned to the product batch, or null if the lot is identified only by expiration date.
-          type:
-          - string
-          - 'null'
-        expiration_date:
-          description: Lot expiration date in ISO 8601 format (YYYY-MM-DD), or null if not applicable.
-          type:
-          - string
-          - 'null'
-          format: date
+        id:
+          description: Server-assigned numeric identifier of the product.
+          type: integer
+        sku:
+          description: Stock Keeping Unit (SKU), the client's unique product code.
+          type: string
+        name:
+          description: Human-readable name of the product.
+          type: string
       required:
-      - lot_number
-      - expiration_date
-      title: Lot Control Output
+      - id
+      - sku
+      - name
+      title: Return Or Receiving Item Product Output
     Fulfillment_IntegrationsBundle_Crate_ReturnOrReceivingItemLotPublicApiOutput:
       type: object
       properties:
@@ -390,12 +412,40 @@ components:
       - lot_number
       - expiration_date
       title: Return Or Receiving Item Lot Output
-    ShipMonk_OMS_Receiving_Enum_LpnType:
-      type:
-      - string
-      enum:
-      - SSCC
-      title: Lpn Type
+    ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_ReceivingItemLotInput:
+      type: object
+      properties:
+        lot_number:
+          description: Supplier-assigned lot/batch number. Pass null if unknown.
+          example: LOT-2025-001
+          type:
+          - string
+          - 'null'
+          default: null
+        expiration_date:
+          description: Lot expiration date in ISO 8601 format (YYYY-MM-DD). Pass null if the product has no expiration.
+          type:
+          - string
+          - 'null'
+          format: date
+          default: null
+      required: []
+      title: Receiving Item Lot Input
+    ShipMonk_OMS_Receiving_ApiResource_PublicApiPalletOutput:
+      type: object
+      properties:
+        pallet_key:
+          description: Client-supplied unique key identifying this pallet within the receiving; referenced by cartons[].pallet_key and receiving_lines[].loose_units_pallet_key.
+          type: string
+        identifiers:
+          description: Packaging identifiers attached to this pallet (e.g. SSCC barcodes).
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipMonk_OMS_Receiving_ApiResource_PublicApiLpnOutput'
+      required:
+      - pallet_key
+      - identifiers
+      title: Pallet Output
     ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingReceiptOutput:
       type: object
       properties:
@@ -451,68 +501,136 @@ components:
       - receiving_lines
       - custom_data
       title: Receiving Receipt Output
-    ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingReceiptItemDetailOutput:
+    ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingOutput:
       type: object
       properties:
-        line_key:
-          description: Caller-supplied line key of the receiving line this detail belongs to; null if no key was provided.
+        id:
+          description: Server-assigned numeric identifier of the receiving. Use this value to reference the receiving in subsequent API calls.
+          type: integer
+        warehouse:
+          description: Code of the warehouse where the goods are being received.
+          type: string
+        receiving_key:
+          description: Client-supplied reference (e.g. purchase order number) for the receiving, or null if none was provided at creation.
           type:
           - string
           - 'null'
-        received_quantity:
-          description: Number of units received in this detail entry.
+        asn:
+          description: Advance Shipping Notice (ASN) number, a supplier-provided identifier for the incoming shipment.
+          type: string
+        bol_number:
+          description: Bill of Lading (BOL) number from the carrier transport document, or null if not provided.
+          anyOf:
+          - type: string
+          - type: 'null'
+        supplier_name:
+          description: Name of the supplier sending the goods.
+          type: string
+        handling_unit_type:
+          description: Type of handling units used to ship the goods.
+          $ref: '#/components/schemas/ShipMonk_Warehouse_WarehouseReceiving_Enum_WarehouseReceivingPacking'
+        handling_unit_quantity:
+          description: Total number of handling units (as specified by handling_unit_type) in the shipment.
           type: integer
-        received_at:
-          description: Timestamp when this batch was received at the warehouse, in ISO 8601 format. Null if not yet received.
+        estimated_delivery:
+          description: Estimated date when the shipment is expected to arrive at the warehouse, in ISO 8601 format (YYYY-MM-DD).
+          type: string
+        description:
+          description: Free-form notes about the receiving, or null if none were provided.
+          type:
+          - string
+          - 'null'
+        status:
+          description: 'Current status of the receiving: awaiting (created, shipment not yet arrived), arrived (shipment received at the warehouse but not yet processed), in_progress (goods being unloaded and counted), received (processing complete).'
+          $ref: '#/components/schemas/ShipMonk_OMS_Receiving_Enum_PublicApiReceivingStatus'
+        created_at:
+          description: Timestamp when the receiving record was created, in ISO 8601 format.
+          type: string
+          format: date-time
+        updated_at:
+          description: Timestamp when the receiving record was last modified, in ISO 8601 format.
+          type: string
+          format: date-time
+        arrived_at:
+          description: Timestamp when the shipment physically arrived at the warehouse, in ISO 8601 format. Null until arrival.
           type:
           - string
           - 'null'
           format: date-time
-        lot:
-          description: Lot/batch control information for the received units, or null if the product is not lot-tracked.
-          anyOf:
-          - $ref: '#/components/schemas/ShipMonk_OMS_Receiving_ApiResource_PublicApiLotControlOutput'
-          - type: 'null'
-      required:
-      - line_key
-      - received_quantity
-      - received_at
-      - lot
-      title: Receiving Receipt Item Detail Output
-    ShipMonk_OMS_Receiving_ApiResource_PublicApiPalletOutput:
-      type: object
-      properties:
-        pallet_key:
-          description: Client-supplied unique key identifying this pallet within the receiving; referenced by cartons[].pallet_key and receiving_lines[].loose_units_pallet_key.
-          type: string
-        identifiers:
-          description: Packaging identifiers attached to this pallet (e.g. SSCC barcodes).
+        received_at:
+          description: Timestamp when all goods finished being received and counted, in ISO 8601 format. Null until processing is complete.
+          type:
+          - string
+          - 'null'
+          format: date-time
+        items:
+          description: Expected and received quantities aggregated per product across the entire receiving.
           type: array
           items:
-            $ref: '#/components/schemas/ShipMonk_OMS_Receiving_ApiResource_PublicApiLpnOutput'
+            $ref: '#/components/schemas/ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingItemOutput'
+        receiving_lines:
+          description: Itemized receiving lines, each linking a product (with optional lot data) to a specific carton or pallet in the packing hierarchy.
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingLineOutput'
+        custom_data:
+          description: Arbitrary name/value pairs supplied by client integrations and attached to the receiving.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_CommonBundle_ApiResource_IntegrationDataOutput'
+        cartons:
+          description: Cartons declared on the receiving. Each receiving_lines entry with a non-null carton_key references one of these by carton_key.
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipMonk_OMS_Receiving_ApiResource_PublicApiCartonOutput'
+        pallets:
+          description: Pallets declared on the receiving. Each carton or loose-units line may reference one of these by pallet_key.
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipMonk_OMS_Receiving_ApiResource_PublicApiPalletOutput'
       required:
-      - pallet_key
-      - identifiers
-      title: Pallet Output
-    ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_ReceivingItemLotInput:
-      type: object
-      properties:
-        lot_number:
-          description: Supplier-assigned lot/batch number. Pass null if unknown.
-          example: LOT-2025-001
-          type:
-          - string
-          - 'null'
-          default: null
-        expiration_date:
-          description: Lot expiration date in ISO 8601 format (YYYY-MM-DD). Pass null if the product has no expiration.
-          type:
-          - string
-          - 'null'
-          format: date
-          default: null
-      required: []
-      title: Receiving Item Lot Input
+      - id
+      - warehouse
+      - receiving_key
+      - asn
+      - bol_number
+      - supplier_name
+      - handling_unit_type
+      - handling_unit_quantity
+      - estimated_delivery
+      - description
+      - status
+      - created_at
+      - updated_at
+      - arrived_at
+      - received_at
+      - items
+      - receiving_lines
+      - custom_data
+      - cartons
+      - pallets
+      title: Receiving Output
+    ShipMonk_OMS_Receiving_Enum_ReceivingCategory:
+      type:
+      - string
+      enum:
+      - purchase_order_asn
+      - inventory_transfer
+      - wholesale_order_return
+      - special_projects
+      - subscription_box_receiving
+      - bonded_inventory
+      - package_forwarding
+      title: Receiving Category
+    Fulfillment_IntegrationsBundle_Enum_ReceivingCompletionMode:
+      type:
+      - string
+      enum:
+      - fully_received
+      - short_received
+      - excess_received
+      - partially_received
+      title: Receiving Completion Mode
     ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingReceiptItemOutput:
       type: object
       properties:
@@ -532,70 +650,6 @@ components:
       - received_quantity
       - receiving_details
       title: Receiving Receipt Item Output
-    ShipMonk_Api_Output_PaginatorOutput:
-      type: object
-      properties:
-        total:
-          type: integer
-        pages:
-          type: integer
-        page:
-          type: integer
-      required:
-      - total
-      - pages
-      - page
-      title: Paginator Output
-    ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_ReceivingItemInput:
-      type: object
-      properties:
-        sku:
-          description: Stock Keeping Unit (SKU), the client's unique product code.
-          type: string
-        expected_quantity:
-          description: Number of units expected on this line; must be greater than 0.
-          example: 50
-          type: integer
-          minimum: 1
-        barcode:
-          description: Barcode used to identify the product (e.g. UPC, EAN). Required if the product cannot be resolved by other means; must match an existing product's barcode.
-          example: 0123456789012
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        lot:
-          description: Lot/batch tracking data for this line. Provide when the product is lot-tracked; omit or pass null otherwise.
-          anyOf:
-          - $ref: '#/components/schemas/ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_ReceivingItemLotInput'
-          - type: 'null'
-          default: null
-        line_key:
-          description: Optional client-supplied key uniquely identifying this line within the receiving. Required when using the packing-hierarchy fields (carton_key or loose_units_pallet_key); must be unique across items in this request.
-          example: LINE-001
-          type:
-          - string
-          - 'null'
-          default: null
-        carton_key:
-          description: Key referencing a carton in cartons[].carton_key, indicating these units are packed in that carton. Exactly one of carton_key or loose_units_pallet_key must be non-null when using the packing-hierarchy fields.
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        loose_units_pallet_key:
-          description: Key referencing a pallet in pallets[].pallet_key, indicating these units sit loose on that pallet (no carton). Exactly one of carton_key or loose_units_pallet_key must be non-null when using the packing-hierarchy fields.
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-      required:
-      - sku
-      - expected_quantity
-      title: Receiving Item Input
     ShipMonk_OMS_Receiving_ApiResource_PublicApiLpnOutput:
       type: object
       properties:
@@ -609,15 +663,144 @@ components:
       - type
       - value
       title: Lpn Output
-    Fulfillment_IntegrationsBundle_Enum_ReceivingCompletionMode:
+    ShipMonk_OMS_Receiving_Enum_PublicApiReceivingStatus:
       type:
       - string
       enum:
-      - fully_received
-      - short_received
-      - excess_received
-      - partially_received
-      title: Receiving Completion Mode
+      - awaiting
+      - arrived
+      - in_progress
+      - received
+      title: Receiving Status
+    ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_ReceivingCustomDataItemInput:
+      type: object
+      properties:
+        name:
+          description: Name (key) of the custom metadata entry; should be unique within the receiving's custom_data list.
+          example: po_number
+          type: string
+          minLength: 2
+          maxLength: 255
+        value:
+          description: Value stored under the corresponding custom_data name.
+          example: PO-98765
+          type: string
+          maxLength: 65536
+      required:
+      - name
+      - value
+      title: Receiving Custom Data Item Input
+    ShipMonk_OMS_Receiving_ApiResource_PublicApiLotControlOutput:
+      type: object
+      properties:
+        lot_number:
+          description: Lot number assigned to the product batch, or null if the lot is identified only by expiration date.
+          type:
+          - string
+          - 'null'
+        expiration_date:
+          description: Lot expiration date in ISO 8601 format (YYYY-MM-DD), or null if not applicable.
+          type:
+          - string
+          - 'null'
+          format: date
+      required:
+      - lot_number
+      - expiration_date
+      title: Lot Control Output
+    ShipMonk_OMS_Receiving_Enum_LpnType:
+      type:
+      - string
+      enum:
+      - SSCC
+      title: Lpn Type
+    Fulfillment_IntegrationsBundle_Crate_ReceivingCreateOrUpdateOutput:
+      type: object
+      properties:
+        message:
+          description: Human-readable message indicating whether the receiving was created or updated.
+          type: string
+      required:
+      - message
+      title: Receiving Create Or Update Output
+    ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_CartonInput:
+      type: object
+      properties:
+        carton_key:
+          description: Client-supplied key that uniquely identifies this carton within the request; used by other entries (e.g. items) to reference it.
+          type: string
+          maxLength: 255
+        pallet_key:
+          description: Optional reference to a pallet_key in the pallets list, indicating this carton is stacked on that pallet. Omit if the carton is loose.
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+          default: null
+        identifiers:
+          description: Typed identifiers (e.g. SSCC barcode) attached to this carton; at least one entry is required, at most one per type, and each value must be unique across all cartons and pallets of the receiving.
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_LpnInput'
+          default: []
+      required:
+      - carton_key
+      title: Carton Input
+    ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingLineOutput:
+      type: object
+      properties:
+        line_key:
+          description: Client-supplied unique key identifying this line within the receiving, or null if none was provided at creation.
+          type:
+          - string
+          - 'null'
+        product:
+          description: The product on this receiving line.
+          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Crate_ReturnOrReceivingItemProductPublicApiOutput'
+        expected_quantity:
+          description: Number of units expected on this line.
+          type: integer
+        received_quantity:
+          description: Number of units received on this line so far.
+          type: integer
+        carton_key:
+          description: Key of the carton (from cartons[].carton_key) on which these units are packed, or null if the units are loose on a pallet. Exactly one of carton_key or loose_units_pallet_key is non-null when the packing hierarchy is used.
+          type:
+          - string
+          - 'null'
+        loose_units_pallet_key:
+          description: Key of the pallet (from pallets[].pallet_key) on which these loose units are placed without a carton, or null if the units are packed in a carton. Exactly one of carton_key or loose_units_pallet_key is non-null when the packing hierarchy is used.
+          type:
+          - string
+          - 'null'
+        lot:
+          description: Lot/batch tracking data for the units on this line, or null if no lot is tracked.
+          anyOf:
+          - $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Crate_ReturnOrReceivingItemLotPublicApiOutput'
+          - type: 'null'
+      required:
+      - line_key
+      - product
+      - expected_quantity
+      - received_quantity
+      - carton_key
+      - loose_units_pallet_key
+      - lot
+      title: Receiving Line Output
+    ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_LpnInput:
+      type: object
+      properties:
+        type:
+          description: Identifier type. Only "SSCC" (GS1 supplier shipping-container code) identifiers can be created or modified, and only for accounts with LPN receiving enabled; other types are managed by ShipMonk and are read-only.
+          $ref: '#/components/schemas/ShipMonk_OMS_Receiving_Enum_LpnType'
+        value:
+          description: Identifier value. For type=SSCC, a valid GS1 SSCC — 18 digits or 20 digits with leading "00"; stored and returned as 20 digits.
+          type: string
+          maxLength: 255
+      required:
+      - type
+      - value
+      title: Lpn Input
     Fulfillment_IntegrationsBundle_Crate_PublicApiReceivingItemDetailsOutput:
       type: object
       properties:
@@ -754,36 +937,116 @@ components:
       - handling_unit_type
       - items
       title: Create Or Update Receiving Input
-    ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_ReceivingCustomDataItemInput:
-      type: object
-      properties:
-        name:
-          description: Name (key) of the custom metadata entry; should be unique within the receiving's custom_data list.
-          example: po_number
-          type: string
-          minLength: 2
-          maxLength: 255
-        value:
-          description: Value stored under the corresponding custom_data name.
-          example: PO-98765
-          type: string
-          maxLength: 65536
-      required:
-      - name
-      - value
-      title: Receiving Custom Data Item Input
-    ShipMonk_OMS_Receiving_Enum_ReceivingCategory:
+    ShipMonk_Warehouse_WarehouseReceiving_Enum_WarehouseReceivingPacking:
       type:
       - string
       enum:
-      - purchase_order_asn
-      - inventory_transfer
-      - wholesale_order_return
-      - special_projects
-      - subscription_box_receiving
-      - bonded_inventory
-      - package_forwarding
-      title: Receiving Category
+      - small_boxes
+      - single_sku_pallet
+      - mixed_sku_pallet
+      - container_20_palletized
+      - container_20_non_palletized
+      - container_40_palletized
+      - container_40_non_palletized
+      - container_53_palletized
+      - container_53_non_palletized
+      - unknown
+      title: Warehouse Receiving Packing
+    ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingItemOutput:
+      type: object
+      properties:
+        product:
+          description: The product identified by this receiving item.
+          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Crate_ReturnOrReceivingItemProductPublicApiOutput'
+        expected_quantity:
+          description: Total number of units of this product expected to be received.
+          type: integer
+        received_quantity:
+          description: Total number of units of this product received so far across all batches.
+          type: integer
+        receiving_details:
+          description: Per-batch breakdown of received units for this product, including lot information and timestamps.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Crate_PublicApiReceivingItemDetailsOutput'
+      required:
+      - product
+      - expected_quantity
+      - received_quantity
+      - receiving_details
+      title: Receiving Item Output
+    Fulfillment_IntegrationsBundle_Input_ReceivingCompleteInput:
+      type: object
+      properties:
+        receiving_key:
+          description: Caller-supplied unique identifier of the receiving (purchase order). Either receiving_key or asn must be provided to identify the target receiving.
+          type:
+          - string
+          - 'null'
+          example: key-123
+        asn:
+          description: Optional filter to retrieve a receiving by its Advance Shipping Notice (ASN) number, a supplier-provided identifier for the incoming shipment.
+          type:
+          - string
+          - 'null'
+          example: ASN-12345
+        completion_mode:
+          description: 'How the sandbox should simulate completion: ''fully_received'' (all expected units), ''short_received'' (fewer than expected), ''excess_received'' (more than expected), or ''partially_received'' (partial completion that leaves the receiving open).'
+          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Enum_ReceivingCompletionMode'
+      required:
+      - completion_mode
+      title: Receiving Complete Input
+    ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_PalletInput:
+      type: object
+      properties:
+        pallet_key:
+          description: Client-supplied key that uniquely identifies this pallet within the request; referenced by cartons.pallet_key.
+          type: string
+          maxLength: 255
+        identifiers:
+          description: Optional list of typed identifiers (e.g. SSCC barcode) attached to this pallet; at most one entry per type, and each value must be unique across all cartons and pallets of the receiving.
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_LpnInput'
+          default: []
+      required:
+      - pallet_key
+      title: Pallet Input
+    ShipMonk_Api_Output_PaginatorOutput:
+      type: object
+      properties:
+        total:
+          type: integer
+        pages:
+          type: integer
+        page:
+          type: integer
+      required:
+      - total
+      - pages
+      - page
+      title: Paginator Output
+    ShipMonk_OMS_Receiving_ApiResource_PublicApiCartonOutput:
+      type: object
+      properties:
+        carton_key:
+          description: Client-supplied unique key identifying this carton within the receiving; referenced by receiving_lines[].carton_key.
+          type: string
+        pallet_key:
+          description: Key of the pallet (from pallets[].pallet_key) on which this carton is placed, or null if the carton is not on a pallet.
+          type:
+          - string
+          - 'null'
+        identifiers:
+          description: Packaging identifiers attached to this carton (e.g. SSCC barcodes).
+          type: array
+          items:
+            $ref: '#/components/schemas/ShipMonk_OMS_Receiving_ApiResource_PublicApiLpnOutput'
+      required:
+      - carton_key
+      - pallet_key
+      - identifiers
+      title: Carton Output
     ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingReceiptLineQuantityOutput:
       type: object
       properties:
@@ -809,264 +1072,34 @@ components:
       - received_quantity
       - lot
       title: Receiving Receipt Line Quantity Output
-    ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_CartonInput:
-      type: object
-      properties:
-        carton_key:
-          description: Client-supplied key that uniquely identifies this carton within the request; used by other entries (e.g. items) to reference it.
-          type: string
-          maxLength: 255
-        pallet_key:
-          description: Optional reference to a pallet_key in the pallets list, indicating this carton is stacked on that pallet. Omit if the carton is loose.
-          type:
-          - string
-          - 'null'
-          maxLength: 255
-          default: null
-        identifiers:
-          description: Typed identifiers (e.g. SSCC barcode) attached to this carton; at least one entry is required, at most one per type, and each value must be unique across all cartons and pallets of the receiving.
-          type: array
-          items:
-            $ref: '#/components/schemas/ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_LpnInput'
-          default: []
-      required:
-      - carton_key
-      title: Carton Input
-    ShipMonk_PublicApi_Receiving_ReceivingCreateOrUpdate_LpnInput:
-      type: object
-      properties:
-        type:
-          description: Identifier type. Only "SSCC" (GS1 supplier shipping-container code) identifiers can be created or modified, and only for accounts with LPN receiving enabled; other types are managed by ShipMonk and are read-only.
-          $ref: '#/components/schemas/ShipMonk_OMS_Receiving_Enum_LpnType'
-        value:
-          description: Identifier value. For type=SSCC, a valid GS1 SSCC — 18 digits or 20 digits with leading "00"; stored and returned as 20 digits.
-          type: string
-          maxLength: 255
-      required:
-      - type
-      - value
-      title: Lpn Input
-    Fulfillment_IntegrationsBundle_Crate_ReceivingCreateOrUpdateOutput:
-      type: object
-      properties:
-        message:
-          description: Human-readable message indicating whether the receiving was created or updated.
-          type: string
-      required:
-      - message
-      title: Receiving Create Or Update Output
-    ShipMonk_OMS_Receiving_Enum_PublicApiReceivingStatus:
-      type:
-      - string
-      enum:
-      - awaiting
-      - arrived
-      - in_progress
-      - received
-      title: Receiving Status
-    ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingLineOutput:
+    ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingReceiptItemDetailOutput:
       type: object
       properties:
         line_key:
-          description: Client-supplied unique key identifying this line within the receiving, or null if none was provided at creation.
+          description: Caller-supplied line key of the receiving line this detail belongs to; null if no key was provided.
           type:
           - string
           - 'null'
-        product:
-          description: The product on this receiving line.
-          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Crate_ReturnOrReceivingItemProductPublicApiOutput'
-        expected_quantity:
-          description: Number of units expected on this line.
-          type: integer
         received_quantity:
-          description: Number of units received on this line so far.
+          description: Number of units received in this detail entry.
           type: integer
-        carton_key:
-          description: Key of the carton (from cartons[].carton_key) on which these units are packed, or null if the units are loose on a pallet. Exactly one of carton_key or loose_units_pallet_key is non-null when the packing hierarchy is used.
+        received_at:
+          description: Timestamp when this batch was received at the warehouse, in ISO 8601 format. Null if not yet received.
           type:
           - string
           - 'null'
-        loose_units_pallet_key:
-          description: Key of the pallet (from pallets[].pallet_key) on which these loose units are placed without a carton, or null if the units are packed in a carton. Exactly one of carton_key or loose_units_pallet_key is non-null when the packing hierarchy is used.
-          type:
-          - string
-          - 'null'
+          format: date-time
         lot:
-          description: Lot/batch tracking data for the units on this line, or null if no lot is tracked.
+          description: Lot/batch control information for the received units, or null if the product is not lot-tracked.
           anyOf:
-          - $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Crate_ReturnOrReceivingItemLotPublicApiOutput'
+          - $ref: '#/components/schemas/ShipMonk_OMS_Receiving_ApiResource_PublicApiLotControlOutput'
           - type: 'null'
       required:
       - line_key
-      - product
-      - expected_quantity
       - received_quantity
-      - carton_key
-      - loose_units_pallet_key
-      - lot
-      title: Receiving Line Output
-    ShipMonk_OMS_Receiving_ApiResource_PublicApiCartonOutput:
-      type: object
-      properties:
-        carton_key:
-          description: Client-supplied unique key identifying this carton within the receiving; referenced by receiving_lines[].carton_key.
-          type: string
-        pallet_key:
-          description: Key of the pallet (from pallets[].pallet_key) on which this carton is placed, or null if the carton is not on a pallet.
-          type:
-          - string
-          - 'null'
-        identifiers:
-          description: Packaging identifiers attached to this carton (e.g. SSCC barcodes).
-          type: array
-          items:
-            $ref: '#/components/schemas/ShipMonk_OMS_Receiving_ApiResource_PublicApiLpnOutput'
-      required:
-      - carton_key
-      - pallet_key
-      - identifiers
-      title: Carton Output
-    ShipMonk_Warehouse_WarehouseReceiving_Enum_WarehouseReceivingPacking:
-      type:
-      - string
-      enum:
-      - small_boxes
-      - single_sku_pallet
-      - mixed_sku_pallet
-      - container_20_palletized
-      - container_20_non_palletized
-      - container_40_palletized
-      - container_40_non_palletized
-      - container_53_palletized
-      - container_53_non_palletized
-      - unknown
-      title: Warehouse Receiving Packing
-    ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingOutput:
-      type: object
-      properties:
-        id:
-          description: Server-assigned numeric identifier of the receiving. Use this value to reference the receiving in subsequent API calls.
-          type: integer
-        warehouse:
-          description: Code of the warehouse where the goods are being received.
-          type: string
-        receiving_key:
-          description: Client-supplied reference (e.g. purchase order number) for the receiving, or null if none was provided at creation.
-          type:
-          - string
-          - 'null'
-        asn:
-          description: Advance Shipping Notice (ASN) number, a supplier-provided identifier for the incoming shipment.
-          type: string
-        bol_number:
-          description: Bill of Lading (BOL) number from the carrier transport document, or null if not provided.
-          anyOf:
-          - type: string
-          - type: 'null'
-        supplier_name:
-          description: Name of the supplier sending the goods.
-          type: string
-        handling_unit_type:
-          description: Type of handling units used to ship the goods.
-          $ref: '#/components/schemas/ShipMonk_Warehouse_WarehouseReceiving_Enum_WarehouseReceivingPacking'
-        handling_unit_quantity:
-          description: Total number of handling units (as specified by handling_unit_type) in the shipment.
-          type: integer
-        estimated_delivery:
-          description: Estimated date when the shipment is expected to arrive at the warehouse, in ISO 8601 format (YYYY-MM-DD).
-          type: string
-        description:
-          description: Free-form notes about the receiving, or null if none were provided.
-          type:
-          - string
-          - 'null'
-        status:
-          description: 'Current status of the receiving: awaiting (created, shipment not yet arrived), arrived (shipment received at the warehouse but not yet processed), in_progress (goods being unloaded and counted), received (processing complete).'
-          $ref: '#/components/schemas/ShipMonk_OMS_Receiving_Enum_PublicApiReceivingStatus'
-        created_at:
-          description: Timestamp when the receiving record was created, in ISO 8601 format.
-          type: string
-          format: date-time
-        updated_at:
-          description: Timestamp when the receiving record was last modified, in ISO 8601 format.
-          type: string
-          format: date-time
-        arrived_at:
-          description: Timestamp when the shipment physically arrived at the warehouse, in ISO 8601 format. Null until arrival.
-          type:
-          - string
-          - 'null'
-          format: date-time
-        received_at:
-          description: Timestamp when all goods finished being received and counted, in ISO 8601 format. Null until processing is complete.
-          type:
-          - string
-          - 'null'
-          format: date-time
-        items:
-          description: Expected and received quantities aggregated per product across the entire receiving.
-          type: array
-          items:
-            $ref: '#/components/schemas/ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingItemOutput'
-        receiving_lines:
-          description: Itemized receiving lines, each linking a product (with optional lot data) to a specific carton or pallet in the packing hierarchy.
-          type: array
-          items:
-            $ref: '#/components/schemas/ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingLineOutput'
-        custom_data:
-          description: Arbitrary name/value pairs supplied by client integrations and attached to the receiving.
-          type: array
-          items:
-            $ref: '#/components/schemas/Fulfillment_CommonBundle_ApiResource_IntegrationDataOutput'
-        cartons:
-          description: Cartons declared on the receiving. Each receiving_lines entry with a non-null carton_key references one of these by carton_key.
-          type: array
-          items:
-            $ref: '#/components/schemas/ShipMonk_OMS_Receiving_ApiResource_PublicApiCartonOutput'
-        pallets:
-          description: Pallets declared on the receiving. Each carton or loose-units line may reference one of these by pallet_key.
-          type: array
-          items:
-            $ref: '#/components/schemas/ShipMonk_OMS_Receiving_ApiResource_PublicApiPalletOutput'
-      required:
-      - id
-      - warehouse
-      - receiving_key
-      - asn
-      - bol_number
-      - supplier_name
-      - handling_unit_type
-      - handling_unit_quantity
-      - estimated_delivery
-      - description
-      - status
-      - created_at
-      - updated_at
-      - arrived_at
       - received_at
-      - items
-      - receiving_lines
-      - custom_data
-      - cartons
-      - pallets
-      title: Receiving Output
-    Fulfillment_IntegrationsBundle_Crate_ReturnOrReceivingItemProductPublicApiOutput:
-      type: object
-      properties:
-        id:
-          description: Server-assigned numeric identifier of the product.
-          type: integer
-        sku:
-          description: Stock Keeping Unit (SKU), the client's unique product code.
-          type: string
-        name:
-          description: Human-readable name of the product.
-          type: string
-      required:
-      - id
-      - sku
-      - name
-      title: Return Or Receiving Item Product Output
+      - lot
+      title: Receiving Receipt Item Detail Output
     Fulfillment_PublicApiBundle_Enum_PublicApiOrdering:
       type:
       - string
@@ -1074,31 +1107,24 @@ components:
       - DESC
       - ASC
       title: Ordering
-    ShipMonk_OMS_Receiving_ApiResource_PublicApiReceivingItemOutput:
+    Fulfillment_CommonBundle_ApiResource_IntegrationDataOutput:
       type: object
       properties:
-        product:
-          description: The product identified by this receiving item.
-          $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Crate_ReturnOrReceivingItemProductPublicApiOutput'
-        expected_quantity:
-          description: Total number of units of this product expected to be received.
-          type: integer
-        received_quantity:
-          description: Total number of units of this product received so far across all batches.
-          type: integer
-        receiving_details:
-          description: Per-batch breakdown of received units for this product, including lot information and timestamps.
-          type: array
-          items:
-            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_Crate_PublicApiReceivingItemDetailsOutput'
+        name:
+          description: Key of the custom data entry.
+          type: string
+        value:
+          description: Value of the custom data entry; may be any JSON-serializable structure.
+          type: object
       required:
-      - product
-      - expected_quantity
-      - received_quantity
-      - receiving_details
-      title: Receiving Item Output
+      - name
+      - value
+      title: Integration Data Output
   securitySchemes:
     api_key_header_Api-Key:
       type: apiKey
       in: header
       name: Api-Key
+x-refined-from:
+- shipmonk-openapi.json
+- shipmonk-receivings-openapi.yml

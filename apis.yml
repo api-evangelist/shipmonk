@@ -201,6 +201,89 @@ apis:
     url: rate-limits/shipmonk-rate-limits.yml
   - type: Sandbox
     url: sandbox/shipmonk-sandbox.yml
+- aid: shipmonk:shipmonk-webhooks-api
+  name: ShipMonk Webhooks API
+  description: >-
+    ShipMonk supports webhooks to help you stay updated in real time as key events happen in our system.
+    Currently, we provide webhooks for the following areas:
+
+    - Orders
+
+    - Returns
+
+    - Receivings
+
+
+    ## Webhooks Setup
+
+    You have full flexibility in configuring which webhooks to subscribe to. You can:
+
+    - Use a single URL to receive all events, or
+
+    - Define separate endpoints for individual webhook types.
+
+
+    Webhook setup can be done by your ShipMonk support team.
+
+
+    ## Store filter
+
+    By default, a webhook subscription delivers events for all stores in your account. If you operate
+    multiple stores, a subscription can be restricted to one or more specific stores (store filter), so
+    you only receive events for those stores.
+
+
+    ## Security
+
+    All webhooks support HTTP Basic Authentication. If you provide a username and password, ShipMonk will
+    include these credentials in the webhook request. This allows you to restrict access and ensure only
+    ShipMonk can call your endpoints.
+
+
+    ## Data Integrity
+
+    Each webhook request sent by ShipMonk includes an `X-Sm-Signature` header. This header allows you
+    to verify that the request genuinely originated from ShipMonk and was not tampered with.
+
+
+    To enable this verification, you must provide ShipMonk with a secret key (a random string of your
+    choice). For every webhook, ShipMonk uses this secret key to generate a HMAC using the SHA-512 algorithm
+    (HMAC-SHA512), applied to the raw payload. The resulting signature is included in the `X-Sm-Signature`
+    header.
+
+
+    To validate the authenticity of a webhook:
+
+    - Retrieve the raw payload from the HTTP POST request.
+
+    - Using the same secret key and the HMAC-SHA512 algorithm, generate a signature from the payload.
+
+    - Compare your generated signature to the value in the X-Sm-Signature header.
+
+    - If they match, you can safely trust the request.
+
+
+    This mechanism ensures both the integrity and authenticity of the webhook payload.
+
+
+    ## Accepting the webhook
+
+
+    Webhook requests are sent as HTTP POST requests. To acknowledge successful processing, your endpoint
+    must respond with an HTTP status code in the 2xx range.
+
+    - If a 2xx response is returned, the webhook is considered successfully delivered.
+
+    - For any other response, ShipMonk will retry the webhook delivery up to 8 times using an exponential
+    backoff schedule. The delay starts at 30 seconds and doubles after each attempt — 30s, 1m, 2m, 4m,
+    8m, 16m, 32m, 60m (capped at 60 minutes) — spanning roughly 2 hours before delivery is abandoned.
+  humanURL: https://apidocs.shipmonk.com/reference/webhooks
+  baseURL: https://api.shipmonk.com
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/shipmonk-webhooks-api-openapi.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
