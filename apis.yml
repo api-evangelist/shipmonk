@@ -12,6 +12,18 @@ description: ShipMonk is a Florida-headquartered third-party logistics (3PL) and
   OpenAPI 3.1 document covering orders, products and inventory, receivings, returns and warehouses, with
   four HTTP webhook events for shipment, order, return and receiving status changes and a contract-only
   sandbox environment with warehouse simulation endpoints.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://files.readme.io/742121760e9d1bfa2dd7dd9dc8fb20dba2f79207e8c192facb4681cdb2bb5c23-logo.svg
 tags:
 - Logistics
