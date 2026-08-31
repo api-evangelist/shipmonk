@@ -280,6 +280,8 @@ apis:
   humanURL: https://apidocs.shipmonk.com/reference/webhooks
   baseURL: https://api.shipmonk.com
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
