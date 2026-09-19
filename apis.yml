@@ -202,6 +202,8 @@ apis:
   humanURL: https://apidocs.shipmonk.com/reference
   baseURL: https://api.shipmonk.com
   tags:
+  - Warehouse
+  tags_raw:
   - Warehouses
   properties:
   - type: OpenAPI
