@@ -128,6 +128,20 @@ components:
       - enabled
       - address
       title: Warehouse List Output
+    ShipMonk_Api_Output_PaginatorOutput:
+      type: object
+      properties:
+        total:
+          type: integer
+        pages:
+          type: integer
+        page:
+          type: integer
+      required:
+      - total
+      - pages
+      - page
+      title: Paginator Output
     Fulfillment_PublicApiBundle_ApiResource_Address_AddressDetailOutput:
       type: object
       properties:
@@ -189,20 +203,6 @@ components:
       - verified
       - country
       title: Address Detail Output
-    ShipMonk_Api_Output_PaginatorOutput:
-      type: object
-      properties:
-        total:
-          type: integer
-        pages:
-          type: integer
-        page:
-          type: integer
-      required:
-      - total
-      - pages
-      - page
-      title: Paginator Output
   securitySchemes:
     api_key_header_Api-Key:
       type: apiKey
