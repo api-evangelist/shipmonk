@@ -81,13 +81,6 @@ paths:
       summary: Retrieve List of Warehouses
 components:
   schemas:
-    Fulfillment_PublicApiBundle_Enum_Warehouse_WarehouseListSortEnum:
-      type:
-      - string
-      enum:
-      - name
-      - id
-      title: Warehouse List Sort Enum
     Fulfillment_PublicApiBundle_Enum_PublicApiOrdering:
       type:
       - string
@@ -95,53 +88,6 @@ components:
       - DESC
       - ASC
       title: Ordering
-    Fulfillment_PublicApiBundle_ApiResource_Warehouse_WarehouseListOutput:
-      type: object
-      properties:
-        id:
-          description: Unique numeric identifier of the warehouse.
-          type: integer
-        identifier:
-          description: Short warehouse code (e.g., CA1) used as a stable, human-readable reference.
-          type: string
-        name:
-          description: Display name of the warehouse.
-          type: string
-        timezone:
-          description: IANA time zone of the warehouse location (e.g., America/Los_Angeles).
-          type: string
-        warehouse_wms_type:
-          description: Warehouse management system backing this warehouse.
-          type: string
-        enabled:
-          description: Whether the warehouse is currently active and accepting shipments.
-          type: boolean
-        address:
-          description: Physical address of the warehouse.
-          $ref: '#/components/schemas/Fulfillment_PublicApiBundle_ApiResource_Address_AddressDetailOutput'
-      required:
-      - id
-      - identifier
-      - name
-      - timezone
-      - warehouse_wms_type
-      - enabled
-      - address
-      title: Warehouse List Output
-    ShipMonk_Api_Output_PaginatorOutput:
-      type: object
-      properties:
-        total:
-          type: integer
-        pages:
-          type: integer
-        page:
-          type: integer
-      required:
-      - total
-      - pages
-      - page
-      title: Paginator Output
     Fulfillment_PublicApiBundle_ApiResource_Address_AddressDetailOutput:
       type: object
       properties:
@@ -203,6 +149,60 @@ components:
       - verified
       - country
       title: Address Detail Output
+    Fulfillment_PublicApiBundle_ApiResource_Warehouse_WarehouseListOutput:
+      type: object
+      properties:
+        id:
+          description: Unique numeric identifier of the warehouse.
+          type: integer
+        identifier:
+          description: Short warehouse code (e.g., CA1) used as a stable, human-readable reference.
+          type: string
+        name:
+          description: Display name of the warehouse.
+          type: string
+        timezone:
+          description: IANA time zone of the warehouse location (e.g., America/Los_Angeles).
+          type: string
+        warehouse_wms_type:
+          description: Warehouse management system backing this warehouse.
+          type: string
+        enabled:
+          description: Whether the warehouse is currently active and accepting shipments.
+          type: boolean
+        address:
+          description: Physical address of the warehouse.
+          $ref: '#/components/schemas/Fulfillment_PublicApiBundle_ApiResource_Address_AddressDetailOutput'
+      required:
+      - id
+      - identifier
+      - name
+      - timezone
+      - warehouse_wms_type
+      - enabled
+      - address
+      title: Warehouse List Output
+    Fulfillment_PublicApiBundle_Enum_Warehouse_WarehouseListSortEnum:
+      type:
+      - string
+      enum:
+      - name
+      - id
+      title: Warehouse List Sort Enum
+    ShipMonk_Api_Output_PaginatorOutput:
+      type: object
+      properties:
+        total:
+          type: integer
+        pages:
+          type: integer
+        page:
+          type: integer
+      required:
+      - total
+      - pages
+      - page
+      title: Paginator Output
   securitySchemes:
     api_key_header_Api-Key:
       type: apiKey

@@ -254,44 +254,41 @@ paths:
       summary: Complete Return
 components:
   schemas:
-    Fulfillment_IntegrationsBundle_Crate_ReturnOrReceivingItemProductPublicApiOutput:
+    Fulfillment_IntegrationsBundle_Crate_ReturnsListPublicApiOutput:
       type: object
       properties:
-        id:
-          description: Server-assigned numeric identifier of the product.
-          type: integer
-        sku:
-          description: Stock Keeping Unit (SKU), the client's unique product code.
-          type: string
-        name:
-          description: Human-readable name of the product.
-          type: string
+        returns_list:
+          description: Returns matching the query criteria.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_ReturnOutput'
       required:
-      - id
-      - sku
-      - name
-      title: Return Or Receiving Item Product Output
-    ShipMonk_Api_Output_PaginatorOutput:
-      type: object
-      properties:
-        total:
-          type: integer
-        pages:
-          type: integer
-        page:
-          type: integer
-      required:
-      - total
-      - pages
-      - page
-      title: Paginator Output
-    Fulfillment_IntegrationsBundle_Crate_ReturnItemDetailsType:
+      - returns_list
+      title: Returns List Output
+    ShipMonk_Warehouse_Returns_Enum_ReturnItemFinalDisposition:
       type:
       - string
       enum:
-      - receive
-      - optoro_inventory
-      title: Return Item Details Type
+      - reworked
+      - returned_to_inventory
+      - return_to_merchant
+      - dispose
+      - donate
+      - other
+      title: Return Item Final Disposition
+    Fulfillment_CommonBundle_ApiResource_IntegrationDataOutput:
+      type: object
+      properties:
+        name:
+          description: Key of the custom data entry.
+          type: string
+        value:
+          description: Value of the custom data entry; may be any JSON-serializable structure.
+          type: object
+      required:
+      - name
+      - value
+      title: Integration Data Output
     Fulfillment_IntegrationsBundle_Crate_PublicApiReturnItemOutput:
       type: object
       properties:
@@ -319,17 +316,31 @@ components:
       - receiving_details
       - desired_action
       title: Return Item Output
-    ShipMonk_Warehouse_Returns_Enum_ReturnEntitySource:
+    Fulfillment_IntegrationsBundle_Crate_ReturnItemDetailsType:
       type:
       - string
       enum:
-      - shipmonk
-      - loop
-      - returnly
-      - deposco
-      - happy_returns_loop
-      - happy_returns
-      title: Return Entity Source
+      - receive
+      - optoro_inventory
+      title: Return Item Details Type
+    Fulfillment_IntegrationsBundle_ApiResource_ReturnItemInput:
+      type: object
+      properties:
+        sku:
+          description: Stock Keeping Unit (SKU) of the returned product; must match an existing product.
+          type: string
+        expected_quantity:
+          description: Quantity of this SKU the customer is expected to return; must be a positive integer.
+          type: integer
+          minimum: 1
+        desired_action:
+          description: 'Requested handling for the item once received: received_back_into_inventory (restock as sellable) or damaged_not_resellable (write off).'
+          $ref: '#/components/schemas/ShipMonk_Warehouse_Returns_Enum_ReturnItemStatus'
+      required:
+      - sku
+      - expected_quantity
+      - desired_action
+      title: Return Item Input
     Fulfillment_IntegrationsBundle_Crate_ReturnItemDetailsPublicApiOutput:
       type: object
       properties:
@@ -370,16 +381,181 @@ components:
       - type
       - final_disposition
       title: Return Item Details Output
-    ShipMonk_Warehouse_Returns_Sandbox_Enum_SandboxReturnDisposition:
+    Fulfillment_IntegrationsBundle_Input_CompleteSandboxReturnInput:
+      type: object
+      properties:
+        rma:
+          description: Return Merchandise Authorization (RMA) number; must be unique per return and is used as the upsert key.
+          type: string
+          minLength: 1
+          maxLength: 255
+        completion_mode:
+          description: 'How the sandbox should simulate return completion: ''fully_received'' (all expected units), ''short_received'' (fewer than expected), ''excess_received'' (more than expected), or ''partially_received'' (partial completion).'
+          $ref: '#/components/schemas/ShipMonk_Warehouse_Returns_Sandbox_Enum_SandboxReturnsCompletionMode'
+        final_disposition:
+          description: 'Simulated final disposition of returned items: ''reworked'', ''returned_to_inventory'', ''return_to_merchant'', ''dispose'', or ''donate''.'
+          $ref: '#/components/schemas/ShipMonk_Warehouse_Returns_Sandbox_Enum_SandboxReturnDisposition'
+      required:
+      - rma
+      - completion_mode
+      - final_disposition
+      title: Complete Sandbox Return Input
+    ShipMonk_Api_Output_PaginatorOutput:
+      type: object
+      properties:
+        total:
+          type: integer
+        pages:
+          type: integer
+        page:
+          type: integer
+      required:
+      - total
+      - pages
+      - page
+      title: Paginator Output
+    ShipMonk_Warehouse_Returns_Enum_ReturnItemStatus:
       type:
       - string
       enum:
-      - reworked
-      - returned_to_inventory
-      - return_to_merchant
-      - dispose
-      - donate
-      title: Sandbox Return Disposition
+      - received_back_into_inventory
+      - damaged_not_resellable
+      title: Return Item Status
+    Fulfillment_IntegrationsBundle_Crate_ReturnOrReceivingItemProductPublicApiOutput:
+      type: object
+      properties:
+        id:
+          description: Server-assigned numeric identifier of the product.
+          type: integer
+        sku:
+          description: Stock Keeping Unit (SKU), the client's unique product code.
+          type: string
+        name:
+          description: Human-readable name of the product.
+          type: string
+      required:
+      - id
+      - sku
+      - name
+      title: Return Or Receiving Item Product Output
+    Fulfillment_IntegrationsBundle_ApiResource_ReturnInput:
+      type: object
+      properties:
+        warehouse:
+          description: Code of the warehouse that will process this return.
+          type: string
+          minLength: 1
+          example: PA1
+        rma:
+          description: Return Merchandise Authorization (RMA) number; must be unique per return and is used as the upsert key.
+          type: string
+          minLength: 1
+        order_key:
+          description: Order key of the original outbound order this return relates to. Optional; supply to link the return to a known order.
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          example: 327b5abd-017a-4504-a50d-54f1cea80269
+        store_id:
+          description: Identifier of the store this return belongs to.
+          type: integer
+          example: 123456
+        return_reason:
+          description: 'Reason code for the return, used for reporting: exchange, changed_mind, undeliverable, unknown, or incorrect_product.'
+          $ref: '#/components/schemas/ShipMonk_Warehouse_Returns_Enum_ReturnReason'
+        note:
+          description: Optional free-text note attached to the return for internal reference.
+          type:
+          - string
+          - 'null'
+        tracking_number:
+          description: Carrier tracking number of the parcel returning to the warehouse; optional, supply when known to enable inbound matching. Mutually exclusive with tracking_numbers.
+          type:
+          - string
+          - 'null'
+          minLength: 1
+        tracking_numbers:
+          description: Carrier tracking numbers of the parcels returning to the warehouse; optional, supply when known to enable inbound matching. Mutually exclusive with tracking_number.
+          type: array
+          items:
+            type: string
+            minLength: 1
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_ReturnItemInput'
+        custom_data:
+          description: Free-form key/value metadata stored on the return; not interpreted by fulfillment logic and returned as-is in return reads.
+          type: array
+          items:
+            $ref: '#/components/schemas/Fulfillment_AccountApiBundle_Input_Return_ReturnIntegrationDataRecordInput'
+        references_to_related_order:
+          description: Optional lookup criteria used to associate this return with an existing order when order_key is unknown.
+          $ref: '#/components/schemas/Fulfillment_AccountApiBundle_Input_Return_ReferencesToRelatedOrderInput'
+      required:
+      - warehouse
+      - rma
+      - store_id
+      - return_reason
+      - items
+      title: Return Input
+    ShipMonk_Warehouse_Returns_Enum_ReturnStatus:
+      type:
+      - string
+      enum:
+      - status_created
+      - in_progress
+      - en_route
+      - returned
+      - arrived
+      - not_arrived
+      - grading_completed
+      title: Return Status
+    Fulfillment_IntegrationsBundle_Crate_ReturnOrReceivingItemLotPublicApiOutput:
+      type: object
+      properties:
+        lot_number:
+          description: Lot/batch number assigned by the supplier, or null if not provided.
+          type:
+          - string
+          - 'null'
+        expiration_date:
+          description: Lot expiration date in ISO 8601 format (YYYY-MM-DD), or null if not applicable.
+          type:
+          - string
+          - 'null'
+          format: date-time
+      required:
+      - lot_number
+      - expiration_date
+      title: Return Or Receiving Item Lot Output
+    Fulfillment_AccountApiBundle_Input_Return_ReferencesToRelatedOrderInput:
+      type: object
+      properties:
+        order_number:
+          description: Order number to look up among existing orders' references; null disables the lookup.
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          example: Order-123
+        search_in_all_stores:
+          description: When true, searches for the related order across all stores. When false, searches only within the store associated with the return.
+          type: boolean
+      required:
+      - order_number
+      - search_in_all_stores
+      title: References To Related Order Input
+    ShipMonk_Warehouse_Returns_Sandbox_Enum_SandboxReturnsCompletionMode:
+      type:
+      - string
+      enum:
+      - fully_received
+      - short_received
+      - excess_received
+      - partially_received
+      title: Sandbox Returns Completion Mode
     ShipMonk_Warehouse_Returns_Enum_ReturnReason:
       type:
       - string
@@ -390,6 +566,16 @@ components:
       - reason_unknown
       - reason_incorrect_product
       title: Return Reason
+    ShipMonk_Warehouse_Returns_Sandbox_Enum_SandboxReturnDisposition:
+      type:
+      - string
+      enum:
+      - reworked
+      - returned_to_inventory
+      - return_to_merchant
+      - dispose
+      - donate
+      title: Sandbox Return Disposition
     Fulfillment_IntegrationsBundle_ApiResource_ReturnOutput:
       type: object
       properties:
@@ -478,155 +664,17 @@ components:
       - custom_data
       - source
       title: Return Output
-    ShipMonk_Warehouse_Returns_Enum_ReturnItemStatus:
+    ShipMonk_Warehouse_Returns_Enum_ReturnEntitySource:
       type:
       - string
       enum:
-      - received_back_into_inventory
-      - damaged_not_resellable
-      title: Return Item Status
-    ShipMonk_Warehouse_Returns_Enum_ReturnStatus:
-      type:
-      - string
-      enum:
-      - status_created
-      - in_progress
-      - en_route
-      - returned
-      - arrived
-      - not_arrived
-      - grading_completed
-      title: Return Status
-    Fulfillment_IntegrationsBundle_Crate_ReturnOrReceivingItemLotPublicApiOutput:
-      type: object
-      properties:
-        lot_number:
-          description: Lot/batch number assigned by the supplier, or null if not provided.
-          type:
-          - string
-          - 'null'
-        expiration_date:
-          description: Lot expiration date in ISO 8601 format (YYYY-MM-DD), or null if not applicable.
-          type:
-          - string
-          - 'null'
-          format: date-time
-      required:
-      - lot_number
-      - expiration_date
-      title: Return Or Receiving Item Lot Output
-    ShipMonk_Warehouse_Returns_Sandbox_Enum_SandboxReturnsCompletionMode:
-      type:
-      - string
-      enum:
-      - fully_received
-      - short_received
-      - excess_received
-      - partially_received
-      title: Sandbox Returns Completion Mode
-    Fulfillment_IntegrationsBundle_Crate_ReturnsListPublicApiOutput:
-      type: object
-      properties:
-        returns_list:
-          description: Returns matching the query criteria.
-          type: array
-          items:
-            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_ReturnOutput'
-      required:
-      - returns_list
-      title: Returns List Output
-    Fulfillment_IntegrationsBundle_ApiResource_ReturnInput:
-      type: object
-      properties:
-        warehouse:
-          description: Code of the warehouse that will process this return.
-          type: string
-          minLength: 1
-          example: PA1
-        rma:
-          description: Return Merchandise Authorization (RMA) number; must be unique per return and is used as the upsert key.
-          type: string
-          minLength: 1
-        order_key:
-          description: Order key of the original outbound order this return relates to. Optional; supply to link the return to a known order.
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          example: 327b5abd-017a-4504-a50d-54f1cea80269
-        store_id:
-          description: Identifier of the store this return belongs to.
-          type: integer
-          example: 123456
-        return_reason:
-          description: 'Reason code for the return, used for reporting: exchange, changed_mind, undeliverable, unknown, or incorrect_product.'
-          $ref: '#/components/schemas/ShipMonk_Warehouse_Returns_Enum_ReturnReason'
-        note:
-          description: Optional free-text note attached to the return for internal reference.
-          type:
-          - string
-          - 'null'
-        tracking_number:
-          description: Carrier tracking number of the parcel returning to the warehouse; optional, supply when known to enable inbound matching. Mutually exclusive with tracking_numbers.
-          type:
-          - string
-          - 'null'
-          minLength: 1
-        tracking_numbers:
-          description: Carrier tracking numbers of the parcels returning to the warehouse; optional, supply when known to enable inbound matching. Mutually exclusive with tracking_number.
-          type: array
-          items:
-            type: string
-            minLength: 1
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/Fulfillment_IntegrationsBundle_ApiResource_ReturnItemInput'
-        custom_data:
-          description: Free-form key/value metadata stored on the return; not interpreted by fulfillment logic and returned as-is in return reads.
-          type: array
-          items:
-            $ref: '#/components/schemas/Fulfillment_AccountApiBundle_Input_Return_ReturnIntegrationDataRecordInput'
-        references_to_related_order:
-          description: Optional lookup criteria used to associate this return with an existing order when order_key is unknown.
-          $ref: '#/components/schemas/Fulfillment_AccountApiBundle_Input_Return_ReferencesToRelatedOrderInput'
-      required:
-      - warehouse
-      - rma
-      - store_id
-      - return_reason
-      - items
-      title: Return Input
-    Fulfillment_IntegrationsBundle_Input_CompleteSandboxReturnInput:
-      type: object
-      properties:
-        rma:
-          description: Return Merchandise Authorization (RMA) number; must be unique per return and is used as the upsert key.
-          type: string
-          minLength: 1
-          maxLength: 255
-        completion_mode:
-          description: 'How the sandbox should simulate return completion: ''fully_received'' (all expected units), ''short_received'' (fewer than expected), ''excess_received'' (more than expected), or ''partially_received'' (partial completion).'
-          $ref: '#/components/schemas/ShipMonk_Warehouse_Returns_Sandbox_Enum_SandboxReturnsCompletionMode'
-        final_disposition:
-          description: 'Simulated final disposition of returned items: ''reworked'', ''returned_to_inventory'', ''return_to_merchant'', ''dispose'', or ''donate''.'
-          $ref: '#/components/schemas/ShipMonk_Warehouse_Returns_Sandbox_Enum_SandboxReturnDisposition'
-      required:
-      - rma
-      - completion_mode
-      - final_disposition
-      title: Complete Sandbox Return Input
-    ShipMonk_Warehouse_Returns_Enum_ReturnItemFinalDisposition:
-      type:
-      - string
-      enum:
-      - reworked
-      - returned_to_inventory
-      - return_to_merchant
-      - dispose
-      - donate
-      - other
-      title: Return Item Final Disposition
+      - shipmonk
+      - loop
+      - returnly
+      - deposco
+      - happy_returns_loop
+      - happy_returns
+      title: Return Entity Source
     Fulfillment_AccountApiBundle_Input_Return_ReturnIntegrationDataRecordInput:
       type: object
       properties:
@@ -642,54 +690,6 @@ components:
       - name
       - value
       title: Return Integration Data Record Input
-    Fulfillment_CommonBundle_ApiResource_IntegrationDataOutput:
-      type: object
-      properties:
-        name:
-          description: Key of the custom data entry.
-          type: string
-        value:
-          description: Value of the custom data entry; may be any JSON-serializable structure.
-          type: object
-      required:
-      - name
-      - value
-      title: Integration Data Output
-    Fulfillment_AccountApiBundle_Input_Return_ReferencesToRelatedOrderInput:
-      type: object
-      properties:
-        order_number:
-          description: Order number to look up among existing orders' references; null disables the lookup.
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          example: Order-123
-        search_in_all_stores:
-          description: When true, searches for the related order across all stores. When false, searches only within the store associated with the return.
-          type: boolean
-      required:
-      - order_number
-      - search_in_all_stores
-      title: References To Related Order Input
-    Fulfillment_IntegrationsBundle_ApiResource_ReturnItemInput:
-      type: object
-      properties:
-        sku:
-          description: Stock Keeping Unit (SKU) of the returned product; must match an existing product.
-          type: string
-        expected_quantity:
-          description: Quantity of this SKU the customer is expected to return; must be a positive integer.
-          type: integer
-          minimum: 1
-        desired_action:
-          description: 'Requested handling for the item once received: received_back_into_inventory (restock as sellable) or damaged_not_resellable (write off).'
-          $ref: '#/components/schemas/ShipMonk_Warehouse_Returns_Enum_ReturnItemStatus'
-      required:
-      - sku
-      - expected_quantity
-      - desired_action
-      title: Return Item Input
   securitySchemes:
     api_key_header_Api-Key:
       type: apiKey
