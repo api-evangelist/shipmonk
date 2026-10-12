@@ -1,0 +1,16 @@
+generated: '2026-10-12'
+method: none
+source:
+- https://zapier.com/apps/shipmonk/integrations
+- https://n8n.io/integrations/shipmonk/
+- https://composio.dev/toolkits/shipmonk
+- https://monid.ai/tools/shipmonk
+checked:
+- https://composio.dev/toolkits/shipmonk
+- https://monid.ai/tools/shipmonk
+- https://n8n.io/integrations/shipmonk/
+- https://zapier.com/apps/shipmonk/integrations
+summary: null
+marketplace_apps: []
+edges: []
+templates: []
