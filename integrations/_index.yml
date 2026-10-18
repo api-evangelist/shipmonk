@@ -27,5 +27,5 @@
     - connectors/applications/shipmonk
     vendor_link: https://www.shipmonk.com/
     builder: Fivetran
-  status: pending-generation
+  status: not-a-workflow
   arazzo: null
