@@ -29,3 +29,15 @@
     builder: Fivetran
   status: not-a-workflow
   arazzo: null
+- slug: shipmonk-gorgias-own
+  label: Gorgias (own)
+  partner: gorgias
+  partner_name: Gorgias (own)
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://www.gorgias.com/apps/shipmonk
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
