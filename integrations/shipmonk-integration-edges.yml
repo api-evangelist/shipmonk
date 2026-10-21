@@ -13,6 +13,9 @@ checked:
 - https://monid.ai/tools/shipmonk
 - https://n8n.io/integrations/shipmonk/
 - https://zapier.com/apps/shipmonk/integrations
+- https://advertising.amazon.com/partners/directory
+- https://sellercentral.amazon.com/gspn
+- https://sellercentral.amazon.com/selling-partner-appstore
 summary: null
 marketplace_apps: []
 edges:
@@ -58,4 +61,19 @@ edges:
   listing_count: 1
   detected: '2026-10-20'
   detected_by: mirror-platform-listings.py
+- partner_name: Amazon Selling Partner Appstore
+  partner: amazon-seller-central
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://sellercentral.amazon.com/selling-partner-appstore/dp/amzn1.sp.solution.403c2298-ec63-4483-b984-64525d3bb381
+  mirror_of: amazon-seller-central/integrations/amazon-seller-central-integration-edges.yml
+  apps:
+  - ShipMonk
+  detected: '2026-10-21'
+  detected_by: sweep-amazon-sp-api-appstore.py
 templates: []
